@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .cart-table .coupon-all .coupon2 .continue-btn {
+        padding: 8px 15px;
+        background: var(--addbutton);
+        color: #fff;
+        border-color: var(--addbutton);
+    }
+
+        .cart-table .coupon-all .coupon2 .continue-btn:hover {
+            color: var(--addbutton);
+        }
+
+    .btn::before, .btn-2::before {
+        background-color: white;
+    }
+
+    .cart-page-total .proceed-checkout-btn {
+        background-color: #33b6ae;
+        border: 1px solid #33b6ae;
+        color: #ffffff
+    }
+
+        .cart-page-total .proceed-checkout-btn:hover {
+            background: white;
+            color: #33b6ae;
+            border: 1px solid #33b6ae;
+        }
+</style>
+@if (ViewBag.Banner.Count > 0)
+{
+    <div class="breadcrumb-area section-ptb" style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Cart</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">Cart</h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Cart</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+}
+
+
+<!-- main-content-wrap start -->
+<div class="main-content-wrap section-ptb cart-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form action="#" class="cart-table">
+                    <div class="table-content table-responsive">
+                        <table id="cart-table" class="table">
+                            <thead>
+                                <tr>
+                                    <th class="plantmore-product-thumbnail">Images</th>
+                                    <th class="cart-product-name">Product</th>
+                                    <th class="plantmore-product-price">Unit Price</th>
+                                    <th class="plantmore-product-quantity">Quantity</th>
+                                    <th class="plantmore-product-subtotal">Total</th>
+                                    <th class="plantmore-product-remove">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody class="cart-items">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="coupon-all">
+
+                                <div class="coupon2">
+                                    <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=1})" class="btn continue-btn">Continue Shopping</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 ml-auto">
+                            <div class="cart-page-total">
+                                <h2>Cart totals</h2>
+                                <ul>
+                                    <li><strong class="">Sub-Total</strong> <span class="subtotal">RS00.00</span></li>
+                                    <li><strong class="">Total</strong> <span class="totalamount">RS00.00</span></li>
+                                </ul>
+                                <a href="~/order/checkout" id="check-btn" class="proceed-checkout-btn">Proceed to checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var storedCityName = getCookieValue("CityName");
+        function getCookieValue(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            } else {
+                return null; // Cookie not found or empty
+            }
+        }
+        $('#cityClick span').text(storedCityName);
+    });
+</script>
+<!-- main-content-wrap end -->

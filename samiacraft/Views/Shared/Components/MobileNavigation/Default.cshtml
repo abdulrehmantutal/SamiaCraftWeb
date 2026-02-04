@@ -1,0 +1,206 @@
+@model IEnumerable<samiacraft.Models.BLL.navigationBLL>
+
+<style>
+    .main-menu {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-menu > li {
+        position: relative;
+    }
+
+    .main-menu > li > a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        font-size: 16px;
+        padding: 10px 0;
+        display: block;
+        transition: color 0.3s;
+    }
+
+    .main-menu > li > a:hover {
+        color: var(--addbutton);
+    }
+
+    .main-menu > li.has-dropdown > a::after {
+        content: '▼';
+        margin-left: 8px;
+        font-size: 12px;
+    }
+
+    .dropdown-menu-custom {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        min-width: 200px;
+        max-width: 250px;
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        list-style: none;
+        padding: 10px 0;
+        margin: 0;
+    }
+
+    .dropdown-menu-custom::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .dropdown-menu-custom::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .dropdown-menu-custom::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+    .dropdown-menu-custom::-webkit-scrollbar-thumb:hover {
+        background: #999;
+    }
+
+    .main-menu > li.has-dropdown:hover .dropdown-menu-custom {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .dropdown-menu-custom li {
+        margin: 0;
+    }
+
+    .dropdown-menu-custom li a {
+        display: block;
+        padding: 12px 20px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .dropdown-menu-custom li:last-child a {
+        border-bottom: none;
+    }
+
+    .dropdown-menu-custom li a:hover {
+        background-color: #f5f5f5;
+        color: var(--addbutton);
+        padding-left: 25px;
+    }
+
+    .dropdown-menu-custom li.clearance a {
+        color: #d32f2f;
+        font-weight: 600;
+    }
+
+    .dropdown-menu-custom li.clearance a:hover {
+        background-color: #fde0e0;
+    }
+
+    .view-all-link {
+        display: block;
+        padding: 12px 20px;
+        color: #555;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border-top: 1px solid #e0e0e0;
+        transition: all 0.3s;
+    }
+
+    .view-all-link:hover {
+        background-color: #f5f5f5;
+        color: var(--addbutton);
+        padding-left: 25px;
+    }
+
+    .mobile-menu {
+        display: none;
+    }
+
+    @@media (max-width: 991px) {
+        .main-menu {
+            display: none;
+        }
+        .mobile-menu {
+            display: block;
+        }
+    }
+</style>
+
+<ul class="main-menu">
+    <li>
+        <a href="~/home/index">Home</a>
+    </li>
+    <li>
+        <a href="~/home/about">About Us</a>
+    </li>
+    <li class="has-dropdown">
+        <a href="#">Contect Us</a>
+        <ul class="dropdown-menu-custom">
+            @if (Model != null)
+            {
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.ID, SubCategoryIDs = "", ColorIDs = "", MinPrice = "RS0", MaxPrice = "RS50000", Searchtext = "", SortID = 0 })">
+                            @item.Name
+                        </a>
+                    </li>
+                }
+                <li class="clearance">
+                    <a href="~/shop/shop">Clearance</a>
+                </li>
+                <a href="~/shop/shop" class="view-all-link">View All</a>
+            }
+            else
+            {
+                <li><a href="~/shop/shop">Shop Now</a></li>
+            }
+        </ul>
+    </li>
+    <li>
+        <a href="~/home/contact">Contact Us</a>
+    </li>
+</ul>
+
+<nav class="mobile-menu">
+    <ul>
+        <li><a href="~/home/index">Home</a></li>
+        <li><a href="~/home/about">About Us</a></li>
+        <li class="menu-item-has-children">
+            <a href="#">Categories</a>
+            @if (Model != null)
+            {
+                <ul class="dropdown">
+                    @foreach (var item in Model)
+                    {
+                        <li>
+                            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.ID, SubCategoryIDs = "", ColorIDs = "", MinPrice = "RS0", MaxPrice = "RS50000", Searchtext = "", SortID = 0 })">
+                                @item.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+        <li><a href="~/home/contact">Contact Us</a></li>
+    </ul>
+</nav>

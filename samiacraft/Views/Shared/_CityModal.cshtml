@@ -1,0 +1,43 @@
+﻿<div class="row text-center">
+    @foreach (var option in ViewBag.City)
+    {
+        <div class="col-md-4">
+            <input type="radio" name="radioOptions" id="@option.CityID" class="d-none imgbgchk" value="@option.CityID">
+            <label for="@option.CityID" class="city-name">
+                @if (option.CityID == 1)
+                {
+                    <div class="image-container" style="cursor:pointer;">
+                        <div class="figure">
+                            <img class="Sirv image-main" src="~/Content/assets/images/banner/lahore-main.png" alt="City Image" />
+                            <img class="Sirv image-hover" src="~/Content/assets/images/banner/lahore-active.png" />
+                        </div>
+                    </div>
+                }
+                else if (option.CityID == 2)
+                {
+                    <div class="image-container" style="cursor:pointer;">
+                        <div class="figure">
+                            <img class="Sirv image-main" src="~/Content/assets/images/banner/karachi-main.png" alt="City Image" />
+                            <img class="Sirv image-hover" src="~/Content/assets/images/banner/karachi-active.png" />
+                        </div>
+                    </div>
+                }
+                else if (option.CityID == 3)
+                {
+                    <div class="image-container" style="cursor:pointer;">
+                        <div class="figure">
+                            <img class="Sirv image-main" src="~/Content/assets/images/banner/islamabad-main.png" alt="City Image" />
+                            <img class="Sirv image-hover" src="~/Content/assets/images/banner/islamabad-active.png" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <img src="https://dummyimage.com/600x400/000/fff" alt="Image Not Found">
+                }
+
+                <span class="city-name" style="font-size:18px;font-weight:500;">@option.CityName</span>
+            </label>
+        </div>
+    }
+</div>

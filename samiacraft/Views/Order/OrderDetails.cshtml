@@ -1,0 +1,272 @@
+﻿@model samiacraft.Models.BLL.myorderBLL
+@{
+    ViewBag.Title = "OrderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.Banner.Count > 0)
+{
+    <div class="breadcrumb-area section-ptb" style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Details</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">Order Details</h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Details</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+}
+
+<!-- main-content-wrap start -->
+<div class="main-content-wrap section-ptb compaer-page contact-bg">
+    <div class="container w-100">
+        <h4 class="text-deal3 pt-0 text-sm-left text-center">-- Order Summary --</h4>
+        <div class="row">
+            <div class="col-md-6 my-3 ">
+                <div class="card">
+                    <div class="card-header font-weight-bold">Order Information</div>
+                    <div class="card-body">
+                        <ul class="list-group scroll-order">
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Order No
+                                <span class="font-weight-bold">@Model.OrderNo</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Order Date
+                                <span class="font-weight-bold">@Html.DisplayFor(modelItem => Model.OrderDate)</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Total Items
+                                <span class="font-weight-bold">@Model.TotalItems</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Status
+                                @if (Model.StatusID == 101)
+                                {
+                                    <span class="font-weight-bold text-primary">In Progress</span>
+                                }
+                                else if (Model.StatusID == 102)
+                                {
+                                    <span class="font-weight-bold text-info">Order Accepted</span>
+                                }
+                                else if (Model.StatusID == 104)
+                                {
+                                    <span class="font-weight-bold text-danger">Payment Failed</span>
+                                }
+                                else if (Model.StatusID == 100)
+                                {
+                                    <span class="font-weight-bold text-success">Order Delivered</span>
+                                }
+                                else
+                                {
+                                    <span class="font-weight-bold text-danger">Delivery Failed</span>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 my-3">
+                <div class="card">
+                    <div class="card-header font-weight-bold">Delivery Information</div>
+                    <div class="card-body">
+                        <ul class="list-group scroll-order">
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Sender Name
+                                <span class="font-weight-bold">@Model.SenderName</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Sender Email
+                                <span class="font-weight-bold">@Model.SenderEmail</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Sender Contact
+                                <span class="font-weight-bold">@Model.SenderContact</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Recipient Name
+                                <span class="font-weight-bold">@Model.CustomerName</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Recipient Contact No
+                                <span class="font-weight-bold">@Model.ContactNo</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Recipient Address
+                                <span class="font-weight-bold">@Model.Address</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Nearest Place
+                                <span class="font-weight-bold">@Model.NearestPlace</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Country
+                                <span class="font-weight-bold">@Model.Country</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                City
+                                <span class="font-weight-bold">@Model.City</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 my-3">
+                <div class="card">
+                    <div class="card-header font-weight-bold">Order Details</div>
+                    <div class="card-body">
+                        <ul class="list-group scroll-order">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="font-weight-bold">Item</span>
+                                <span class="font-weight-bold">Item Desc</span>
+                                <span class="font-weight-bold">Price</span>
+                            </li>
+
+                            @foreach (var item in Model.OrderDetail)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center ">
+                                    <span class="">
+                                        @if (item.ItemImage == "" || item.ItemImage == null)
+                                        {
+                                            <img class="order-detail-img" src="~/Content/assets/images/NA.png" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img class="order-detail-img" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.ItemImage" alt="">
+                                        }
+
+                                    </span>
+                                    <span class=" font-weight-bold mobile-text px-2  text-center">@item.ItemTitle x @item.Quantity</span>
+                                    <span class=" font-weight-bold mobile-text px-2 ">Rs. @item.Price</span>
+                                </li>
+                                if (Model.GiftDetail.Count > 0)
+                                {
+
+                                    foreach (var gifts in Model.GiftDetail.Where(x => x.OrderDetailID == item.OrderDetailID))
+                                    {
+                                        <li class="list-group-item border-top-0 pt-0 px-5">
+                                            <div class="border d-flex justify-content-between rounded border-secondary">
+                                                <div class="">
+                                                    @if (gifts.GiftImage == "" || gifts.GiftImage == null)
+                                                    {
+                                                        <img class="order-detail-img" src="~/Content/assets/images/NA.png" alt="">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="order-detail-img rounded-left" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@gifts.GiftImage" alt="">
+                                                    }
+                                                </div>
+                                                <div class="px-2 align-self-center">
+                                                    <p class="lh-16 small">@gifts.GiftTitle</p>
+                                                </div>
+                                                <div class="px-2 align-self-center ">
+                                                    <p class="badge badge-dark"><span class=" mx-0 text-white"></span>RS. @gifts.Price</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+
+                                }
+
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 my-3">
+                <div class="card">
+                    <div class="card-header font-weight-bold">Billing Information</div>
+                    <div class="card-body">
+                        <ul class="list-group scroll-order">
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Payment Method
+                                @if (Model.PaymentMethodTitle != "Cash on Delivery")
+                                {
+                                    <span class="font-weight-bold">Online Payment</span>
+                                }
+                                else
+                                {
+                                    <span class="font-weight-bold">Cash On Delivery</span>
+                                }
+
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Coupon
+                                @if (Model.CouponID != 0)
+                                {
+                                    <span class="font-weight-bold text-success">Applied (@Model.CouponCode)</span>
+                                }
+                                else
+                                {
+                                    <span class="font-weight-bold text-danger">Not Applied</span>
+                                }
+
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Total Amount
+                                <span class="font-weight-bold">Rs. @Model.AmountTotal</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Delivery Amount
+                                <span class="font-weight-bold">Rs. @Model.DeliveryAmount</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Tax Amount
+                                <span class="font-weight-bold">Rs. @Model.Tax</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
+                                Discount Amount
+                                <span class="font-weight-bold">Rs. @Model.DiscountAmount</span>
+                            </li>
+                            <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item bg-light">
+                                Grand Total
+                                <span class="font-weight-bold">Rs. @Model.GrandTotal</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 text-center">
+                <a href="@Url.Action("Myorders", "Order")" class="btn mt-35">Back to Orders</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- main-content-wrap end -->
+<script>
+    $(document).ready(function () {
+        $('#cityClick').click(function () {
+            $('#popupModal').modal('show')
+        });
+    });
+</script>

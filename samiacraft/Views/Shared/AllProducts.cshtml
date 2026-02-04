@@ -1,0 +1,602 @@
+﻿
+<style>
+
+
+    /*Product*/
+    .all-items .img-a {
+        display: block;
+        overflow: hidden;
+        border-radius: 20px;
+        position: relative;
+    }
+
+        .all-items .img-a img {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border-radius: 12px;
+        }
+
+        .all-items .img-a:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-card {
+        font-weight: 500;
+        font-size: 14px;
+        color: #217E79;
+    }
+
+    .text-shopnow {
+        color: #217E79;
+    }
+
+    .rating-icon {
+     width: 15px;
+     display: inline-block;
+     height: auto;
+ }
+
+      .rating-number {
+      font-size: 15px;
+      padding: 0 5px;
+  }
+
+    .all-items h6 {
+        font-weight: 500;
+    }
+
+    .text-price {
+        color: #0b4b48;
+        font-weight: 500;
+    }
+
+    .text-del {
+        color: #33B6AE;
+    }
+
+
+    .hover-icons {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .all-items .position-relative:hover .hover-icons {
+        opacity: 1;
+        right: 15px;
+    }
+
+    .icon-btn img {
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        border-radius: 50%;
+        padding: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: 0.3s;
+        border: 0.77px solid #C6E6E4;
+    }
+
+        .icon-btn img:hover {
+            transform: scale(1.1);
+        }
+    @@media (min-width: 375px) {
+        .mobview {
+            padding-top: 12px;
+            text-align: right;
+            font-size: 16px !important;
+             margin-left: -8px; 
+        }
+    }
+    @@media (min-width: 375px) {
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0rem;
+            font-size: 15px !important;
+        }
+    }
+    @@media only screen and (min-width: 320px) and (max-width: 480px) {
+        .product-content {
+            padding-top: 5px;
+            padding-left: 7px;
+        }
+
+
+        .mSlider {
+            padding-top: 9px !important;
+            margin-left: -5px !important;
+        }
+    }
+
+    @@media only screen and (min-width: 481px ) and (max-width: 767px) {
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 32px !important;
+        }
+
+        .mobview {
+            padding-top: 21px !important;
+            /*margin-left: 143px !important;*/
+        }
+    }
+
+    @@media only screen and (min-width: 768px ) and (max-width: 1024px) {
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 5px !important;
+        }
+
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 115px;
+        }
+    }
+
+    @@media only screen and (min-width: 1025px ) {
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 5px !important;
+        }
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 150px;
+        }
+    }
+
+    @@media (min-width: 768px) {
+
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 32px !important;
+        }
+
+        .mobview {
+            padding-top: 21px !important;
+            /*margin-left: 143px !important;*/
+        }
+    }
+
+    @@media (min-width: 1024px) {
+
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 32px !important;
+        }
+
+        .mobview {
+            padding-top: 21px !important;
+            /*margin-left: 90px !important;*/
+        }
+    }
+
+    @@media (max-width: 1440px) {
+
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 5px !important;
+        }
+
+    }
+
+    @@media (min-width: 1024px) {
+
+        .product-content {
+            padding-top: 0px !important;
+            padding-left: 0px !important;
+        }
+
+        @@media (min-width: 768px) {
+            .col-md-3 {
+                -ms-flex: 0 0 25%;
+                -webkit-box-flex: 0;
+                flex: 0 0 25%;
+                max-width: 100%;
+            }
+        }
+
+        @@media (min-width: 768px) {
+            .mobileSlide {
+                display: block !important;
+            }
+
+            .pt-40 {
+                padding-top: 15px;
+            }
+
+            .mob {
+                padding-bottom: 0em;
+                margin-bottom: 0.2rem;
+            }
+
+            .mobview {
+                padding-top: 0px;
+            }
+
+            .mobCatImg {
+                -ms-flex: 0 0 50%;
+                -webkit-box-flex: 0;
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        @@media (min-width: 425px) {
+            .mobileSlide {
+                display: block !important;
+            }
+
+            .pt-40 {
+                padding-top: 15px;
+            }
+
+            .mob {
+                padding-bottom: 0em;
+                margin-bottom: 0.2rem;
+            }
+
+            .mobview {
+                padding-top: 0px;
+            }
+
+            .mobCat {
+                height: 135px !important;
+            }
+
+            .mobCatImg {
+                -ms-flex: 0 0 50%;
+                -webkit-box-flex: 0;
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        @@media (min-width: 375px) {
+            .mobileSlide {
+                display: block !important;
+            }
+
+            .pt-40 {
+                padding-top: 15px;
+            }
+
+            .mob {
+                padding-bottom: 0em;
+                margin-bottom: 0.2rem;
+            }
+
+            .mobview {
+                padding-top: 15px;
+            }
+
+            .mobCat {
+                height: 135px !important;
+            }
+
+            .mobCatImg {
+                -webkit-box-flex: 0;
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
+
+            .product-content {
+                padding-top: 10px;
+                padding-left: 16px;
+            }
+        }
+
+        .categorybox img {
+            border-radius: 20px;
+            height: 220px;
+            width: 220px;
+            margin: auto;
+        }
+
+        .zoom {
+            transition: transform .5s;
+            margin: 0 auto;
+        }
+
+            .zoom:hover {
+                -ms-transform: scale(3.5); /* IE 9 */
+                -webkit-transform: scale(3.5); /* Safari 3-8 */
+                transform: scale(1.1);
+            }
+
+        .all-product-image {
+            padding-left: 0rem !important;
+            padding-right: 0rem !important;
+        }
+
+        .product-image > a img {
+            /*height: auto;*/
+            height: 275px;
+            object-fit: fill;
+        }
+
+        .product-content p {
+            margin: 0
+        }
+
+        .add-button {
+            margin-top: 5% !important;
+            /*background-color: #006793;*/
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 7px 15px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+            .add-button:hover {
+                background-color: yellow;
+            }
+
+                .add-button:hover .add-icon {
+                    color: blue;
+                }
+
+        .imgcon {
+            position: relative;
+            display: inline-block; /*add this to make container wrap around image*/
+        }
+
+            .imgcon img {
+                position: relative;
+                display: block;
+                max-width: 100%; /* make sure image does not overflow container */
+                max-height: 100%;
+                object-fit: fill;
+            }
+
+            .imgcon .wl {
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 2; /* add this to make icon stack over image */
+                margin-right: 8px;
+                margin-top: 8px;
+                border: 1px solid var(--addbutton);
+                justify-content: center;
+                border-radius: 50%;
+                height: 30px;
+                width: 30px;
+                padding-top: 1%;
+            }
+
+        .fill {
+            margin: 2%;
+            height: 15px;
+            width: 15px;
+            /*color: #006793;*/
+            font-weight: 900;
+        }
+
+            .fill:hover {
+                color: red;
+            }
+
+        .im:hover {
+            color: white !important;
+        }
+    }
+</style>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="grid">
+        <div class="shop-product-wrap">
+            @ViewBag.Message
+            <div class="row all-items">
+                @foreach (var item in ViewBag.shopList)
+                {
+                    <div class="col-lg-4 col-6 mb-4 pt-3">
+                        <div class="position-relative rounded-3 overflow-hidden shadow-sm">
+
+
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/Content/assets/images/NA.png") : System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)"
+                                     alt="@item.Title"
+                                     class="img-fluid rounded-3 shadow-sm"
+                                     style="object-fit: cover; width: 100%; aspect-ratio: 1/1;"
+                                     onerror="this.style.display='none'" />
+
+                            </a>
+
+
+                            @if (item.DiscountedPrice != null && item.DiscountedPrice > 0)
+                            {
+                                <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-info text-white small px-3 py-1">
+                                    @(((item.Price - item.DiscountedPrice) / item.Price * 100).ToString("0"))% off
+                                </span>
+                            }
+
+                            @*--Hover Icons--*@
+                            <div class="hover-icons d-flex flex-column align-items-center">
+                                <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })" class="icon-btn" title="Preview">
+                                    <img src="~/Content/assets/images/preview.png" alt="Preview">
+                                </a>
+                                <a onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; " class="icon-btn" title="Wishlist">
+                                    <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                                </a>
+
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                    </a>
+                                }
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                            <small class="text-card fw-semibold">@item.Category</small>
+
+                            <div class="d-flex align-items-center gap-1">
+                                @if (item.Stars != null)
+                                {
+
+                                    <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                    <span class="fw-semibold rating-number">@item.Stars</span>
+
+
+                                }
+                                else
+                                {
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e0e0e0" class="bi bi-star" viewBox="0 0 16 16">
+                                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.725 3.522-3.361c.33-.32.159-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.38 5.218l-4.898.696c-.441.062-.612.63-.282.95l3.522 3.36-.83 4.726z" />
+                                    </svg>
+
+
+                                    <span class="fw-semibold">0</span>
+                                }
+                            </div>
+                        </div>
+
+                        <h6 class="mb-1 fw-semibold">@item.Title</h6>
+
+                        <div class="d-flex justify-content-between">
+                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                            {
+                                <span class="text-price fw-bold">Rs. @item.Price.ToString("0.00")</span>
+                            }
+                            else
+                            {
+                                <span class="text-price fw-bold">Rs. @item.DiscountedPrice?.ToString("0.00")</span>
+                                <del class="text-del ms-2">Rs. @item.Price.ToString("0.00")</del>
+                            }
+
+
+
+
+                        </div>
+
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="list">
+        <div class="shop-product-list-wrap all-list-items">
+            @ViewBag.Message
+            @foreach (var item in ViewBag.shopList)
+            {
+                <div class="row product-layout-list">
+                    <div class="col-lg-6">
+                        <!-- single-product-wrap start -->
+                        <div class="single-product-wrap">
+                            <div class="product-image ">
+                                @if (item.Image == "" || item.Image == null)
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img src="~/Content/assets/images/NA.png" alt="@item.Title"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title"></a>
+                                }
+
+
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <div class="product-action">
+                                        <a class="add-to-cart addItemLS btnalert" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;"><i class="ion-bag"></i></a>
+                                        <a class="wishlist" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline"></i></a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="product-action">
+                                        <a class="add-to-cart addItemLS btnalert" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;"><i class="ion-bag"></i></a>
+                                        <a class="wishlist" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.DiscountedPrice, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline"></i></a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <!-- single-product-wrap end -->
+                    </div>
+                    <div class="col-lg-8 align-self-center">
+                        <div class="product-content text-left">
+
+                            <h4><a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">@item.Title</a></h4>
+                            <div class="pro_rating d-flex ">
+                                <ul class="product-rating d-flex m-auto">
+                                    @{
+                                        if (item.Stars != null)
+                                        {
+                                            for (int i = 0; i < item.Stars; i++)
+                                            {
+                                                <li><span class="ion-android-star"></span></li>
+                                            }
+                                            for (int i = 0; i < (5 - item.Stars); i++)
+                                            {
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li><span class="ion-android-star-outline"></span></li>
+                                            <li><span class="ion-android-star-outline"></span></li>
+                                            <li><span class="ion-android-star-outline"></span></li>
+                                            <li><span class="ion-android-star-outline"></span></li>
+                                            <li><span class="ion-android-star-outline"></span></li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                            {
+                                <div class="price-box">
+                                    <span class="new-price ">RS @item.Price</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="price-box">
+                                    <span class="old-price ">RS @item.Price</span>
+                                    <span class="new-price ">RS @item.DiscountedPrice</span>
+                                </div>
+                            }
+                            <p>@item.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+
+        $('.all-items').paginathing({
+            perPage: 40,
+            containerClass: 'panel-footer'
+        })
+        $('.all-list-items').paginathing({
+            perPage: 20,
+            containerClass: 'panel-footer'
+        })
+    });
+</script>
