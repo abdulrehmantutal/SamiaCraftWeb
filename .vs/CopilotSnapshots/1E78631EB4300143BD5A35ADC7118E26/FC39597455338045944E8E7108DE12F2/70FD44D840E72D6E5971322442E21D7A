@@ -1,0 +1,1051 @@
+﻿using samiacraft.Models.BLL;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Mail;
+using System.Net;
+using samiacraft.Helpers;
+using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
+using samiacraft.Services;
+
+namespace samiacraft.Controllers
+{
+    public class OrderController : Controller
+    {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly BenefitGatewayService _benefitGatewayService;
+
+        public OrderController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment, BenefitGatewayService benefitGatewayService)
+        {
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+            _benefitGatewayService = benefitGatewayService;
+        }
+
+        public IActionResult Cart()
+        {
+            try
+            {
+                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+                var settng = new settingBLL().GetSettings();
+                if (settng?.DynamicList?.Count > 0)
+                {
+                    ViewBag.Logo = settng.DynamicList[0].Logo;
+                    ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+                    ViewBag.AddButton = settng.DynamicList[0].AddButton;
+                }
+                ViewBag.Banner = new bannerBLL().GetBanner("Cart");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public IActionResult Checkout(int id = -1)
+        {
+            try
+            {
+                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+
+                var settng = new settingBLL().GetSettings();
+                if (settng?.DynamicList?.Count > 0)
+                {
+                    ViewBag.Logo = settng.DynamicList[0].Logo;
+                    ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+                    ViewBag.AddButton = settng.DynamicList[0].AddButton;
+                }
+
+                ViewBag.Banner = new bannerBLL().GetBanner("Checkout");
+
+                int CustomerID = id;
+                if (CustomerID == 0)
+                {
+                    HttpContext.Session.SetInt32("CustomerID", 0);
+                    return View();
+                }
+                else
+                {
+                    var sessionCustomerId = HttpContext.Session.GetInt32("CustomerID");
+                    if (sessionCustomerId != null && sessionCustomerId != 0)
+                    {
+                        return View();
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login_Register", "Account");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public JsonResult PunchOrder([FromBody] checkoutBLL data)
+        {
+            try
+            {
+                var currDate = DateTime.UtcNow.AddMinutes(300);
+                int rtn = 0;
+
+                checkoutBLL _service = new checkoutBLL();
+
+                // Parse OrderDetail from string
+                if (!string.IsNullOrEmpty(data.OrderDetailString))
+                {
+                    string json = JsonConvert.SerializeObject(JArray.Parse(data.OrderDetailString));
+                    JArray jsonResponse = JArray.Parse(json);
+                    data.OrderDetail = jsonResponse.ToObject<List<checkoutBLL.OrderDetails>>();
+                }
+
+                // Insert Order
+                rtn = _service.InsertOrder(data);
+
+                if (rtn > 0)
+                {
+                    // Send Emails
+                    SendOrderEmails(rtn, data);
+                }
+
+                // Return based on payment type
+                if (data.PaymentMethodID == 1) // Cash
+                {
+                    return Json(new { data = rtn });
+                }
+                else // Other payment methods
+                {
+                    return Json(new { data = "DebitCreditCard", OrderID = rtn });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { data = 0, error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Order/PlaceOrder")]
+        public async Task<JsonResult> PlaceOrder()
+        {
+            try
+            {
+                // Build checkout data from form submission
+                var checkoutData = ExtractCheckoutData();
+                
+                if (checkoutData == null)
+                {
+                    return Json(new { Success = false, Message = "Invalid order data" });
+                }
+
+                // Validate required fields
+                var validationResult = ValidateCheckoutData(checkoutData);
+                if (!validationResult.IsValid)
+                {
+                    return Json(new { Success = false, Message = validationResult.Message });
+                }
+
+                // Parse order items from SessionData
+                ParseOrderItems(checkoutData);
+
+                if (checkoutData.OrderDetail == null || checkoutData.OrderDetail.Count == 0)
+                {
+                    return Json(new { Success = false, Message = "No items in order" });
+                }
+
+                // Insert order to database
+                var checkoutService = new checkoutBLL();
+                int OrderID = checkoutService.InsertOrder(checkoutData);
+
+                if (OrderID <= 0)
+                {
+                    return Json(new { Success = false, Message = "Failed to create order" });
+                }
+
+                // Determine payment type and handle accordingly
+                int paymentType = checkoutData.PaymentMethodID ?? 1;
+
+                switch (paymentType)
+                {
+                    case 1: // Cash
+                        SendCompleteOrderEmails(OrderID, checkoutData);
+                        return Json(new
+                        {
+                            Success = true,
+                            orderid = OrderID,
+                            orderno = OrderID.ToString(),
+                            redirectUrl = $"/Order/OrderComplete?OrderID={OrderID}"
+                        });
+
+                    case 2: // Credimax (Mastercard Gateway)
+                        return await HandleCredimaxPayment(OrderID, checkoutData);
+
+                    case 3: // BenefitPay
+                        SendPendingPaymentEmails(OrderID, checkoutData);
+                        return Json(new
+                        {
+                            Success = true,
+                            orderid = OrderID,
+                            orderno = OrderID.ToString(),
+                            redirectUrl = $"/Order/BenefitPaymentInitialize?OrderID={OrderID}&GrandTotal={checkoutData.GrandTotal:0.00}"
+                        });
+
+                    case 4: // Mastercard Direct
+                        SendPendingPaymentEmails(OrderID, checkoutData);
+                        return Json(new
+                        {
+                            Success = true,
+                            orderid = OrderID,
+                            orderno = OrderID.ToString(),
+                            paymentPending = true
+                        });
+
+                    case 5: // Bank Transfer
+                        SendCompleteOrderEmails(OrderID, checkoutData);
+                        return Json(new
+                        {
+                            Success = true,
+                            orderid = OrderID,
+                            orderno = OrderID.ToString(),
+                            redirectUrl = $"/Order/OrderComplete?OrderID={OrderID}"
+                        });
+
+                    default:
+                        return Json(new { Success = false, Message = "Unknown payment method" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = $"Error: {ex.Message}" });
+            }
+        }
+
+
+        //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+        //using (var client = new HttpClient())
+        //{
+        //    client.DefaultRequestHeaders.Clear();
+        //    client.DefaultRequestHeaders.Add("Authorization", $"Basic {credentials}");
+
+        //    var payload = new
+        //    {
+        //        apiOperation = "CREATE_CHECKOUT_SESSION",
+        //        order = new
+        //        {
+        //            amount = (data.GrandTotal ?? 0).ToString("0.00"),
+        //            currency = "BHD",
+        //            id = OrderID.ToString()
+        //        },
+        //        interaction = new
+        //        {
+        //            operation = "AUTHORIZE",
+        //            returnUrl = $"https://localhost:7051/Order/PaymentCallback?OrderID={OrderID}&status=success",
+        //            cancelUrl = $"https://localhost:7051/Order/PaymentCallback?OrderID={OrderID}&status=cancel",
+        //            merchant = new
+        //            {
+        //                name = "SHAZI TRADING COMPANY WLL",
+        //                logo = "https://localhost:7051/Content/assets/images/logo.svg"
+        //            }
+        //        }
+        //    };
+
+        //    var json = JsonConvert.SerializeObject(payload);
+        //    var content = new StringContent(json, Encoding.UTF8, "text/plain");
+
+        //    var response = await client.PostAsync(sessionUrl, content);
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var responseContent = await response.Content.ReadAsStringAsync();
+        //        dynamic responseData = JsonConvert.DeserializeObject(responseContent);
+        //        string sessionID = responseData["session"]["id"];
+
+        //        return Json(new
+        //        {
+        //            Success = true,
+        //            orderid = OrderID,
+        //            orderno = OrderID.ToString(),
+        //            sessionID = sessionID,
+        //            redirectUrl = $"https://credimax.gateway.mastercard.com/checkout?sessionId={sessionID}"
+        //        });
+        //    }
+        //}
+
+
+        //using (var client = new HttpClient())
+        //{
+        //    client.DefaultRequestHeaders.Add("Authorization", $"Basic {credentials}");
+
+        //    // Build payload
+        //    var payload = new
+        //    {
+        //        apiOperation = "CREATE_CHECKOUT_SESSION",
+        //        order = new
+        //        {
+        //            amount = (data.GrandTotal ?? 0).ToString("0.00"),
+        //            currency = "BHD",
+        //            id = OrderID.ToString()
+        //        },
+        //        interaction = new
+        //        {
+        //            operation = "AUTHORIZE",
+        //            returnUrl = $"https://localhost:7051/Order/PaymentCallback?OrderID={OrderID}&status=success",
+        //            cancelUrl = $"https://localhost:7051/Order/PaymentCallback?OrderID={OrderID}&status=cancel",
+        //            merchant = new
+        //            {
+        //                name = "SHAZI TRADING COMPANY WLL",
+        //                logo = "https://localhost:7051/Content/assets/images/logo.svg"
+        //            }
+        //        }
+        //    };
+
+        //    var json = JsonConvert.SerializeObject(payload);
+        //    var content = new StringContent(json, Encoding.UTF8, "text/plain");
+
+
+        //    var response = await client.PostAsync(sessionUrl, content);
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var responseContent = await response.Content.ReadAsStringAsync();
+        //        dynamic responseData = JsonConvert.DeserializeObject(responseContent);
+        //        string sessionID = responseData["session"]["id"];
+
+        //        return Json(new
+        //        {
+        //            Success = true,
+        //            orderid = OrderID,
+        //            orderno = OrderID.ToString(),
+        //            sessionID = sessionID,
+        //            redirectUrl = $"https://credimax.gateway.mastercard.com/checkout?sessionId={sessionID}"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        return Json(new { Success = false, Message = "Failed to create payment session" });
+        //    }
+        //}
+        private async Task<JsonResult> HandleCredimaxPayment(int OrderID, checkoutBLL data)
+        {
+            try
+            {
+                SendPendingPaymentEmails(OrderID, data);
+
+                string sessionUrl = "https://credimax.gateway.mastercard.com/api/rest/version/60/merchant/E10561950/session";
+                string credentials = "bWVyY2hhbnQuRTEwNTYxOTUwOjhhYTlhZmI5OTg0ODZhMjA0ZjI0ODY0YzIyOTY1OGNh";
+                string baseUrl = _configuration["AppSettings:BaseUrl"] ?? "https://localhost:7051";
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Add("Authorization", $"Basic {credentials}");
+                    var payload = new
+                    {
+                        apiOperation = "CREATE_CHECKOUT_SESSION",
+                        order = new
+                        {
+                            amount = (data.GrandTotal ?? 0).ToString("0.00"),
+                            currency = "BHD",
+                            id = OrderID.ToString()
+                        },
+                        interaction = new
+                        {
+                            operation = "PURCHASE",
+                            returnUrl = $"{baseUrl}/Order/PaymentCallback?OrderID={OrderID}&status=success",
+                            cancelUrl = $"{baseUrl}/Order/PaymentCallback?OrderID={OrderID}&status=cancel",
+                            merchant = new
+                            {
+                                name = "SHAZI TRADING COMPANY WLL",
+                                logo = $"{baseUrl}/Content/assets/images/logo.svg"
+                            }
+                        }
+                    };
+                    var json = JsonConvert.SerializeObject(payload);
+                    var content = new StringContent(json, Encoding.UTF8, "text/plain");
+
+                    var response = await client.PostAsync(sessionUrl, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        dynamic responseData = JsonConvert.DeserializeObject(responseContent);
+                        string sessionID = responseData["session"]["id"];
+
+                        return Json(new
+                        {
+                            Success = true,
+                            orderid = OrderID,
+                            orderno = OrderID.ToString(),
+                            sessionID = sessionID,
+                            redirectUrl = $"https://credimax.gateway.mastercard.com/checkout/pay/{sessionID}?checkoutVersion=1.0.0"
+                        });
+                    }
+                    else
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        return Json(new
+                        {
+                            Success = false,
+                            Message = $"Payment session creation failed: {responseContent}"
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Message = $"Payment error: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult PaymentCallback(int OrderID = 0, string status = "")
+        {
+            try
+            {
+                if (status == "success" && OrderID > 0)
+                {
+                    // Payment approved
+                    var checkoutService = new checkoutBLL();
+                    checkoutService.OrderUpdate(OrderID, 101); // Update status to completed
+                    
+                    return RedirectToAction("OrderComplete", new { OrderID = OrderID });
+                }
+                else
+                {
+                    // Payment cancelled or failed
+                    return RedirectToAction("OrderComplete", new { OrderID = OrderID, OrderNo = "Reject" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+        }
+
+        /// <summary>
+        /// Initializes payment with Benefit Gateway
+        /// </summary>
+        [HttpGet]
+        public IActionResult BenefitPaymentInitialize(int OrderID = 0, double GrandTotal = 0)
+        {
+            try
+            {
+                if (OrderID <= 0 || GrandTotal <= 0)
+                {
+                    return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+                }
+
+                // Build payment callback URLs
+                string baseUrl = _configuration["AppSettings:BaseUrl"] ?? "https://www.samiacrafts.com";
+                string responseUrl = $"{baseUrl}/Order/BenefitPaymentResponse";
+                string errorUrl = $"{baseUrl}/Order/BenefitPaymentError";
+
+                // Initialize payment request
+                var initRequest = new PaymentInitializationRequest
+                {
+                    OrderID = OrderID,
+                    Amount = GrandTotal,
+                    ResponseUrl = responseUrl,
+                    ErrorUrl = errorUrl
+                };
+
+                // Call Benefit Gateway service to initialize payment
+                var result = _benefitGatewayService.InitializePayment(initRequest);
+
+                if (result.IsSuccessful && !string.IsNullOrEmpty(result.RedirectUrl))
+                {
+                    // Redirect to Benefit Gateway payment page
+                    return Redirect(result.RedirectUrl);
+                }
+                else
+                {
+                    // Payment initialization failed
+                    return RedirectToAction("OrderComplete", new { OrderID = OrderID, OrderNo = "Error" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+        }
+
+        /// <summary>
+        /// Processes the response from Benefit Gateway payment page
+        /// IMPORTANT: Must return only "REDIRECT=" response as per Benefit Gateway requirements
+        /// </summary>
+        [HttpPost]
+        public IActionResult BenefitPaymentResponse()
+        {
+            try
+            {
+                // Create response request from form data
+                var paymentResponse = new PaymentResponseRequest
+                {
+                    TransactionData = Request.Form["trandata"].ToString(),
+                    PaymentID = Request.Form["paymentid"].ToString(),
+                    TrackID = Request.Form["Trackid"].ToString(),
+                    ErrorText = Request.Form["ErrorText"].ToString()
+                };
+
+                // Process payment response via Benefit Gateway service
+                var result = _benefitGatewayService.ProcessPaymentResponse(paymentResponse);
+
+                if (result.IsSuccessful && result.OrderID > 0)
+                {
+                    // Payment approved - redirect to completion page
+                    string redirectUrl = $"https://www.samiacrafts.com/Order/BenefitPaymentApproved?OrderID={result.OrderID}";
+                    return Content($"REDIRECT={redirectUrl}");
+                }
+                else
+                {
+                    // Payment failed - redirect to error page
+                    return Content("REDIRECT=https://www.samiacrafts.com/Order/OrderComplete?OrderNo=Reject");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return only "REDIRECT=" response as required by Benefit Gateway
+                return Content("REDIRECT=https://www.samiacrafts.com/Order/OrderComplete?OrderNo=Reject");
+            }
+        }
+
+        /// <summary>
+        /// Completes the order after successful Benefit payment
+        /// </summary>
+        [HttpGet]
+        public IActionResult BenefitPaymentApproved(int OrderID = 0)
+        {
+            try
+            {
+                if (OrderID <= 0)
+                {
+                    return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+                }
+
+                // Update order status to completed
+                var checkoutService = new checkoutBLL();
+                checkoutService.OrderUpdate(OrderID, 101);
+
+                // Send order completion emails
+                var orderDetails = new myorderBLL().GetDetails(OrderID);
+                if (orderDetails != null)
+                {
+                    // Map order details to checkout data for email
+                    var checkoutData = new checkoutBLL
+                    {
+                        CustomerName = orderDetails.CustomerName,
+                        Email = orderDetails.Email,
+                        ContactNo = orderDetails.ContactNo,
+                        Address = orderDetails.Address,
+                        City = orderDetails.City,
+                        Country = orderDetails.Country,
+                        PlaceType = orderDetails.PlaceType,
+                        CardNotes = orderDetails.CardNotes,
+                        GrandTotal = orderDetails.GrandTotal,
+                        AmountTotal = orderDetails.AmountTotal,
+                        DiscountAmount = orderDetails.DiscountAmount,
+                        Tax = orderDetails.Tax,
+                        DeliveryAmount = orderDetails.DeliveryAmount,
+                        PaymentMethodID = 3, // BenefitPay
+                        OrderDetail = orderDetails.OrderDetail.Select(od => new checkoutBLL.OrderDetails
+                        {
+                            ID = 0,
+                            Name = od.Name,
+                            Qty = od.Quantity,
+                            Price = od.Price,
+                            Image = od.Image
+                        }).ToList()
+                    };
+                    
+                    SendCompleteOrderEmails(OrderID, checkoutData);
+                }
+
+                return RedirectToAction("OrderComplete", new { OrderID = OrderID });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+        }
+
+        /// <summary>
+        /// Handles payment errors from Benefit Gateway
+        /// </summary>
+        [HttpGet]
+        public IActionResult BenefitPaymentError()
+        {
+            try
+            {
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+        }
+
+        private checkoutBLL ExtractCheckoutData()
+        {
+            try
+            {
+                var data = new checkoutBLL
+                {
+                    // Sender Information
+                    CustomerName = Request.Form["SenderName"].ToString().Trim(),
+                    Email = Request.Form["SenderEmailAddress"].ToString().Trim(),
+                    ContactNo = Request.Form["SenderMobileNumber"].ToString().Trim(),
+
+                    // Recipient/Delivery Information
+                    Address = Request.Form["RecipientAddress"].ToString().Trim(),
+                    City = Request.Form["City"].ToString().Trim(),
+                    Country = Request.Form["Country"].ToString() ?? "Bahrain",
+                    NearestPlace = Request.Form["NearestPlace"].ToString() ?? "",
+                    PlaceType = Request.Form["PlaceType"].ToString(),
+                    CardNotes = Request.Form["Notes"].ToString().Trim(),
+                    DeliveryTime = Request.Form["DeliveryTime"].ToString() ?? "",
+
+                    // Financial Information
+                    AmountTotal = ParseDouble(Request.Form["SubTotal"]),
+                    DiscountAmount = ParseDouble(Request.Form["AmountDiscount"]),
+                    Tax = ParseDouble(Request.Form["Tax"]),
+                    DeliveryAmount = ParseDouble(Request.Form["DeliveryCharges"]),
+                    GrandTotal = ParseDouble(Request.Form["GrandTotal"]),
+
+                    // Payment Information
+                    PaymentMethodID = MapPaymentType(Request.Form["payment_type"].ToString()),
+                    
+                    // Order Items (as JSON string)
+                    OrderDetailString = Request.Form["SessionData"].ToString(),
+
+                    // Customer ID from session
+                    CustomerID = HttpContext.Session.GetInt32("CustomerID") ?? 0
+                };
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private void ParseOrderItems(checkoutBLL data)
+        {
+            if (string.IsNullOrEmpty(data.OrderDetailString))
+                return;
+
+            try
+            {
+                var jsonArray = JArray.Parse(data.OrderDetailString);
+                data.OrderDetail = jsonArray.ToObject<List<checkoutBLL.OrderDetails>>();
+            }
+            catch (Exception ex)
+            {
+                // Parsing failed, leave OrderDetail empty
+            }
+        }
+
+        private ValidationResult ValidateCheckoutData(checkoutBLL data)
+        {
+            if (string.IsNullOrEmpty(data.CustomerName))
+                return new ValidationResult { IsValid = false, Message = "Sender name is required" };
+
+            if (string.IsNullOrEmpty(data.Email))
+                return new ValidationResult { IsValid = false, Message = "Email is required" };
+
+            if (string.IsNullOrEmpty(data.ContactNo))
+                return new ValidationResult { IsValid = false, Message = "Contact number is required" };
+
+            if (string.IsNullOrEmpty(data.Address))
+                return new ValidationResult { IsValid = false, Message = "Delivery address is required" };
+
+            if (string.IsNullOrEmpty(data.City))
+                return new ValidationResult { IsValid = false, Message = "City is required" };
+
+            if (string.IsNullOrEmpty(data.PlaceType))
+                return new ValidationResult { IsValid = false, Message = "Place type is required" };
+
+            if (data.PaymentMethodID == null || data.PaymentMethodID <= 0)
+                return new ValidationResult { IsValid = false, Message = "Payment method is required" };
+
+            if (data.GrandTotal <= 0)
+                return new ValidationResult { IsValid = false, Message = "Order total must be greater than zero" };
+
+            return new ValidationResult { IsValid = true };
+        }
+
+        private double ParseDouble(string value)
+        {
+            return string.IsNullOrEmpty(value) ? 0 : double.Parse(value);
+        }
+
+        private int MapPaymentType(string paymentTypeString)
+        {
+            if (string.IsNullOrEmpty(paymentTypeString))
+                return 1; // Default to Cash
+
+            return paymentTypeString.ToLower() switch
+            {
+                "cash" => 1,
+                "banktransfer" => 5,
+                "benefitpay" => 3,
+                "credimax" => 2,
+                "Mastercard,Mastercard" => 4,
+                _ => 1
+            };
+        }
+
+        private void SendCompleteOrderEmails(int OrderID, checkoutBLL data)
+        {
+            try
+            {
+                string bodyEmail = BuildCustomerEmail(OrderID, data);
+                string bodyAdmin = BuildAdminEmail(OrderID, data);
+
+                if (!string.IsNullOrEmpty(bodyEmail))
+                {
+                    SendEmail(
+                        _configuration["AppSettings:EmailSender"],
+                        data.Email,
+                        $"Thank You For Order #{OrderID}",
+                        bodyEmail
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(bodyAdmin))
+                {
+                    SendEmail(
+                        _configuration["AppSettings:EmailSender"],
+                        _configuration["AppSettings:EmailReceivers"],
+                        $"New Order #{OrderID}",
+                        bodyAdmin
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log silently
+            }
+        }
+
+        private void SendPendingPaymentEmails(int OrderID, checkoutBLL data)
+        {
+            try
+            {
+                string bodyEmail = BuildCustomerEmail(OrderID, data);
+                string bodyAdmin = BuildAdminEmail(OrderID, data);
+
+                if (!string.IsNullOrEmpty(bodyEmail))
+                {
+                    SendEmail(
+                        _configuration["AppSettings:EmailSender"],
+                        data.Email,
+                        $"Order #{OrderID} - Payment Pending",
+                        bodyEmail
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(bodyAdmin))
+                {
+                    SendEmail(
+                        _configuration["AppSettings:EmailSender"],
+                        _configuration["AppSettings:EmailReceivers"],
+                        $"New Order #{OrderID} - Payment Pending",
+                        bodyAdmin
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log silently
+            }
+        }
+
+        private string BuildCustomerEmail(int OrderID, checkoutBLL data)
+        {
+            try
+            {
+                string contentRoot = _webHostEnvironment.ContentRootPath;
+                string templatePath = Path.Combine(contentRoot, "Content", "assets", "emailtemplates", "order-customer.txt");
+
+                if (!System.IO.File.Exists(templatePath))
+                    return null;
+
+                string body = System.IO.File.ReadAllText(templatePath);
+                
+                // Build product table
+                string itemsTable = BuildItemsTable(data);
+                
+                // Replace placeholders
+                body = body.Replace("#CustomerName#", data.CustomerName);
+                body = body.Replace("#Customer#", data.CustomerName);
+                body = body.Replace("#OrderNo#", OrderID.ToString());
+                body = body.Replace("#OrderDate#", DateTime.UtcNow.AddMinutes(180).ToString("dd MMMM yyyy HH:mm"));
+                body = body.Replace("#SubTotal#", $"BHD {(data.AmountTotal ?? 0):0.00}");
+                body = body.Replace("#Tax#", $"BHD {(data.Tax ?? 0):0.00}");
+                body = body.Replace("#DeliveryAmount#", $"BHD {(data.DeliveryAmount ?? 0):0.00}");
+                body = body.Replace("#Discount#", $"BHD {(data.DiscountAmount ?? 0):0.00}");
+                body = body.Replace("#GrandTotal#", $"BHD {(data.GrandTotal ?? 0):0.00}");
+                body = body.Replace("#Address#", data.Address);
+                body = body.Replace("#City#", data.City);
+                body = body.Replace("#Contact#", data.ContactNo);
+                body = body.Replace("#ContactNo#", data.ContactNo);
+                body = body.Replace("#Description#", data.CardNotes);
+                body = body.Replace("#PlaceType#", data.PlaceType);
+                body = body.Replace("#PaymentType#", GetPaymentTypeName(data.PaymentMethodID));
+                body = body.Replace("#items#", itemsTable);
+                body = body.Replace("#gifts#", "");
+
+                return body;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private string BuildAdminEmail(int OrderID, checkoutBLL data)
+        {
+            try
+            {
+                string contentRoot = _webHostEnvironment.ContentRootPath;
+                string templatePath = Path.Combine(contentRoot, "Content", "assets", "emailtemplates", "order-admin.txt");
+
+                if (!System.IO.File.Exists(templatePath))
+                    return null;
+
+                string body = System.IO.File.ReadAllText(templatePath);
+
+                // Build product table
+                string itemsTable = BuildItemsTable(data);
+
+                // Replace placeholders
+                body = body.Replace("#CustomerName#", data.CustomerName);
+                body = body.Replace("#Customer#", data.CustomerName);
+                body = body.Replace("#OrderNo#", OrderID.ToString());
+                body = body.Replace("#OrderDate#", DateTime.UtcNow.AddMinutes(180).ToString("dd MMMM yyyy HH:mm"));
+                body = body.Replace("#SubTotal#", $"BHD {(data.AmountTotal ?? 0):0.00}");
+                body = body.Replace("#Tax#", $"BHD {(data.Tax ?? 0):0.00}");
+                body = body.Replace("#DeliveryAmount#", $"BHD {(data.DeliveryAmount ?? 0):0.00}");
+                body = body.Replace("#Discount#", $"BHD {(data.DiscountAmount ?? 0):0.00}");
+                body = body.Replace("#GrandTotal#", $"BHD {(data.GrandTotal ?? 0):0.00}");
+                body = body.Replace("#Address#", data.Address);
+                body = body.Replace("#City#", data.City);
+                body = body.Replace("#Contact#", data.ContactNo);
+                body = body.Replace("#ContactNo#", data.ContactNo);
+                body = body.Replace("#Description#", data.CardNotes);
+                body = body.Replace("#PlaceType#", data.PlaceType);
+                body = body.Replace("#PaymentType#", GetPaymentTypeName(data.PaymentMethodID));
+                body = body.Replace("#items#", itemsTable);
+                body = body.Replace("#gifts#", "");
+
+                return body;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private string BuildItemsTable(checkoutBLL data)
+        {
+            try
+            {
+                if (data?.OrderDetail == null || data.OrderDetail.Count == 0)
+                    return "<p>No items</p>";
+
+                var items = new StringBuilder();
+                items.Append("<table style='width:100%;border-collapse:collapse;margin:15px 0;'>");
+                items.Append("<tr style='background-color:#f5f5f5;'>");
+                items.Append("<th style='border:1px solid #ddd;padding:8px;text-align:left;'>Product</th>");
+                items.Append("<th style='border:1px solid #ddd;padding:8px;text-align:center;'>Qty</th>");
+                items.Append("<th style='border:1px solid #ddd;padding:8px;text-align:right;'>Price</th>");
+                items.Append("<th style='border:1px solid #ddd;padding:8px;text-align:right;'>Total</th>");
+                items.Append("</tr>");
+
+                foreach (var item in data.OrderDetail)
+                {
+                    double itemTotal = (item.Qty) * (item.Price ?? 0);
+                    items.Append("<tr>");
+                    items.Append($"<td style='border:1px solid #ddd;padding:8px;'>{item.Name}</td>");
+                    items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:center;'>{item.Qty}</td>");
+                    items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {item.Price:0.00}</td>");
+                    items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {itemTotal:0.00}</td>");
+                    items.Append("</tr>");
+                }
+
+                items.Append("</table>");
+                return items.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
+        private string GetPaymentTypeName(int? paymentMethodID)
+        {
+            return paymentMethodID switch
+            {
+                1 => "Cash on Delivery",
+                2 => "Credimax",
+                3 => "BenefitPay",
+                4 => "Mastercard",
+                5 => "Bank Transfer",
+                _ => "Cash"
+            };
+        }
+
+        private void SendOrderEmails(int OrderID, checkoutBLL data)
+        {
+            SendCompleteOrderEmails(OrderID, data);
+        }
+
+        private void SendEmail(string from, string to, string subject, string body)
+        {
+            try
+            {
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(from);
+                    mail.To.Add(to);
+                    mail.Subject = subject;
+                    mail.Body = body;
+                    mail.IsBodyHtml = true;
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential(
+                            _configuration["AppSettings:FromAddress"],
+                            _configuration["AppSettings:EmailSenderPassword"]
+                        );
+                        smtp.EnableSsl = true;
+                        smtp.Send(mail);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error
+            }
+        }
+
+        public IActionResult OrderComplete(int OrderID = 0, string OrderNo = "")
+        {
+            try
+            {
+                var settng = new settingBLL().GetSettings();
+                if (settng?.DynamicList?.Count > 0)
+                {
+                    ViewBag.Logo = settng.DynamicList[0].Logo;
+                    ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+                    ViewBag.AddButton = settng.DynamicList[0].AddButton;
+                }
+
+                checkoutBLL check = new checkoutBLL();
+                if (OrderNo == "Reject" || OrderID == 0)
+                {
+                    ViewBag.OrderNo = "Reject";
+                }
+                else
+                {
+                    var data = new myorderBLL().GetDetails(OrderID);
+                    if (data != null && data.PaymentMethodTitle == "DebitCreditCard")
+                    {
+                        check.OrderUpdate(OrderID, 101);
+                    }
+                    ViewBag.OrderNo = data?.OrderNo ?? "Unknown";
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.OrderNo = "Error";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public JsonResult Coupon(string coupon)
+        {
+            try
+            {
+                couponBLL couponData = new couponBLL();
+                var result = couponData.Get(coupon);
+                return Json(new { data = result, error = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { data = (object)null, error = ex.Message });
+            }
+        }
+
+        public IActionResult MyOrders()
+        {
+            try
+            {
+                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+                ViewBag.Banner = new bannerBLL().GetBanner("Other");
+
+                var sessionCustomerId = HttpContext.Session.GetInt32("CustomerID");
+                if (sessionCustomerId != null && sessionCustomerId != 0)
+                {
+                    return View(new myorderBLL().GetAll(sessionCustomerId.Value));
+                }
+                else
+                {
+                    return RedirectToAction("Login_Register", "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        public IActionResult OrderDetails(int OrderID)
+        {
+            try
+            {
+                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+
+                var settng = new settingBLL().GetSettings();
+                if (settng?.DynamicList?.Count > 0)
+                {
+                    ViewBag.Logo = settng.DynamicList[0].Logo;
+                    ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+                    ViewBag.AddButton = settng.DynamicList[0].AddButton;
+                }
+                ViewBag.Banner = new bannerBLL().GetBanner("Other");
+                return View(new myorderBLL().GetDetails(OrderID));
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Helper class for form validation results
+    /// </summary>
+    public class ValidationResult
+    {
+        public bool IsValid { get; set; }
+        public string Message { get; set; }
+    }
+}

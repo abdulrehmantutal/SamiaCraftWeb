@@ -1,0 +1,672 @@
+﻿@{
+    ViewBag.Title = "Shop";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .btn-default {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: var(--addbutton);
+    }
+
+        .btn-default:hover {
+            color: var(--addbutton);
+            background-color: white !important;
+            border-color: var(--addbutton);
+        }
+
+    .btn::before, .btn-2::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 0;
+        width: 150%;
+        background-color: white;
+        color: #000 !important;
+        transition: all 0.3s ease 0s;
+        content: "";
+        transform: translateX(-50%) translateY(-50%) rotate(-10deg);
+        opacity: 0;
+        z-index: -1;
+    }
+
+    .shop-item-filter-list li .active {
+        color: var(--addbutton);
+    }
+
+    .imgcon .wl {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2; /* add this to make icon stack over image */
+        margin-right: 8px;
+        margin-top: 8px;
+        border: 1px solid var(--addbutton);
+        justify-content: center;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        padding-top: 1%;
+    }
+
+    .fill {
+        color: var(--addbutton);
+    }
+
+    .add-button {
+        margin-top: 5% !important;
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 7px 15px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .add-button:hover {
+            background-color: white !important;
+            border: 1px solid var(--addbutton);
+        }
+
+            .add-button:hover .add-icon {
+                color: black !important;
+            }
+
+    .product-content .price-box .new-price {
+        color: var(--addbutton);
+    }
+
+    .shop-sidebar h4::before {
+        position: absolute;
+        content: "";
+        background: var(--addbutton);
+        width: 50px;
+        height: 2px;
+        left: 0;
+        bottom: -1px;
+    }
+
+    .ui-widget-content .ui-slider-range {
+        background: var(--addbutton);
+    }
+
+    .ui-widget-content .ui-state-default:hover {
+        background: var(--addbutton);
+    }
+
+    .ui-widget-content .ui-state-default {
+        background: #ffffff;
+        border: 3px solid var(--addbutton);
+        border-radius: 25px;
+        box-shadow: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: normal;
+        height: 15px;
+        width: 15px;
+    }
+
+    .pagination li.active a {
+        color: #ffffff;
+        background: var(--addbutton);
+        border: 1px solid var(--addbutton);
+    }
+
+    .pagination li a:hover {
+        color: #ffffff !important;
+        background: var(--addbutton);
+        border: 1px solid var(--addbutton);
+    }
+
+
+}
+</style>
+
+@if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
+{
+    <!-- Desktop Banner -->
+    <div class="breadcrumb-area section-ptb desktop-banner"
+         style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0; background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading</h2>
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Shop</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.MobileBanner != null && ViewBag.MobileBanner.Count > 0)
+{
+    <!-- Mobile Banner -->
+    <div class="breadcrumb-area section-ptb mobile-banner"
+         style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.MobileBanner[0].Image) repeat scroll 0 0; background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.MobileBanner[0].MainHeading</h2>
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Shop</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if ((ViewBag.Banner == null || ViewBag.Banner.Count == 0) &&
+         (ViewBag.MobileBanner == null || ViewBag.MobileBanner.Count == 0))
+{
+    <!-- Fallback Default -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">Online Flower Shop</h2>
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Shop</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div id="mySidenav" class="sidenav border shadow">
+    <div class="d-flex justify-content-between">
+        <div class="px-3">
+            <h5>  </h5>
+        </div>
+        <div class="px-3">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+    </div>
+    <div class="off-canvas-inner">
+        <div class="mobile-navigation side-navigation">
+            <nav class="feature px-3">
+                <div class="shop-sidebar">
+                    <h4 class="">FILTER BY TEXT</h4>
+                </div>
+                <div class="input-group input-group-sm my-4">
+                    <input type="text" id="txt-mobile" class="form-control " placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <a href="javascript:;" class="filterOn btn btn-default btn-small">Search</a>
+                    </div>
+                </div>
+
+                <div class="shop-sidebar mb-2">
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="title">CATEGORIES</h4>
+                        </div>
+                        <div class="">
+                            @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                        </div>
+                    </div>
+
+                    <ul class="scroll-style ">
+                        @if (ViewBag.Category != null && ViewBag.Category.Count > 0)
+                        {
+                            @foreach (var item in ViewBag.Category)
+                            {
+                                @if (item != null && !string.IsNullOrEmpty(item.Title))
+                                {
+                                    <li><label><input type="checkbox" name="Category" class="mr-2" value="@item.CategoryID">@item.Title</label></li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+
+
+                @if (ViewBag.Color != null && ViewBag.Color.Count > 0)
+                {
+                    <div class="shop-sidebar mb-30">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="title">Color</h4>
+                            </div>
+                            <div class="">
+                                @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                            </div>
+                        </div>
+
+                        <ul>
+                            @foreach (var item in ViewBag.Color)
+                            {
+                                @if (item != null && !string.IsNullOrEmpty(item.Title))
+                                {
+                                    <li><label><input type="checkbox" name="Color" class="mr-2" value="@item.colorID">@item.Title</label></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+                <div class="mb-3">
+
+                    <div class="shop-sidebar filter-price-content">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="mb-0">FILTER BY PRICE</h4>
+                            </div>
+                            <div class="">
+                                @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                            </div>
+                        </div>
+
+                        <form action="#" method="post">
+                            <div id="price-slider1" class="price-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 16.6667%; width: 79.1667%;"></div><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 16.6667%;"></span><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 95.8333%;"></span></div>
+                            <div class="filter-price-wapper">
+                                <div class="filter-price-cont">
+                                    <span>Price:</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mx-1 pr-0 min-price" readonly="">
+                                    </div>
+                                    <span>—</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mx-1 pr-0 max-price" readonly="">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+</div>
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "290px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+<nav class="navbar navbar-expand-sm bg-light navbar-dark fixed-bottom p-0  d-md-block d-lg-none">
+    <div class="d-flex justify-content-between w-100">
+        <div class="p-2 border w-50 text-center">
+            <a href="#" onclick="openNav()"><i class="ion-funnel mr-1"></i> Filter</a>
+        </div>
+        <div class="p-2 border w-50 text-center">
+            <a href="#" onclick="openNav()"><i class="ion-android-funnel mr-1"></i> Sort</a>
+        </div>
+    </div>
+</nav>
+@*<div class="main-content-wrap shop-page section-ptb contact-bg">*@
+<div class="main-content-wrap shop-page section-ptb">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col-lg-3 d-lg-block d-none order-2 order-lg-1">
+                <div class="shop-sidebar-wrap">
+                    <div class="shop-sidebar">
+                        <h4 class="">FILTER BY TEXT</h4>
+                    </div>
+                    <div class="input-group input-group-sm my-4">
+                        <input type="text" id="txt-desktop" class="form-control " placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <a href="javascript:;" class="filterOn btn btn-default btn-small">Search</a>
+                        </div>
+                    </div>
+
+                    <div class="shop-sidebar mb-30">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="title">CATEGORIES</h4>
+                            </div>
+                            <div class="">
+                                @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                            </div>
+                        </div>
+
+                        <ul class="scroll-style ">
+                            @if (ViewBag.Category != null && ViewBag.Category.Count > 0)
+                            {
+                                @foreach (var item in ViewBag.Category)
+                                {
+                                    @if (item != null && !string.IsNullOrEmpty(item.Title))
+                                    {
+                                        <li><label><input type="checkbox" name="Category" class="mr-2" value="@item.CategoryID">@item.Title</label></li>
+
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+
+                    @if (ViewBag.Color != null && ViewBag.Color.Count > 0)
+                    {
+                        <div class="shop-sidebar mb-30">
+                            <div class="d-flex justify-content-between">
+                                <div class="">
+                                    <h4 class="title">Color</h4>
+                                </div>
+                                <div class="">
+                                    @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                                </div>
+                            </div>
+
+                            <ul>
+                                @foreach (var item in ViewBag.Color)
+                                {
+                                    @if (item != null && !string.IsNullOrEmpty(item.Title))
+                                    {
+                                        <li><label><input type="checkbox" name="Color" class="mr-2" value="@item.colorID">@item.Title</label></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+                    <div class="shop-sidebar mb-30">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="mb-0">FILTER BY PRICE</h4>
+                            </div>
+                            <div class="">
+                                @*<a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong h4 text-default"></i></a>*@
+                            </div>
+                        </div>
+                        <div class="filter-price-content">
+                            <form action="#" method="post">
+                                <div id="price-slider" class="price-slider"></div>
+                                <div class="filter-price-wapper">
+                                    <div class="filter-price-cont">
+                                        <span>Price: </span>
+                                        <div class="input-type">
+                                            <input type="text" class="bg-transparent mx-1 pr-0 min-price" style="width:60px !important" readonly="" />
+                                        </div>
+                                        <span>—</span>
+                                        <div class="input-type">
+                                            <input type="text" class="bg-transparent mx-1 pr-0 max-price" style="width:65px !important" readonly="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="sidbar-product shop-sidebar mb-30">
+                        <h4 class="title">best product</h4>
+
+                        @foreach (var item in ViewBag.BestProduct)
+                        {
+                            <div class="sidbar-product-inner ">
+                                <div class="product-image flex-shrink-0">
+
+                                    @if (item.Image == "" || item.Image == null)
+                                    {
+                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img class="best-seller-img" src="~/Content/assets/images/NA.png" alt="@item.Title"></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img class="best-seller-img" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title"></a>
+                                    }
+                                </div>
+                                <div class="product-content text-left">
+                                    <h3 style=" line-height: 1.2; margin-bottom: 11px;"><a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">@item.Title</a></h3>
+                                    <div class="pro_rating d-flex ">
+                                        <ul class="product-rating d-flex m-auto">
+                                            @{
+                                                if (item.Stars != null)
+                                                {
+                                                    for (int i = 0; i < item.Stars; i++)
+                                                    {
+                                                        <li><span class="ion-android-star"></span></li>
+                                                    }
+                                                    for (int i = 0; i < (5 - item.Stars); i++)
+                                                    {
+                                                        <li><span class="ion-android-star-outline"></span></li>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                    @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                    {
+                                        <div class="price-box">
+                                            <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0 "> @item.Price</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="price-box">
+                                            <span class="currency-text mx-0"> </span><span class="old-price mx-0"> @item.Price</span>
+                                            <span class="currency-text mx-0 text-default"> </span><span class="new-price mx-0 "> @item.DiscountedPrice</span>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 order-1 order-lg-2">
+                <div class="shop-product-wrapper">
+                    <div class="row">
+                        <div class="col">
+                            <div class="shop-top-bar">
+                                <div class="product-mode">
+                                    <ul class="nav shop-item-filter-list" role="tablist">
+                                        <li class="active"><a class="active" data-toggle="tab" href="#grid"><i class="ion-ios-keypad-outline"></i></a></li>
+                                        <li><a data-toggle="tab" href="#list"><i class="ion-ios-list-outline"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="product-short">
+                                    <select class="SelectSort nice-select" id="Sort" name="sortby">
+                                        <option value="1">Name(A - Z)</option>
+                                        <option value="2">Name(Z - A)</option>
+                                        <option value="3">Price(Low > High)</option>
+                                        <option value="4">Price(High > Low)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="LoadProduct" class="shop-products-wrap">
+
+                    </div>
+
+                    <div id="divLoader" class="mx-auto w-100 text-center p-5" style="display:none;">
+                        <img class="mr-3" src="~/Content/assets/images/item-load.gif" style="width: 33px;" /> <span class="text-warning">Loading ...</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/Content/assets/js/paginathing.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $("#LoadProduct").load('@Url.Action("Products", "Shop")');
+            $("#divLoader").hide();
+
+            var Category = [];
+            var SubCategory = [];
+            var Color = [];
+
+            $('input[name="Category"]').click(function () {
+
+                if ($(this).prop("checked") == true) {
+                    Category.push($(this).val());
+                    var SortID = $(".SelectSort").val();
+                    ProductFilter(Category.join(), "", "", "RS0", "RS50000", SortID);
+                }
+                else {
+                    var index = Category.indexOf($(this).val());
+                    Category.splice(index, 1);
+                    var SortID = $(".SelectSort").val();
+                    ProductFilter(Category.join(), "", "", "RS0", "RS50000", SortID);
+                }
+            });
+
+            $('input[name="SubCategory"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    SubCategory.push($(this).val());
+                    ProductFilter("", SubCategory.join(), "", "RS0", "RS50000",0);
+                }
+                else {
+                    var index = SubCategory.indexOf($(this).val());
+                    SubCategory.splice(index, 1);
+                    ProductFilter("", SubCategory.join(), "", "RS0", "RS50000",0);
+                }
+            });
+            $('#Sort').on('change', function () {
+                ProductFilter(Category.join(), "", "", "RS0", "RS50000", this.value);
+            });
+            $("#price-slider").mouseup(function () {
+                var MinPrice = $(".min-price").val();
+                var MaxPrice = $(".max-price").val();
+                var SortID = $(".SelectSort").val();
+                ProductFilter(Category.join(), "", "", MinPrice, MaxPrice, SortID);
+            });
+            $("#price-slider1").mouseup(function () {
+                var MinPrice = $(".min-price").val();
+                var MaxPrice = $(".max-price").val();
+                var SortID = $(".SelectSort").val();
+                ProductFilter(Category.join(), "", "", MinPrice, MaxPrice, SortID);
+            });
+
+            $(".filterOn").click(function () {
+
+                $("#divLoader").show();
+                $("#LoadProduct").hide();
+
+                var Searchtxt = "";
+
+                if ($("#txt-desktop").val() != null && $("#txt-desktop").val() != '') {
+                    Searchtxt = $("#txt-desktop").val();
+
+                }
+                else {
+                    Searchtxt = $("#txt-mobile").val();
+
+                }
+
+                var MinPrice = $(".min-price").val();
+                var MaxPrice = $(".max-price").val();
+                var SortID = $(".SelectSort").val();
+                var filter = new Object();
+                filter.Category = Category.join();
+                filter.SubCategory = SubCategory.join();
+                filter.Color = Color.join();
+                filter.Searchtxt = Searchtxt;
+                filter.MinPrice = MinPrice;
+                filter.MaxPrice = MaxPrice;
+                filter.SortID = SortID;
+
+                var FilterData = JSON.stringify(filter);
+
+                $.ajax({
+                    type: "POST",
+                    url: '../Shop/Filter',
+                    data: FilterData,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (obj) {
+                        $.ajax({
+                            type: "POST",
+                            url: '../Shop/Products',
+                            data: JSON.stringify(obj.data),
+                            contentType: 'application/json; charset=utf-8',
+                            dataType: 'html',
+                            success: function (data) {
+
+                                $("#divLoader").hide();
+                                $("#LoadProduct").show();
+                                $("#LoadProduct").html(data);
+
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+
+                            }
+                        });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        //
+                    }
+                });
+            });
+            //===============================================
+
+        });
+        function ProductFilter(Category, SubCategory, Color, MinPrice, MaxPrice, SortID) {
+
+            $("#divLoader").show();
+            $("#LoadProduct").hide();
+
+            var MinPrice = $(".min-price").val();
+            var MaxPrice = $(".max-price").val();
+            var SortID = $(".SelectSort").val();
+            var filter = new Object();
+            filter.Category = Category;
+            filter.SubCategory = SubCategory;
+            filter.Color = Color;
+            filter.Searchtxt = "";
+            filter.MinPrice = MinPrice;
+            filter.MaxPrice = MaxPrice;
+            filter.SortID = SortID;
+
+            var FilterData = JSON.stringify(filter);
+
+            $.ajax({
+                type: "POST",
+                url: '../Shop/Filter',
+                data: FilterData,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (obj) {
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: '../Shop/Products',
+                        data: JSON.stringify(obj.data),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'html',
+                        success: function (data) {
+
+
+                            $("#divLoader").hide();
+                            $("#LoadProduct").show();
+                            $("#LoadProduct").html(data);
+
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+
+                        }
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    //
+                }
+            });
+            }
+
+
+    </script>
+}

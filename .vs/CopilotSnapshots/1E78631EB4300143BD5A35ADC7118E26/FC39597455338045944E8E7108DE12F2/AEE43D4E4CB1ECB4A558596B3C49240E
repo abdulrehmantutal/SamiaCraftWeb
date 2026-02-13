@@ -1,0 +1,233 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using com.fss.plugin;
+
+namespace samiacraft.Services
+{
+    /// <summary>
+    /// Service for handling Benefit Gateway payment integration
+    /// Manages payment initialization, response processing, and error handling
+    /// </summary>
+    public class BenefitPaymentService
+    {
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
+        private readonly string _benefitPayPath;
+        private readonly string _benefitAlias;
+
+        public BenefitPaymentService(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+        {
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
+            
+            // Initialize paths and configuration
+            _benefitPayPath = Path.Combine(webHostEnvironment.ContentRootPath, "BenefitPay");
+            _benefitAlias = configuration["BenefitPay:Alias"] ?? "PROD03822897";
+        }
+
+        /// <summary>
+        /// Initializes a payment with Benefit Gateway
+        /// </summary>
+        public PaymentInitializationResult InitializePayment(PaymentInitializationRequest request)
+        {
+            try
+            {
+                var result = new PaymentInitializationResult { IsSuccessful = false };
+
+                // Use try to handle Benefit SDK
+                try
+                {
+                    var pipe = new iPayBenefitPipe();
+
+                    // Set required parameters
+                    pipe.setAction("1");                          // Action: Payment
+                    pipe.setCurrency("048");                      // Currency: BHD
+                    pipe.setLanguage("EN");                       // Language: English
+                    pipe.setType("D");                            // Type: Default
+
+                    // Set alias and paths
+                    pipe.setAlias(_benefitAlias);
+                    pipe.setResourcePath(_benefitPayPath + "\\");
+                    pipe.setKeystorePath(_benefitPayPath + "\\");
+
+                    // Set URLs
+                    pipe.setResponseURL(request.ResponseUrl);
+                    pipe.setErrorURL(request.ErrorUrl);
+
+                    // Set transaction details
+                    pipe.setTrackId(request.OrderID.ToString());
+                    pipe.setAmt(request.Amount.ToString("0.00"));
+
+                    // Set UDFs (User Defined Fields) for tracking
+                    pipe.setUdf1("");
+                    pipe.setUdf2("SamiaCrafts");
+                    pipe.setUdf3("");
+                    pipe.setUdf4("");
+                    pipe.setUdf5("");
+
+                    // Perform payment initialization
+                    int val = pipe.performPaymentInitializationHTTP();
+
+                    if (val == 0)
+                    {
+                        result.IsSuccessful = true;
+                        result.RedirectUrl = pipe.getWebAddress();
+                    }
+                    else
+                    {
+                        result.ErrorMessage = pipe.getError();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorMessage = $"Payment initialization failed: {ex.Message}";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentInitializationResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Service error: {ex.Message}"
+                };
+            }
+        }
+
+        /// <summary>
+        /// Processes the response from Benefit Gateway
+        /// </summary>
+        public PaymentResponseResult ProcessPaymentResponse(PaymentResponseRequest request)
+        {
+            try
+            {
+                var result = new PaymentResponseResult { IsSuccessful = false };
+
+                // Use Benefit SDK to parse encrypted response
+                try
+                {
+                    var pipe = new iPayBenefitPipe();
+                    pipe.setAlias(_benefitAlias);
+                    pipe.setResourcePath(_benefitPayPath + "\\");
+                    pipe.setKeystorePath(_benefitPayPath + "\\");
+
+                    string parseResult = "";
+                    string resultCode = "";
+
+                    // Parse encrypted data if available
+                    if (!string.IsNullOrEmpty(request.TransactionData))
+                    {
+                        int parseStatus = pipe.parseEncryptedRequest(request.TransactionData);
+                        
+                        if (parseStatus == 0)
+                        {
+                            // Successfully parsed
+                            resultCode = pipe.getResult();
+                            
+                            // Extract response details
+                            result.PaymentID = pipe.getPaymentId();
+                            result.Result = resultCode;
+                            result.ResponseCode = pipe.getAuthRespCode();
+                            result.TransactionID = pipe.getTransId();
+                            result.ReferenceID = pipe.getRef();
+                            result.TrackID = pipe.getTrackId();
+                            result.Amount = pipe.getAmt();
+                            result.AuthCode = pipe.getAuth();
+                            result.PostDate = pipe.getDate();
+                            result.ErrorCode = pipe.getError();
+                            result.ErrorText = pipe.getError_text();
+
+                            // Check if payment was successful
+                            if (resultCode == "CAPTURED")
+                            {
+                                result.IsSuccessful = true;
+                                result.OrderID = int.TryParse(result.TrackID, out int orderId) ? orderId : 0;
+                            }
+                            else
+                            {
+                                result.ErrorMessage = GetErrorMessage(resultCode, result.ResponseCode);
+                            }
+                        }
+                        else
+                        {
+                            result.ErrorMessage = pipe.getError_text();
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(request.ErrorText))
+                    {
+                        // Error returned from gateway
+                        result.ErrorMessage = request.ErrorText;
+                        result.PaymentID = request.PaymentID;
+                        result.TrackID = request.TrackID;
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Unknown error response from Benefit Gateway";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.ErrorMessage = $"Response processing failed: {ex.Message}";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentResponseResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Service error: {ex.Message}"
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets user-friendly error messages based on response codes
+        /// </summary>
+        private string GetErrorMessage(string resultCode, string responseCode)
+        {
+            if (resultCode == "NOT CAPTURED")
+            {
+                return responseCode switch
+                {
+                    "05" => "Please contact your bank/issuer",
+                    "14" => "Invalid card number",
+                    "33" => "This card has expired",
+                    "36" => "This card is restricted",
+                    "38" => "PIN attempts exceeded",
+                    "51" => "Insufficient funds",
+                    "54" => "This card has expired",
+                    "55" => "Incorrect PIN",
+                    "61" => "Exceeds withdrawal limit",
+                    "62" => "This card is restricted",
+                    "65" => "Exceeds withdrawal frequency limit",
+                    "75" => "PIN attempts exceeded",
+                    "76" => "Ineligible account",
+                    "78" => "Please refer to your issuer",
+                    "91" => "Bank is currently unavailable",
+                    _ => "Unable to process transaction. Please try again later or use another card."
+                };
+            }
+            else if (resultCode == "CANCELED")
+            {
+                return "Transaction was cancelled by you";
+            }
+            else if (resultCode == "DENIED BY RISK")
+            {
+                return "Transaction was denied due to risk assessment. Maximum daily limit exceeded.";
+            }
+            else if (resultCode == "HOST TIMEOUT")
+            {
+                return "Transaction timeout. Please try again later.";
+            }
+            else
+            {
+                return "Unable to process transaction. Please try again later.";
+            }
+        }
+    }
+}
+

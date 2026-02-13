@@ -1,0 +1,56 @@
+﻿using AlHilal.Models.BLL;
+using AlHilal.Models.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace AlHilal.Controllers
+{
+    public class ProductController : Controller
+    {
+        productService _service;
+        public ProductController()
+        {
+            _service = new productService();
+
+        }
+        // GET: Product
+        public ActionResult ProductDetails(int ItemID)
+        {
+            // Set canonical URL for product
+            ViewBag.CanonicalUrl = $"https://www.karachiflora.com/Product/ProductDetails?ItemID={ItemID}";
+            
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Other");
+            ViewBag.ProductDetails = _service.GetAll(ItemID);
+            ViewBag.Gift = new giftService().GetAll();
+            return View(_service.GetAll(ItemID));
+        }
+        public ActionResult Wishlist()
+        {
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Other");
+            return View();
+        }
+
+        public JsonResult PostProductReview(productBLL.ReviewsBLL data)
+        {
+            return Json(new
+            {
+                data = new productBLL().InsertProductReview(data)
+            }, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

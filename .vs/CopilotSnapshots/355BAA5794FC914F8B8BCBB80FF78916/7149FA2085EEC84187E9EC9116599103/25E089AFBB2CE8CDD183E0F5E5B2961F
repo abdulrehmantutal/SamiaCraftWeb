@@ -1,0 +1,25 @@
+﻿@model IEnumerable<AlHilal.Models.BLL.navigationBLL>
+<nav class="main-navigation">
+    <ul>
+        @foreach (var item in Model)
+        {
+        <li class="">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.CategoryID, SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">@item.Title</a>
+
+            @if (item.SubCategories.Count > 0)
+            {
+                <ul class="sub-menu">
+
+                    @foreach (var sub in item.SubCategories)
+                    {
+                    <li><a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = sub.SubCategoryID ,ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">@sub.Title</a></li>
+
+                    }
+                </ul>
+            }
+        </li>
+        }
+
+    </ul>
+</nav>
+

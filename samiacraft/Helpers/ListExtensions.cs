@@ -1,0 +1,112 @@
+﻿using System.Data;
+using System.Reflection;
+
+namespace samiacraft.Helpers
+{
+    public static class ListExtensions
+    {
+        public static DataTable ToDataTable<TSource>(this IList<TSource> data)
+        {
+            DataTable dataTable = new DataTable(typeof(TSource).Name);
+            PropertyInfo[] props = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo prop in props)
+            {
+                dataTable.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            }
+
+            foreach (TSource item in data)
+            {
+                var values = new object[props.Length];
+                for (int i = 0; i < props.Length; i++)
+                {
+                    values[i] = props[i].GetValue(item, null);
+                }
+                dataTable.Rows.Add(values);
+            }
+            return dataTable;
+        }
+
+        public static DataTable ToDataTable<TSource>(this IList<TSource> data, List<string> ExceptColumns)
+        {
+            DataTable dataTable = new DataTable(typeof(TSource).Name);
+            PropertyInfo[] props = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo prop in props)
+            {
+                if (ExceptColumns == null || !ExceptColumns.Contains(prop.Name))
+                {
+                    dataTable.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+                }
+            }
+
+            foreach (TSource item in data)
+            {
+                List<object> values = new List<object>();
+                for (int i = 0; i < props.Length; i++)
+                {
+                    if (ExceptColumns == null || !ExceptColumns.Contains(props[i].Name))
+                    {
+                        values.Add(props[i].GetValue(item, null));
+                    }
+                }
+                dataTable.Rows.Add(values.ToArray());
+            }
+            return dataTable;
+        }
+
+        public static List<T> DataTableToList<T>(this DataTable table)  where T : class, new()
+        {
+            try
+            {
+                List<T> list = new List<T>();
+
+                if (table == null || table.Rows.Count == 0)
+                {
+                    return list;
+                }
+
+                foreach (var row in table.AsEnumerable())
+                {
+                    T obj = new T();
+                    bool hasValidData = false;
+
+                    foreach (var prop in obj.GetType().GetProperties())
+                    {
+                        try
+                        {
+                            if (table.Columns.Contains(prop.Name))
+                            {
+                                var cellValue = row[prop.Name];
+                                
+                                if (cellValue != null && cellValue != DBNull.Value)
+                                {
+                                    PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                                    if (propertyInfo != null && propertyInfo.CanWrite)
+                                    {
+                                        propertyInfo.SetValue(obj, Convert.ChangeType(cellValue, propertyInfo.PropertyType), null);
+                                        hasValidData = true;
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                    }
+
+                    // Only add objects that have at least some valid data
+                    if (hasValidData)
+                    {
+                        list.Add(obj);
+                    }
+                }
+
+                return list;
+            }
+            catch
+            {
+                return new List<T>();
+            }
+        }
+    }
+}

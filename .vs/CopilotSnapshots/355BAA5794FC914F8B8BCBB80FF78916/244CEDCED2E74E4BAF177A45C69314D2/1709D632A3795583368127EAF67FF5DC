@@ -1,0 +1,933 @@
+﻿using samiacraft.Models.BLL;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc;
+using static samiacraft.Models.BLL.checkoutBLL;
+using samiacraft.Models;
+using System.Configuration;
+using System.Net.Mail;
+using samiacraft.Models.Service;
+using samiacraft.Helpers;
+
+namespace samiacraft.Controllers
+{
+    public class OrderController : Controller
+    {
+        // GET: Order
+        public ActionResult Cart()
+        {
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Cart");
+            return View();
+        }
+        public ActionResult Checkout(int id = -1)
+        {
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Checkout");
+            int CustomerID = id;
+            if (CustomerID == 0)
+            {
+                var DAList = checkoutBLL.GetDeliveryArea();
+
+                ViewBag.DeliveryAreaList = new SelectList(DAList, "Amount", "Name");
+                Session["CustomerID"] = 0;
+                return View();
+            }
+            else
+            {
+                if (Session["CustomerID"] != null && Convert.ToInt32(Session["CustomerID"]) != 0)
+                {
+                    var DAList = checkoutBLL.GetDeliveryArea();
+
+                    ViewBag.DeliveryAreaList = new SelectList(DAList, "Amount", "Name");
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Login_Register", "Account");
+                }
+            }
+
+        }
+        public ActionResult OrderComplete(int OrderID = 0, string OrderNo = "")
+        {
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            checkoutBLL check = new checkoutBLL();
+            if (OrderNo == "Reject" || OrderID==0)
+            {
+                ViewBag.OrderNo = "Reject";
+                //check.OrderUpdate(OrderID, 103);//Rejected 
+            }
+            else
+            {
+                var data = new myorderBLL().GetDetails(OrderID);
+                if (data.PaymentMethodTitle == "DebitCreditCard")
+                {
+                    check.OrderUpdate(OrderID, 101);//In progress
+                }
+                string ToEmail, SubJect, cc, Bcc;
+                ToEmail = data.SenderEmail;
+                SubJect = "Your order on AlHilal - " + data.OrderNo;
+                string BodyEmail = System.IO.File.ReadAllText(Server.MapPath("~/Template") + "\\" + "emailpattern.txt");
+                string BodyEmailadmin = System.IO.File.ReadAllText(Server.MapPath("~/Template") + "\\" + "emailpattern-admin.txt");
+                string items = "";
+                foreach (var item in data.OrderDetail)
+                {
+                    try
+                    {
+                        items += "<table border = '0' cellpadding = '0' cellspacing = '0' align = 'center' width = '100%' role = 'module' data - type = 'columns' style = 'padding:20px 20px 20px 30px;' bgcolor = '#FFFFFF'>"
+                        + "<tbody>"
+                        + "<tr role = 'module-content'>"
+                        + "<td height = '100%' valign = 'top'>"
+                        + "<table class='column' width='137' style='width:137px; border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;' cellpadding='0' cellspacing='0' align='left' border='0' bgcolor=''>"
+                        + "<tbody>"
+                        + "<tr>"
+                        + "<td style = 'padding:0px;margin:0px;border-spacing:0;'><table class='wrapper' role='module' data-type='image' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;' data-muid='239f10b7-5807-4e0b-8f01-f2b8d25ec9d7'>"
+                        + "<tbody>"
+                        + "<tr>"
+                        + "<td style = 'font-size:6px; line-height:10px; padding:0px 0px 0px 0px;' valign='top' align='left'>"
+                        + "<img src = '" + System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.ItemImage + "' class='max-width' border='0' style='display:block;width: 108px;height: 108px;object-fit: contain;' alt='' >"
+                        + "</td>"
+                        + "</tr>"
+                        + "</tbody>"
+                        + "</table></td>"
+                        + "</tr>"
+                        + "</tbody>"
+                        + "</table>"
+                        + "<table class='column' style='display: contents; border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;' cellpadding='0' cellspacing='0' align='left' border='0' bgcolor=''>"
+                        + "<tbody>"
+                        + "<tr>"
+                        + "<td style = 'padding:0px;margin:0px;border-spacing:0;' ><table class='module' role='module' data-type='text' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;' data-muid='f404b7dc-487b-443c-bd6f-131ccde745e2'>"
+                        + "<tbody>"
+                        + "<tr>"
+                        + "<td style = 'padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;' height='100%' valign='top' bgcolor='' role='module-content'><div>"
+                        + "<div style = 'font-family: inherit; text-align: inherit'> " + item.ItemTitle + "</div>"
+                        + "<div style = 'font-family: inherit; text-align: inherit'> Notes: " + item.ProductNote + "</div>"
+                        + "<div style = 'font-family: inherit; text-align: inherit'> Qty: " + item.Quantity + "</div>"
+                        + "<div style = 'font-family: inherit; text-align: inherit'><span style='color: #103803'>RS " + item.Price + "</span></div>"
+                        + "<div></div></div></td>"
+                        + "</tr>"
+                        + "</tbody>"
+                        + "</table>"
+                        + "</td>"
+                        + "</tr>"
+                        + "</tbody>"
+                        + "</table>"
+                        + "</td>"
+                        + "</tr>"
+                        + "</tbody>"
+                        + "</table>";
+
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+                string gifts = "";
+                if (data.GiftDetail.Count > 0)
+                {
+                    foreach (var item in data.GiftDetail)
+                    {
+                        try
+                        {
+                            gifts += "<table border = '0' cellpadding = '0' cellspacing = '0' align = 'center' width = '100%' role = 'module' data - type = 'columns' style = 'padding:20px 20px 20px 30px;' bgcolor = '#FFFFFF'>"
+                            + "<tbody>"
+                            + "<tr role = 'module-content'>"
+                            + "<td height = '100%' valign = 'top'>"
+                            + "<table class='column' width='137' style='width:137px; border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;' cellpadding='0' cellspacing='0' align='left' border='0' bgcolor=''>"
+                            + "<tbody>"
+                            + "<tr>"
+                            + "<td style = 'padding:0px;margin:0px;border-spacing:0;' ><table class='wrapper' role='module' data-type='image' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;' data-muid='239f10b7-5807-4e0b-8f01-f2b8d25ec9d7'>"
+                            + "<tbody>"
+                            + "<tr>"
+                            + "<td style = 'font-size:6px; line-height:10px; padding:0px 0px 0px 0px;' valign='top' align='left'>"
+                            + "<img src = '" + System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.GiftImage + "' class='max-width' border='0' style='display:block;width: 108px;height: 108px;object-fit: contain;' alt='' >"
+                            + "</td>"
+                            + "</tr>"
+                            + "</tbody>"
+                            + "</table></td>"
+                            + "</tr>"
+                            + "</tbody>"
+                            + "</table>"
+                            + "<table class='column' style='display: contents; border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;' cellpadding='0' cellspacing='0' align='left' border='0' bgcolor=''>"
+                            + "<tbody>"
+                            + "<tr>"
+                            + "<td style = 'padding:0px;margin:0px;border-spacing:0;' ><table class='module' role='module' data-type='text' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;' data-muid='f404b7dc-487b-443c-bd6f-131ccde745e2'>"
+                            + "<tbody>"
+                            + "<tr>"
+                            + "<td style = 'padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;' height='100%' valign='top' bgcolor='' role='module-content'><div>"
+                            + "<div style = 'font-family: inherit; text-align: inherit'> " + item.GiftTitle + "</div>"
+                            + "<div style = 'font-family: inherit; text-align: inherit'><span style='color: #006782'>RS " + item.Price + "</span></div>"
+                            + "<div></div></div></td>"
+                            + "</tr>"
+                            + "</tbody>"
+                            + "</table>"
+                            + "</td>"
+                            + "</tr>"
+                            + "</tbody>"
+                            + "</table>"
+                            + "</td>"
+                            + "</tr>"
+                            + "</tbody>"
+                            + "</table>";
+
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
+                    gifts += "<table class='module' role='module' data-type='divider' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;' datad-muid='f7373f10-9ba4-4ca7-9a2e-1a2ba700deb9.1'>"
+                    + "<tbody>"
+                    + "<tr>"
+                    + "<td style='padding:20px 30px 0px 30px;' role='module-content' height='100%' valign='top' >"
+                    + "<table border='0' cellpadding='0' cellspacing='0' align='center' width='100%' height='3px' style='line-height:3px; font-size:3px;'>"
+                    + "<tbody>"
+                    + "<tr>"
+                    + "<td style='padding:0px 0px 3px 0px;background-color: #ffcc00'></td>"
+                    + "</tr>"
+                    + "</tbody>"
+                    + "</table>"
+                    + "</td>"
+                    + "</tr>"
+                    + "</tbody>"
+                    + "</table>";
+                }
+                BodyEmail = BodyEmail.Replace("#ReceiverName#", data.CustomerName.ToString());
+                BodyEmail = BodyEmail.Replace("#ReceiverContact#", data.ContactNo.ToString());
+                BodyEmail = BodyEmail.Replace("#OrderNo#", data.OrderNo.ToString());
+                BodyEmail = BodyEmail.Replace("#items#", items.ToString());
+                BodyEmail = BodyEmail.Replace("#gifts#", gifts.ToString());
+
+                BodyEmailadmin = BodyEmailadmin.Replace("#ReceiverName#", data.CustomerName.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#ReceiverContact#", data.ContactNo.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#OrderNo#", data.OrderNo.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#items#", items.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#gifts#", gifts.ToString());
+                DateTime dateTime = DateTime.UtcNow.AddMinutes(180);
+                BodyEmail = BodyEmail.Replace("#Customer#", data.SenderName.ToString());
+                //BodyEmail = BodyEmail.Replace("#CustomerAddress#", data.SenderAddress.ToString());
+                //BodyEmail = BodyEmail.Replace("#CustomerContact#", data.SenderName.ToString());
+                BodyEmail = BodyEmail.Replace("#SelectedTime#", data.SelectedTime.ToString());
+                BodyEmail = BodyEmail.Replace("#DeliveryDate#", data.DeliveryDate.ToString("dd/MMM/yyyy"));
+                BodyEmail = BodyEmail.Replace("#OrderDate#", dateTime.ToString("dd/MMM/yyyy"));
+                BodyEmail = BodyEmail.Replace("#Address#", data.Address.ToString());
+
+                BodyEmailadmin = BodyEmailadmin.Replace("#Customer#", data.SenderName.ToString());
+                //BodyEmailadmin = BodyEmailadmin.Replace("#CustomerAddress#", data.SenderAddress.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#CustomerContact#", data.SenderContact.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#SelectedTime#", data.SelectedTime.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#DeliveryDate#", data.DeliveryDate.ToString("dd/MMM/yyyy"));
+                BodyEmailadmin = BodyEmailadmin.Replace("#OrderDate#", dateTime.ToString("dd/MMM/yyyy"));
+                BodyEmailadmin = BodyEmailadmin.Replace("#Address#", data.Address.ToString());
+
+                //string PaymentType = "";
+                //PaymentType = data.PaymentMethodID == 3 ? "Paypal" : data.PaymentMethodID == 5 ? "Easypaisa" : data.PaymentMethodID == 3 ? "Banktransfer" : "Cash on delivery";
+                //BodyEmail = BodyEmail.Replace("#PaymentType#", PaymentType.ToString());
+
+                BodyEmail = BodyEmail.Replace("#Description#", data.CardNotes.ToString());
+                BodyEmail = BodyEmail.Replace("#PaymentMethod#", data.PaymentMethodTitle.ToString());
+                BodyEmail = BodyEmail.Replace("#TotalItems#", data.TotalItems.ToString());
+                BodyEmail = BodyEmail.Replace("#SubTotal#", data.AmountTotal.ToString());
+                BodyEmail = BodyEmail.Replace("#Tax#", data.Tax.ToString());
+                BodyEmail = BodyEmail.Replace("#DeliveryAmount#", data.DeliveryAmount.ToString());
+                BodyEmail = BodyEmail.Replace("#GrandTotal#", data.GrandTotal.ToString());
+
+                //BodyEmailadmin = BodyEmailadmin.Replace("#PaymentType#", PaymentType.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#Description#", data.CardNotes.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#PaymentMethod#", data.PaymentMethodTitle.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#TotalItems#", data.TotalItems.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#SubTotal#", data.AmountTotal.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#Tax#", data.Tax.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#DeliveryAmount#", data.DeliveryAmount.ToString());
+                BodyEmailadmin = BodyEmailadmin.Replace("#GrandTotal#", data.GrandTotal.ToString());
+                cc = "";
+                Bcc = ConfigurationManager.AppSettings["From"].ToString();
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(ToEmail);
+
+                    mail.From = new MailAddress(ConfigurationManager.AppSettings["From"].ToString());
+                    mail.Subject = SubJect;
+                    string Body = BodyEmail;
+                    mail.Body = Body;
+                    mail.IsBodyHtml = true;
+
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Port = 587;
+                    smtp.Host = "smtp.gmail.com";
+
+                    smtp.Credentials = new NetworkCredential(
+                        "abdulrehmantutal@gmail.com",
+                        "wbtcrbhrtagcnzvd"
+                    );
+
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+
+                    ViewBag.Status = "Order Invoice will be sent to your Email.";
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Status = "";
+                }
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(ConfigurationManager.AppSettings["From"].ToString());
+
+                    mail.From = new MailAddress(ConfigurationManager.AppSettings["From"].ToString());
+                    mail.Subject = "NEW ORDER | " + SubJect;
+                    string Body = BodyEmailadmin;
+                    mail.Body = Body;
+                    mail.IsBodyHtml = true;
+
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Port = int.Parse(ConfigurationManager.AppSettings["SmtpPort"].ToString());
+                    smtp.Host = ConfigurationManager.AppSettings["SmtpServer"].ToString(); //Or Your SMTP Server Address
+                    smtp.Credentials = new System.Net.NetworkCredential
+                         (ConfigurationManager.AppSettings["From"].ToString(), ConfigurationManager.AppSettings["Password"].ToString());
+                    //Or your Smtp Email ID and Password
+                    smtp.EnableSsl = true;
+
+                    smtp.Send(mail);
+                }
+                catch (Exception)
+                {
+                }
+                ViewBag.OrderNo = data.OrderNo;
+            }
+
+            return View();
+        }
+        //Coupon
+        public JsonResult Coupon(string coupon)
+        {
+            couponBLL couponBLL = new couponBLL();
+            ViewBag.coupon = couponBLL.Get(coupon);
+            return Json(new { data = ViewBag.coupon }, JsonRequestBehavior.AllowGet);
+        }
+        //Order
+        public JsonResult PunchOrder(checkoutBLL data)
+        {
+            var currDate = DateTime.UtcNow.AddMinutes(300);
+            var isAllowcheckout = false;
+            int rtn = 0;
+            try
+            {
+                if (data.OpenTime != null && data.CloseTime != null)
+                {
+                    var t1 = int.Parse(TimeSpan.Parse(data.OpenTime).ToString("hhmm"));
+                    var t2 = 2359;
+                    var t3 = 0001;
+                    var t4 = int.Parse(TimeSpan.Parse(data.CloseTime).ToString("hhmm"));
+                    var currTimeint = int.Parse(Convert.ToDateTime(currDate).ToString("HHmm"));
+                    
+                    isAllowcheckout = t1 > t4 ? ((currTimeint > t1 && currTimeint < t2) || (currTimeint > t3 && currTimeint < t4) ? true : false) : (currTimeint > t1 && currTimeint < t4);
+                }
+               
+                 checkoutBLL _service = new checkoutBLL();
+                //orderdetails
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(JArray.Parse(data.OrderDetailString));
+                JArray jsonResponse = JArray.Parse(json);
+                data.OrderDetail = jsonResponse.ToObject<List<OrderDetails>>();
+                //gifts
+                try
+                {
+                    if (data.OrderGiftsString != "")
+                    {
+                        string jsonGift = Newtonsoft.Json.JsonConvert.SerializeObject(JArray.Parse(data.OrderGiftsString));
+                        JArray jsonResponseGift = JArray.Parse(jsonGift);
+                        data.OrderGifts = jsonResponseGift.ToObject<List<OrderGiftDetails>>();
+                    }
+                }
+                catch (Exception ex)
+                { }
+                if (!isAllowcheckout)
+                {
+                ViewBag.CheckoutMsg = "Sorry, Delivery Time is from " + Convert.ToDateTime(data.OpenTime).ToString("hh:mm tt") + " to " + Convert.ToDateTime(data.CloseTime).ToString("hh:mm tt");
+                }
+                else
+                {
+                    rtn = _service.InsertOrder(data); 
+                }
+               
+                //rtn=5619;
+                if (data.PaymentMethodID == 7)
+                {
+                    return Json(new { data = "DebitCreditCard", OrderID = rtn }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { data = rtn }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { data = 0 }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult MyOrders()
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Other");
+            if (Session["CustomerID"] != null && Convert.ToInt32(Session["CustomerID"]) != 0)
+            {
+                return View(new myorderBLL().GetAll(Convert.ToInt32(Session["CustomerID"])));
+            }
+            else
+            {
+                return RedirectToAction("Login_Register", "Account");
+            }
+        }
+        public ActionResult OrderDetails(int OrderID)
+        {
+            var settng = new settingBLL().GetSettings();
+            ViewBag.Logo = settng.DynamicList[0].Logo;
+            ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
+            ViewBag.AddButton = settng.DynamicList[0].AddButton;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Other");
+            return View(new myorderBLL().GetDetails(OrderID));
+        }
+        public ActionResult BenefitPay(string OrderNo, int OrderID, double GrandTotal)
+        {
+            iPayBenefitPipe pipe = new iPayBenefitPipe();
+            Session["OrderNo"] = OrderNo;
+            // Do NOT change the values of the following parameters at all.
+            pipe.setAction("1");
+            pipe.setCurrency("048");
+            pipe.setLanguage("EN");
+            pipe.setType("D");
+
+            // modify the following to reflect your "Alias Name", "resource.cgn" file path, "keystore.bin" file path.
+            pipe.setAlias("test200001056");
+            string filepath = Server.MapPath("~/BenefitPay") + "\\";
+            pipe.setResourcePath(filepath); //only the path that contains the file; do not write the file name
+            pipe.setKeystorePath(filepath); //only the path that contains the file; do not write the file name
+
+            // modify the following to reflect your pages URLs
+            string responseurl = "https://www.karachiflora.com/Order/BenefitPayResponse?OrderID=" + OrderID;
+            pipe.setResponseURL(responseurl.ToString());
+            string errorurl = "https://www.karachiflora.com/Order/BenefitPayResponse";
+            pipe.setErrorURL(errorurl.ToString());
+
+            // set a unique track ID for each transaction so you can use it later to match transaction response and identify transactions in your system and “BENEFIT Payment Gateway” portal.
+            pipe.setTrackId(OrderNo);
+
+            // set transaction amount
+            pipe.setAmt(GrandTotal.ToString());
+
+            // The following user-defined fields (UDF1, UDF2, UDF3, UDF4, UDF5) are optional fields.
+            // However, we recommend setting theses optional fields with invoice/product/customer identification information as they will be reflected in “BENEFIT Payment Gateway” portal where you will be able to link transactions to respective customers. This is helpful for dispute cases. 
+            pipe.setUdf1("");
+
+            pipe.setUdf2("AlHilal");
+            pipe.setUdf3("");
+            pipe.setUdf4("");
+            pipe.setUdf5("");
+
+            int val = pipe.performPaymentInitializationHTTP();
+            var Address = "";
+            if (val == 0)
+            {
+                Address = pipe.getWebAddress();
+                Response.Redirect(pipe.getWebAddress());
+            }
+            else
+            {
+                Address = "error";
+                Response.Write("error: " + pipe.getError());
+            }
+            return View();
+        }
+        public ActionResult BenefitPayResponse(int OrderID = 0)
+        {
+            iPayBenefitPipe pipe = new iPayBenefitPipe();
+            pipe.setAlias("test200001056");
+            string filepath = Server.MapPath("~/BenefitPay") + "\\";
+            pipe.setResourcePath(filepath); //only the path that contains the file; do not write the file name
+            pipe.setKeystorePath(filepath); //only the path that contains the file; do not write the file name
+            string trandata = "";
+            string paymentID = "";
+            string result = "";
+            string responseCode = "";
+            string response = "";
+            string transactionID = "";
+            string referenceID = "";
+            string trackID = "";
+            string amount = "";
+            string UDF1 = "";
+            string UDF2 = "";
+            string UDF3 = "";
+            string UDF4 = "";
+            string UDF5 = "";
+            string authCode = "";
+            string postDate = "";
+            string errorCode = "";
+            string errorText = "";
+
+            if (Request.Form["trandata"] != null)
+            {
+                trandata = Request.Form["trandata"].ToString();
+                int parse = pipe.parseEncryptedRequest(trandata);
+                if (parse == 0)
+                {
+                    paymentID = pipe.getPaymentId();
+                    result = pipe.getResult();
+                    responseCode = pipe.getAuthRespCode();
+                    transactionID = pipe.getTransId();
+                    referenceID = pipe.getRef();
+                    trackID = pipe.getTrackId();
+                    amount = pipe.getAmt();
+                    UDF1 = pipe.getUdf1();
+                    UDF2 = pipe.getUdf2();
+                    UDF3 = pipe.getUdf3();
+                    UDF4 = pipe.getUdf4();
+                    UDF5 = pipe.getUdf5();
+                    authCode = pipe.getAuth();
+                    postDate = pipe.getDate();
+                    errorCode = pipe.getError();
+                    errorText = pipe.getError_text();
+                }
+                else
+                {
+                    errorText = pipe.getError_text();
+                }
+            }
+            else if (Request.Form["ErrorText"] != null)
+            {
+                paymentID = Request.Form["paymentid"];
+                trackID = Request.Form["Trackid"];
+                amount = Request.Form["amt"];
+                UDF1 = Request.Form["UDF1"];
+                UDF2 = Request.Form["UDF2"];
+                UDF3 = Request.Form["UDF3"];
+                UDF4 = Request.Form["UDF4"];
+                UDF5 = Request.Form["UDF5"];
+                errorText = Request.Form["ErrorText"];
+            }
+            else
+            {
+                errorText = "Unknown Exception";
+            }
+            // Remove any HTML/CSS/JavaScript from the page. Also, you MUST NOT write anything on the page EXCEPT the word "REDIRECT=" (in upper-case only) followed by a URL.
+            // If anything else is written on the page then you will not be able to complete the process.
+            if (result == "CAPTURED")
+            {
+                Response.Write("REDIRECT=https://www.karachiflora.com/Order/BenefitPayApproved?OrderID=" + OrderID);
+            }
+            else if (result == "NOT CAPTURED" || result == "CANCELED" || result == "DENIED BY RISK" || result == "HOST TIMEOUT")
+            {
+                if (result == "NOT CAPTURED")
+                {
+                    switch (responseCode)
+                    {
+                        case "05":
+                            response = "Please contact issuer";
+                            break;
+                        case "14":
+                            response = "Invalid card number";
+                            break;
+                        case "33":
+                            response = "Expired card";
+                            break;
+                        case "36":
+                            response = "Restricted card";
+                            break;
+                        case "38":
+                            response = "Allowable PIN tries exceeded";
+                            break;
+                        case "51":
+                            response = "Insufficient funds";
+                            break;
+                        case "54":
+                            response = "Expired card";
+                            break;
+                        case "55":
+                            response = "Incorrect PIN";
+                            break;
+                        case "61":
+                            response = "Exceeds withdrawal amount limit";
+                            break;
+                        case "62":
+                            response = "Restricted Card";
+                            break;
+                        case "65":
+                            response = "Exceeds withdrawal frequency limit";
+                            break;
+                        case "75":
+                            response = "Allowable number PIN tries exceeded";
+                            break;
+                        case "76":
+                            response = "Ineligible account";
+                            break;
+                        case "78":
+                            response = "Refer to Issuer";
+                            break;
+                        case "91":
+                            response = "Issuer is inoperative";
+                            break;
+                        default:
+                            // for unlisted values, please generate a proper user-friendly message
+                            response = "Unable to process transaction temporarily. Try again later or try using another card.";
+                            break;
+                    }
+                }
+                else if (result == "CANCELED")
+                {
+                    response = "Transaction was canceled by user.";
+                }
+                else if (result == "DENIED BY RISK")
+                {
+                    response = "Maximum number of transactions has exceeded the daily limit.";
+                }
+                else if (result == "HOST TIMEOUT")
+                {
+                    response = "Unable to process transaction temporarily. Try again later.";
+                }
+                Response.Write("REDIRECT=https://www.karachiflora.com/Order/BenefitPayApproved");
+            }
+            else
+            {
+                //Unable to process transaction temporarily. Try again later or try using another card.
+                Response.Write("REDIRECT=https://www.karachiflora.com/Order/BenefitPayApproved");
+            }
+            return View();
+        }
+        public ActionResult BenefitPayApproved(int OrderID = 0)
+        {
+            if (OrderID != 0)
+            {
+                return RedirectToAction("OrderComplete", "Order", new { OrderID = OrderID });
+            }
+            else
+            {
+                return RedirectToAction("OrderComplete", "Order", new { OrderNo = "Reject" });
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult Direct_Transfer(CheckoutModelEnc data)
+        {
+
+            string public_key = "<RSAKeyValue><Modulus>uEhpjFoCdPqEp/bbO163WBMKgXquIkfNWdIrn96sCbRhy4fZNYF4D+WuW2g1dnvUChU1Xss+0D2z0Qaja5n3+d77ponL5k+AC1jcb9bMMLskRrgwuO5H74khUt6w1bgdY2iOmBQlImyNejxAyJZg49EZS3W40xFeuEPfdLiKl8/gAJpMjJrfgVt9l5+ifkKMVXxPMre/AIsi+tgyMcrBQ65ZsDcxWBIcLWHziTOPa5qmPi5/HtaCa+/RAdwr5gRAjymdogkgGDncr0ZaHYR7JBzqjvQ5MdNfiC6cjAaKCjicg+6ZGZuJ1lwp3lo27rg6F9vVR0oqx75RHxN37dTu1mJ+d1I3txAikgrzAn4g7BjTubgvULjfuT6U10RSq5w7VuqklLMBgZm+DP/f6xxJEMYjWOZsduOeJCtMufdkMfFFruwCLvTIaL5suin/ANThoYIYPdf0o+wcR3Yj42foWpDATOj3pDmy4pVEEfBl7wpSr53rJxdcOfISEozF/ttgnRlJgyBtMzL3+3l9jxKejXUYb87JIvCCtYiaE70GzgdBsOTZ3OT0BmjoeM3Mj+u9pDH9u5Y58//SHzVLFssEHVv6MwtzaOZGAxo9WUazHmUvWK42iD4GU4N0qpt/phBiHkm75TWIgDHpN1wc82X5tz7mn3T3/Ztr3Hs7q1mouH8=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+            //"<RSAKeyValue><Modulus>nP5veko5s9V9l/mhMgt+k7tTGpPYEvTfTA/67ELUoBXqw9K6btWHpiNhFNxnXZcBaKZb2jNIctIatRasQnKQqKiSJBqpKtOm4L452qp6lvjL2mXZZ3+MLysZsed8V/ef+TcHR1qES5c75S7jVZeK+9mJGWEldGSsYlkUA6u8QYhPrZNCpQ+MQ+6Pws/NwV1eYe0IC893HUvUH4FDRbn0VEn/oLgrDJhP+1Q2s8BzS3at0P2uJ521XWjeVAjND/bHwfYf55SXH/w/D/v7DT9J9qA+IaFN0Wk5AnI51X0yXnZd3V4/aEtQ9I/TUu9Eol15xJbwy8S1A9sZUZw6dSZSEyHofy/BSyAaDCyQokUkzMYUU+XQt/LXs6pFPdF3A4zj3AYLgSmnLO1iIMKZKvYpNNJEhakNobBCEO9lQsigvHcf5yD5Emmd3NJPM4dTZhXoCYrXfKD3dc1H/djRh00dwTzoSX+2QICagkKicmiAFfRVidnuqWKvlYGI/fkUC0o3SvRV2PI0SFwzKTCh3T0uy2EeHDCkn/Pg78+BHmJtWC+dBd6u88YbyYCwAUf78SAq+jDZKJbLl9kJjW1oG4ot7fJOmloOU0PMsx1hrmdI1uzR1n/Bb2BQYBoT0WY/sQbgw/hRKTXt7MOtq59EwFqnTlq/MOBV85QAc0qfJSanHME=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+            RSA rsa = new RSA();
+            if (!string.IsNullOrEmpty(data.CANCEL_URL))
+                data.CANCEL_URL = rsa.EnCrypt(public_key, data.CANCEL_URL, 4096);
+            if (!string.IsNullOrEmpty(data.RETURN_URL))
+                data.RETURN_URL = rsa.EnCrypt(public_key, data.RETURN_URL, 4096);
+            if (!string.IsNullOrEmpty(data.TYPE_ID))
+                data.TYPE_ID = rsa.EnCrypt(public_key, data.TYPE_ID, 4096);
+            if (!string.IsNullOrEmpty(data.PASSWORD))
+                data.PASSWORD = rsa.EnCrypt(public_key, data.PASSWORD, 4096);
+            if (!string.IsNullOrEmpty(data.CHANNEL))
+                data.CHANNEL = rsa.EnCrypt(public_key, data.CHANNEL, 4096);
+
+            if (!string.IsNullOrEmpty(data.SHIPPING_DETAIL.NAME))
+                data.SHIPPING_DETAIL.NAME = rsa.EnCrypt(public_key, data.SHIPPING_DETAIL.NAME, 4096);
+            if (!string.IsNullOrEmpty(data.SHIPPING_DETAIL.DELIEVERY_DAYS))
+                data.SHIPPING_DETAIL.DELIEVERY_DAYS = rsa.EnCrypt(public_key, data.SHIPPING_DETAIL.DELIEVERY_DAYS, 4096);
+            if (!string.IsNullOrEmpty(data.SHIPPING_DETAIL.SHIPPING_COST))
+                data.SHIPPING_DETAIL.SHIPPING_COST = rsa.EnCrypt(public_key, data.SHIPPING_DETAIL.SHIPPING_COST, 4096);
+
+            if (!string.IsNullOrEmpty(data.ORDER.DISCOUNT_ON_TOTAL))
+                data.ORDER.DISCOUNT_ON_TOTAL = rsa.EnCrypt(public_key, data.ORDER.DISCOUNT_ON_TOTAL, 4096);
+            if (!string.IsNullOrEmpty(data.ORDER.SUBTOTAL))
+                data.ORDER.SUBTOTAL = rsa.EnCrypt(public_key, data.ORDER.SUBTOTAL, 4096);
+
+            if (data.ORDER != null && data.ORDER.OrderSummaryDescription.Count > 0)
+            {
+                for (int i = 0; i < data.ORDER.OrderSummaryDescription.Count; i++)
+                {
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].ITEM_NAME))
+                        data.ORDER.OrderSummaryDescription[i].ITEM_NAME = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].ITEM_NAME, 4096);
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].QUANTITY))
+                        data.ORDER.OrderSummaryDescription[i].QUANTITY = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].QUANTITY, 4096);
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].OLD_PRICE))
+                        data.ORDER.OrderSummaryDescription[i].OLD_PRICE = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].OLD_PRICE, 4096);
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].UNIT_PRICE))
+                        data.ORDER.OrderSummaryDescription[i].UNIT_PRICE = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].UNIT_PRICE, 4096);
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].CATEGORY))
+                        data.ORDER.OrderSummaryDescription[i].CATEGORY = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].CATEGORY, 4096);
+                    if (!string.IsNullOrEmpty(data.ORDER.OrderSummaryDescription[i].SUB_CATEGORY))
+                        data.ORDER.OrderSummaryDescription[i].SUB_CATEGORY = rsa.EnCrypt(public_key, data.ORDER.OrderSummaryDescription[i].SUB_CATEGORY, 4096);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.PAYMENT_TOKEN))
+                data.ADDITIONAL_DATA.PAYMENT_TOKEN = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.PAYMENT_TOKEN, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.REFERENCE_NUMBER))
+                data.ADDITIONAL_DATA.REFERENCE_NUMBER = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.REFERENCE_NUMBER, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.CURRENCY))
+                data.ADDITIONAL_DATA.CURRENCY = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.CURRENCY, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_FORENAME))
+                data.ADDITIONAL_DATA.BILL_TO_FORENAME = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_FORENAME, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_SURNAME))
+                data.ADDITIONAL_DATA.BILL_TO_SURNAME = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_SURNAME, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_EMAIL))
+                data.ADDITIONAL_DATA.BILL_TO_EMAIL = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_EMAIL, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_PHONE))
+                data.ADDITIONAL_DATA.BILL_TO_PHONE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_PHONE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_ADDRESS_LINE))
+                data.ADDITIONAL_DATA.BILL_TO_ADDRESS_LINE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_ADDRESS_LINE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_ADDRESS_CITY))
+                data.ADDITIONAL_DATA.BILL_TO_ADDRESS_CITY = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_ADDRESS_CITY, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_ADDRESS_STATE))
+                data.ADDITIONAL_DATA.BILL_TO_ADDRESS_STATE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_ADDRESS_STATE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_ADDRESS_COUNTRY))
+                data.ADDITIONAL_DATA.BILL_TO_ADDRESS_COUNTRY = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_ADDRESS_COUNTRY, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.BILL_TO_ADDRESS_POSTAL_CODE))
+                data.ADDITIONAL_DATA.BILL_TO_ADDRESS_POSTAL_CODE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.BILL_TO_ADDRESS_POSTAL_CODE, 4096);
+
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_FORENAME))
+                data.ADDITIONAL_DATA.SHIP_TO_FORENAME = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_FORENAME, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_SURNAME))
+                data.ADDITIONAL_DATA.SHIP_TO_SURNAME = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_SURNAME, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_EMAIL))
+                data.ADDITIONAL_DATA.SHIP_TO_EMAIL = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_EMAIL, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_PHONE))
+                data.ADDITIONAL_DATA.SHIP_TO_PHONE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_PHONE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_LINE))
+                data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_LINE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_LINE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_CITY))
+                data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_CITY = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_CITY, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_STATE))
+                data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_STATE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_STATE, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_COUNTRY))
+                data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_COUNTRY = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_COUNTRY, 4096);
+            if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_POSTAL_CODE))
+                data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_POSTAL_CODE = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.SHIP_TO_ADDRESS_POSTAL_CODE, 4096);
+
+            data.ADDITIONAL_DATA.CUSTOMER_ID = rsa.EnCrypt(public_key, "customer-123", 4096);
+
+            if (data.ADDITIONAL_DATA.MerchantFields != null)
+            {
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD1))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD1 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD1, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD2))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD2 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD2, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD3))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD3 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD3, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD4))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD4 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD4, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD5))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD5 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD5, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD6))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD6 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD6, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD7))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD7 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD7, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD8))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD8 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD8, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD9))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD9 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD9, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD10))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD10 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD10, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD11))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD11 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD11, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD12))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD12 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD12, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD13))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD13 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD13, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD14))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD14 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD14, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD15))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD15 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD15, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD16))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD16 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD16, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD17))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD17 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD17, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD18))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD18 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD18, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD19))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD19 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD19, 4096);
+                if (!string.IsNullOrEmpty(data.ADDITIONAL_DATA.MerchantFields.MDD20))
+                    data.ADDITIONAL_DATA.MerchantFields.MDD20 = rsa.EnCrypt(public_key, data.ADDITIONAL_DATA.MerchantFields.MDD20, 4096);
+            }
+
+            data.EXTERNAL_DETAIL = new ExternalDetailEnc();
+            data.EXTERNAL_DETAIL.MERCHANT_PLATFORM = rsa.EnCrypt(public_key, ".Net", 4096);
+            data.EXTERNAL_DETAIL.PLUGIN_VERSION = rsa.EnCrypt(public_key, "1.5.2", 4096);
+            data.EXTERNAL_DETAIL.BUILD_VERSION = rsa.EnCrypt(public_key, "1.0.1", 4096);
+            data.EXTERNAL_DETAIL.RELEASE_DATE = rsa.EnCrypt(public_key, "08-10-2020", 4096);
+
+            var obj = JsonConvert.SerializeObject(data);
+
+            int orderID = data.ADDITIONAL_DATA.ORDER_ID_TRACKING;
+            int customerID = data.ADDITIONAL_DATA.CUSTOMER_ID_TRACKING;
+            string paymentMethod = data.ADDITIONAL_DATA.PAYMENT_METHOD_TRACKING;
+
+            // Call HBL Service
+            var response = CallService(obj, orderID, customerID, paymentMethod);
+
+            return Json(response, JsonRequestBehavior.AllowGet );
+            
+        }
+
+
+        #region api calling
+        public string CallService(string jsonData, int orderID, int customerID, string paymentMethod)
+        {
+            string URL = "https://digitalbankingportal.hbl.com/hostedcheckout/api/checkout";
+            string AllowProxy = System.Configuration.ConfigurationSettings.AppSettings["AllowProxy"];
+            string Proxy = System.Configuration.ConfigurationSettings.AppSettings["Proxy"];
+            //new line of code
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                   | SecurityProtocolType.Tls11
+                   | SecurityProtocolType.Tls12
+                   | SecurityProtocolType.Ssl3;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            WebProxy proxy = new WebProxy(Proxy, true);
+            HBLPayResponseModel hblResponse = new HBLPayResponseModel();
+
+
+            request.Method = "POST";
+            request.ContentType = "application/json";
+
+            OrderPaymentLogger.Log(orderID, customerID, paymentMethod, null, "RequestSent", jsonData);
+
+            if (AllowProxy == "1")
+                request.Proxy = proxy;
+            request.ContentLength = jsonData.Length;
+            try
+            {
+                using (Stream webStream = request.GetRequestStream())
+                using (StreamWriter requestWriter = new StreamWriter(webStream, System.Text.Encoding.ASCII))
+                {
+                    requestWriter.Write(jsonData);
+                }
+
+
+                string finalResult = "";
+                string sessionId = null;
+
+                WebResponse webResponse = request.GetResponse();
+                using (Stream webStream = webResponse.GetResponseStream())
+                {
+                    if (webStream != null)
+                    {
+                        using (StreamReader responseReader = new StreamReader(webStream))
+                        {
+                            string response = responseReader.ReadToEnd();
+                            finalResult = response;
+                        }
+                    }
+                }
+                hblResponse = JsonConvert.DeserializeObject<HBLPayResponseModel>(finalResult);
+
+                if (hblResponse.Data != null && !string.IsNullOrEmpty(hblResponse.Data.SESSION_ID))
+                {
+   
+                    sessionId = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(hblResponse.Data.SESSION_ID));
+                    hblResponse.Data.SESSION_ID = sessionId; 
+                }
+
+                finalResult = JsonConvert.SerializeObject(hblResponse);
+
+                OrderPaymentLogger.Log(orderID, customerID, paymentMethod, sessionId, "ResponseReceived", null, finalResult);
+
+                return finalResult;
+            }
+
+            catch (WebException ex)
+            {
+                string resp = string.Empty;
+
+                if (ex.Response != null)
+                {
+                    StreamReader sr = new StreamReader(ex.Response.GetResponseStream());
+                    resp = sr.ReadToEnd();
+                }
+                else
+                {
+                    resp = ex.Message;
+                }
+
+                OrderPaymentLogger.Log(orderID, customerID, paymentMethod, "No Session", "Error", jsonData, resp, resp);
+                throw new Exception(resp);
+            }
+        }
+
+        #endregion
+        public ActionResult HBLPaymentApproved(string data = "",int OrderID = 0)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(data))
+                {
+                    RSA rsa = new RSA();
+                    string private_key = "<RSAKeyValue><Modulus>Se3w+h3q0jRuvzXV1aa7rqGAgp08Krk8HwbRSrtjUKHyNqiquo3wnGvdsncV8DRJm766Onb1a/YrYZkzRTp5PeE7rNUeuILt03k7UZJ6CstgIp+4SDFnfGbHfWEWlvWO99oLSLu+4uLr+6lgL1GfsROcAdghOdK4z/ttstpyoaCTijnYIf9TqB37MD5SiUK0P0Q8EDLUknpzYHnelxvyUrHwiRpSnI8X6N4i0Pk84zK2u43WbfLGFZESylCCWKJe6GmbaqSEpe2yy6zJl5zt7gJIKg6X6f9/W5F1vHmSApiyRgI1lYoRJX51li9QJMvLpjCndSjuXQN3lF6M3oSEdp6MRdqu+0sYevgTEOMfvlVbl2sK0Nav4aXn71CmOBbUogkcK5zTEn7dmu2nCJOQ0Il0i/IaExspbvILnLvVFx6b3i314yYMI2HLspanRdD8vuQx3H0PclTsnRV7M3LDtA+SVyA8iuO+WaLeuLwVnn00zq43aKt11Qeg/2RXy165wy2SQnMZKEWpAENEPUoCJh49H4msMKJwLzMvJZhYZM3ZsKBZHRkdvuvk4pEH5Ao82EHnL2Ljr5QPIeqpKkrT4feZnK+Qfhb3LcTJOO8ad99Br6+HvEVDHiIVIpkXArKPPf+scuI/n9IijjnJZEdKhZ2VB0WP21BH2m/9bK68UF8=</Modulus><Exponent>AQAB</Exponent><P>kgCu902YKwMICFdWBV4zo1LW7Z24kZRKKG34l/kVBAswx29qysYuVH/u7srjx5Po0ColuVTEGdTW/MOpa+fZwHSF/9SBO+BlgDMBqaWSslMC4cq4sgkSjR0opelsUKF9vvWFlbwsCbFNOEQkTLXwj5VHaZMxO1rsygiUJW3ej52ojwb9NS4VwpWwihZNlhUshY1YXpUMrcho+BmlkAT8k6mFcEPcPs9c+xOfuknbBeFQiKQki1Sx1gywn/xRKQYoZE+t46HZClBsDRzkicDcblJZjfIfS37LZcZMdIWCDfv8Mn3VFEaxhmc0JPos/KWl2nZZquJfl36SACAe3doPjQ==</P><Q>gaCa+IQYmFsoqystf3JFalha5lnqrjLBJWIo3O4aTT8LsF1mIoItv6HT41IUXAwiGAcCJWeL+diqtZyWl4BKZqiEBMd5LKpkfMry8E+gt8qCOftq+VF8/RbFJhcB2z3Ug5br9cKSEP8XaPNXWeZGFWhtWmwmJurlq/0gMIdh/pfnDnqBGds40XSLbitwBwff2bGRNmxKc+/AUDGVUqWTj0JIx4g5v1FHwZAVeNmLxJCbLtmonsZ7IuZN3mmdwtfd+jwQbdCr+dULtjG5dP+ynHW1r2Ysy/rrPI3JwJDYiSG+gMp5i8gGi1LIA1aNTszRghyIULDLLr2QMoEdYCP+mw==</Q><DP>hZCef5q6pE6HoKnVBeAhuT3lZUcuO+++z7GbA9xX/3UFUM16krouVBsdR9LQAhorl5OXIy6Kn174tg+BBDf8GnX+yAVtnIsyD8+Zq8rOotgSAOFliWmHURTlxLH/5tt1n6YYaNzWJJ/QlrKvyoV+5ruXstt25GfPyxuB+6PBQPzn4MByD55zRamO8SRqIeyI6DxgJVaRXMHEVYOQ1GnbbnJcolFSQRuOYhqXuuIpvf1boUUYMWZvsfO1+QXocXEyrmG+IEpFtYvQ7UYLRIHspfgr+REQ1A3QoPCBrO8eBREKrF40+fGaIexz5YgAc7hOO8adTRj+fibKBddcpXQBWQ==</DP><DQ>W4pYhhF68PTHNoGKYssGvD/jCXMMKLJM9aJpKwO2bUCNd6Gtg8ccmYylfo2zNQGYfhFM8a87CVh5zUDkk96ULATrHhjjuKgnyHzlrND+tWv8JQgoliJ2up/+35Q1ymbSkY7d2TLrRbdvB714vVLBwVJ6jvV6x9bwFFHwDnU8vbb2A6J9Uw4eBMRhxo5EUaK88RXVb3Jv7Yms7LTnN3MYTn3Huai45yN2IfonP62ZZ1mbTS2GR4Hw6UdsTBmXwEYDSzhpfbN0DzzlRWe+CSKdNqJliJUGI5Jx1tRmWmevkr/SsU7LIOxDutXdy4WuyqwXc+PEW/9NrRdPImtNnFwu6w==</DQ><InverseQ>BIVTi3mDdCJ4s5wNBBpreulEa2m4fBQluKS4i3Enh0iQE8Edbh0Fgz+JxDA4mIoLRY33Dc/dGkOqAMLix99MDkP9XYdoTH2TRaM7YIxQ3iIChjNP4rlOkzApzg/cP2QphAsK54b9aEc8Ez44lclOmaB51LjTpHV4ePguOfIaEOLJXtMuR59YcBS0vKgSVHmSpIyAEk9R7nBlGPQYWPJ6/80ahqe8ApnM095sS2k8mf6MKYcrSbSQYsHMPhZwX4uqsyZHl/ViyTWTOPX3MTid/ycsAxrEMihzFE6lGGu5wWBnFP1TAeL6T2Tu+xnYLG+wCaurkWbi1jwuNVutvAj4bQ==</InverseQ><D>LRZZbiEK0lI57JGHrTp3oiRK/N2qESBRY1bEE8C+7DEoSF+LaCUixjMezTXFgm5RKhQi/X8JZGOIx4godaMYyD1yKJD9oGfxZZS9MZ2UorqwEc25FQZUZ9FC/ttUbJKsM8qeMSiXXUYpx5zf1VwBeXxNG+7VLK+wGN/tYjPJz3rgIF/wyaMvQQuv4xdPPPkadq9FtldZv0/Ax+jrcNsRaY+t89/C3EqEuXeoYixvDt0iBraVPQ7f8c09WXfKVwYHvdSSfXKCl7Ok5ISnmbiSfyKTIlsuGP7CjHTlCiJWgxDfQMUeKuo+VNCQJB0M0rQbqmpn5pMk9EMmDa2wWhEVu54Se7scZNTsL1krk5wd2lHDaeG+R4KO1BJ7ygentVDMe+8oJ1WB0oi7sSvygt3SSKV2NTV+bHBHC0VWXED56SA6EGh7te7FUWCh/al8bK6im1n5IIl8uQgLpJO6tU/r/x2L6B1Tt+4yfecZOK69ETETQdHPifNJvXdR72+Bd8l9pvjI0OZxaEHkYzCgAH/QZWhPH1btT6MqGCnOAJn2vwnT9M3wnJHAJNUG+gUWUbCzMJmldcrNtqGkgpIHWtEqPlhU1fYub3Yjwc2bGZ1WKCJVXx3kgpTaDS4j7Uub/uplyz6uoFJiAyUcYWEYZwr6FI9fIKDD5GL8jMuXSs+nqTk=</D></RSAKeyValue>";
+                    // string private_key = "";
+
+                    data = data.Replace(" ", "+");
+                    int mod4 = data.Length % 4;
+                    if (mod4 > 0)
+                    {
+                        data += new string('=', 4 - mod4);
+                    }
+                    data = rsa.DeCrypt(private_key, data, 4096);
+                    //data = data.Replace("&", "--");
+                    string[] array = data.ToString().Split('&');
+                    var responseCode = array[0].Split('=')[1];
+                    var responseRefNo = array[2].Split('=')[1];
+
+                    OrderPaymentLogger.Log(OrderID, null, "HBLPayment", null, "HBLResponseDecrypted", null, data);
+
+
+                    if (responseCode == "100" && responseRefNo != "0" && responseRefNo != "")
+                    {
+                        return RedirectToAction("OrderComplete", "Order", new { OrderID = responseRefNo });
+                    }
+                    else
+                    {
+                        return RedirectToAction("OrderComplete", "Order", new { OrderNo = "Reject" });
+                    }
+                }
+                return RedirectToAction("OrderComplete", "Order", new { OrderNo = "Reject" });
+            }
+            catch(Exception ex)
+            {
+                OrderPaymentLogger.Log(OrderID, null, "HBLPayment", null, "Error", null, null, ex.Message);
+                return RedirectToAction("OrderComplete", "Order", new { OrderNo = "Reject" });
+            }
+        }
+    }
+    public class HBLPayResponseModel
+    {
+        public SessionIdContainer Data { get; set; }
+        public bool IsSuccess { get; set; }
+        public string ResponseCode { get; set; }
+        public string ResponseMessage { get; set; }
+    }
+
+    public class SessionIdContainer
+    {
+        public string SESSION_ID { get; set; }
+    }
+}

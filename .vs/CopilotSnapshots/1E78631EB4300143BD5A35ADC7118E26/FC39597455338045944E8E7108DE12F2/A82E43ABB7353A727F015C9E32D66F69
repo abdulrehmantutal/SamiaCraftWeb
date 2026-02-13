@@ -1,0 +1,245 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+
+namespace samiacraft.Services
+{
+    /// <summary>
+    /// Service for Benefit Gateway payment integration
+    /// Handles payment initialization and response processing
+    /// Direct implementation without IKVM dependency
+    /// </summary>
+    public class BenefitGatewayService
+    {
+        private readonly IConfiguration _configuration;
+        private readonly string _benefitAlias;
+        private readonly string _benefitGatewayUrl = "https://www.benefit-gateway.bh";
+        
+        public BenefitGatewayService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _benefitAlias = configuration["BenefitPay:Alias"] ?? "PROD03822897";
+        }
+
+        /// <summary>
+        /// Initializes payment with Benefit Gateway
+        /// Builds the payment URL with encrypted parameters
+        /// </summary>
+        public PaymentInitializationResult InitializePayment(PaymentInitializationRequest request)
+        {
+            try
+            {
+                var result = new PaymentInitializationResult 
+                { 
+                    IsSuccessful = false,
+                    OrderID = request.OrderID
+                };
+
+                // Build payment request parameters
+                // These parameters will be encrypted and sent to Benefit Gateway
+                var paymentParams = new Dictionary<string, string>
+                {
+                    { "action", "1" },                          // 1 = Payment
+                    { "currency", "048" },                      // 048 = BHD (Bahraini Dinar)
+                    { "language", "EN" },                       // English
+                    { "type", "D" },                            // Default type
+                    { "alias", _benefitAlias },                // Merchant alias
+                    { "trackid", request.OrderID.ToString() }, // Track ID = Order ID
+                    { "amt", request.Amount.ToString("0.00") },// Amount
+                    { "responseurl", request.ResponseUrl },    // Response callback URL
+                    { "errorurl", request.ErrorUrl },          // Error callback URL
+                    { "udf2", "SamiaCrafts" }                   // User defined field for identification
+                };
+
+                // In real Benefit Gateway integration:
+                // These parameters would be encrypted using the merchant's certificate/keystore
+                // Then sent to the gateway
+                // For now, we construct the redirect URL with these parameters
+                
+                // Build the redirect URL
+                // Format: https://www.benefit-gateway.bh/payment/paymentpage.htm?ParamString=encrypted_data
+                string encryptedParams = EncryptPaymentParams(paymentParams);
+                
+                result.RedirectUrl = $"{_benefitGatewayUrl}/payment/paymentpage.htm?ParamString={encryptedParams}";
+                result.IsSuccessful = true;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentInitializationResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Payment initialization failed: {ex.Message}",
+                    OrderID = request.OrderID
+                };
+            }
+        }
+
+        /// <summary>
+        /// Processes encrypted response from Benefit Gateway
+        /// Decrypts and validates the transaction response
+        /// </summary>
+        public PaymentResponseResult ProcessPaymentResponse(PaymentResponseRequest request)
+        {
+            try
+            {
+                var result = new PaymentResponseResult 
+                { 
+                    IsSuccessful = false 
+                };
+
+                // Decode the encrypted transaction data from Benefit Gateway
+                if (!string.IsNullOrEmpty(request.TransactionData))
+                {
+                    // Decrypt the transaction data
+                    var decryptedData = DecryptPaymentResponse(request.TransactionData);
+                    
+                    if (decryptedData != null)
+                    {
+                        // Extract response fields
+                        result.Result = GetDictValue(decryptedData, "result");
+                        result.PaymentID = GetDictValue(decryptedData, "paymentid") ?? request.PaymentID;
+                        result.ResponseCode = GetDictValue(decryptedData, "respcode");
+                        result.TransactionID = GetDictValue(decryptedData, "transid");
+                        result.ReferenceID = GetDictValue(decryptedData, "ref");
+                        result.TrackID = GetDictValue(decryptedData, "trackid");
+                        result.Amount = GetDictValue(decryptedData, "amt");
+                        result.AuthCode = GetDictValue(decryptedData, "auth");
+                        result.PostDate = GetDictValue(decryptedData, "postdate");
+                        result.ErrorCode = GetDictValue(decryptedData, "error");
+                        result.ErrorText = GetDictValue(decryptedData, "errortext");
+
+                        // Check if payment was successful
+                        // CAPTURED = Payment successful
+                        if (result.Result == "CAPTURED")
+                        {
+                            result.IsSuccessful = true;
+                            result.AuthorizationCode = result.AuthCode;
+                            
+                            // Extract OrderID from TrackID
+                            if (int.TryParse(result.TrackID, out int orderId))
+                            {
+                                result.OrderID = orderId;
+                            }
+                        }
+                        else
+                        {
+                            // Map error codes to user-friendly messages
+                            result.ErrorMessage = GetErrorMessage(result.Result, result.ResponseCode, result.ErrorText);
+                        }
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Failed to decrypt payment response";
+                    }
+                }
+                else if (!string.IsNullOrEmpty(request.ErrorText))
+                {
+                    // Gateway returned an error
+                    result.ErrorMessage = request.ErrorText;
+                    result.ErrorCode = "GATEWAY_ERROR";
+                }
+                else
+                {
+                    result.ErrorMessage = "Unknown response from Benefit Gateway";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentResponseResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Response processing failed: {ex.Message}"
+                };
+            }
+        }
+
+        /// <summary>
+        /// Encrypts payment parameters (placeholder)
+        /// In production, this would use the merchant's certificate to encrypt
+        /// </summary>
+        private string EncryptPaymentParams(Dictionary<string, string> parameters)
+        {
+            // NOTE: Real encryption would require:
+            // 1. Loading the merchant's keystore
+            // 2. Using the merchant's certificate to encrypt the parameters
+            // 3. Base64 encoding the encrypted result
+            
+            // For demonstration, return a base64 encoded JSON representation
+            // In actual implementation, use proper RSA/AES encryption with the merchant certificate
+            
+            string jsonParams = JsonConvert.SerializeObject(parameters);
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonParams);
+            return Convert.ToBase64String(bytes);
+        }
+
+        /// <summary>
+        /// Decrypts payment response from Benefit Gateway (placeholder)
+        /// In production, this would use the merchant's certificate to decrypt
+        /// </summary>
+        private Dictionary<string, string> DecryptPaymentResponse(string encryptedData)
+        {
+            try
+            {
+                // NOTE: Real decryption would require:
+                // 1. Base64 decode the encrypted data
+                // 2. Use the merchant's private key to decrypt
+                // 3. Parse the resulting data
+                
+                // For demonstration, attempt to decode from base64
+                byte[] bytes = Convert.FromBase64String(encryptedData);
+                string jsonData = System.Text.Encoding.UTF8.GetString(bytes);
+                
+                var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonData);
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Helper to get value from dictionary safely
+        /// </summary>
+        private string GetDictValue(Dictionary<string, string> dict, string key)
+        {
+            if (dict == null || !dict.ContainsKey(key))
+                return null;
+            
+            return dict[key];
+        }
+
+        /// <summary>
+        /// Maps Benefit Gateway response codes to user-friendly error messages
+        /// </summary>
+        private string GetErrorMessage(string result, string responseCode, string errorText)
+        {
+            if (!string.IsNullOrEmpty(errorText))
+                return errorText;
+
+            if (string.IsNullOrEmpty(result))
+                return "Payment declined";
+
+            return result switch
+            {
+                "DECLINED" => "Your payment has been declined. Please check your card details and try again.",
+                "FAILED" => "Payment processing failed. Please try again.",
+                "INVALID_AMOUNT" => "Invalid payment amount.",
+                "INVALID_CARD" => "Invalid card details provided.",
+                "EXPIRED_CARD" => "Your card has expired.",
+                "INSUFFICIENT_FUNDS" => "Insufficient funds in your account.",
+                "CANCELLED" => "Payment has been cancelled.",
+                "TIMEOUT" => "Payment request timeout. Please try again.",
+                "INVALID_MERCHANT" => "Invalid merchant configuration.",
+                _ => $"Payment failed: {result}"
+            };
+        }
+    }
+}

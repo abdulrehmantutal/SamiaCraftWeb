@@ -1,0 +1,32 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using samiacraft.Models.BLL;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace samiacraft.Components
+{
+    public class MobileNavigationViewComponent : ViewComponent
+    {
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            try
+            {
+                // Get categories with subcategories for mobile
+                var navigationBLL = new navigationBLL();
+                var categories = navigationBLL.GetSubCategoryMobile();
+
+                if (categories == null)
+                {
+                    categories = new List<navigationBLL>();
+                }
+
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                // Return empty list on error
+                return View(new List<navigationBLL>());
+            }
+        }
+    }
+}

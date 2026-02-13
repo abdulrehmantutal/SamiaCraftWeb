@@ -1,0 +1,6 @@
+-----------------------------------------------------------------------------
+Date: 2/13/2026 3:15:49 PM
+Message: InsertOrder failed: Parameter '@LocationID' was supplied multiple times.
+StackTrace:    at samiacraft.Helpers.DBHelper.GetTableFromSP(String sp, SqlParameter[] prms) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Helpers\DBHelper.cs:line 77
+   at samiacraft.Models.BLL.checkoutBLL.InsertOrder(checkoutBLL data) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Models\BLL\checkoutBLL.cs:line 150
+-----------------------------------------------------------------------------

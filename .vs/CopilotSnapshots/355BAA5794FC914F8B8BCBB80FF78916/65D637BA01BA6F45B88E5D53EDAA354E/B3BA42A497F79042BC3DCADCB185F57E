@@ -1,0 +1,1270 @@
+﻿@model samiacraft.Models.BLL.checkoutBLL
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    <link href="~/Content/assets/css/DatePicker/bootstrap-datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/DatePicker/bootstrap-datepicker3.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/DatePicker/bootstrap-datepicker3.standalone.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/DatePicker/bootstrap-datepicker3.standalone.min.css" rel="stylesheet" />
+}
+<style>
+
+
+    .coupon-accordion h3 {
+        background: #f6f6f6;
+        border-top: 3px solid var(--addbutton);
+        color: #515151;
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0 0 30px;
+        padding: 1em 2em 1em 3.5em;
+        position: relative;
+        text-transform: capitalize;
+    }
+
+    .btn-place-order {
+        background: var(--addbutton);
+        border: medium none;
+        color: #ffffff !important;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        padding: 12px;
+        text-transform: uppercase;
+        width: 100%;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+    }
+
+    .coupon-accordion h3 .coupon {
+        color: var(--addbutton);
+        cursor: pointer;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+    }
+
+
+    .hide {
+        display: none;
+    }
+
+
+
+    @@media (min-width: 767px) {
+
+        .desktop-payments {
+            display: block;
+        }
+
+        .mobile-payments {
+            display: none;
+        }
+    }
+
+        @@media (max-width: 767px) {
+            .desktop-payments {
+                display: none;
+            }
+
+            .mobile-payments {
+                display: block;
+            }
+        }
+</style>
+
+@if (ViewBag.Banner.Count > 0)
+{
+    <div class="breadcrumb-area section-ptb" style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">Checkout</h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+}
+
+<!-- main-content-wrap start -->
+<div class="main-content-wrap section-ptb checkout-page ">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col">
+                <div class="coupon-area">
+
+                    <!-- coupon-accordion start -->
+                    <div class="coupon-accordion">
+                        <h3><span>Have a coupon?</span> <span class="coupon" id="showcoupon">Click here to enter your code</span></h3>
+                        <div class="coupon-content" id="checkout-coupon">
+                            <div class="coupon-info">
+                                <form action="#">
+                                    <p class="checkout-coupon">
+                                        <input id="coupon" type="text" placeholder="Coupon code">
+                                        <button onclick="CouponDiscount(); return false;" type="submit" class="btn btn-small btn-default ml-2 rounded-0" name="apply_coupon" value="Apply coupon">Apply coupon</button>
+                                    <p id="CouponResponse"></p>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- coupon-accordion end -->
+                </div>
+            </div>
+        </div>
+        <!-- checkout-details-wrapper start -->
+        <div class="checkout-details-wrapper">
+            <div class="row mb-105">
+
+                <!-- 1️⃣ Order Inputs (First on mobile, second on desktop) -->
+                <div class="col-lg-6 col-md-5 pt-50 pt-md-0 order-1 order-md-1">
+                    <!-- billing-details-wrap start -->
+                    <div class="billing-details-wrap">
+                        <form class="was-validated">
+                            <h3 class="shoping-checkboxt-title pb-1 mb-3">Sender Details</h3>
+                            <div class="">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label><span>Sender Name *</span></label>
+                                        <input id="SenderName" value="@Context.Session.GetString("CustomerName")" class="form-control" placeholder="Name" type="text" name="SenderName" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><span>Sender Email *</span></label>
+                                        <input id="SenderEmail" value="@Context.Session.GetString("CustomerEmail")" class="form-control" placeholder="Email Address" type="email" name="SenderEmail" required>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="SenderContact"><span>Sender Contact *</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="">+92</i></span>
+                                            </div>
+                                            <input id="SenderContact" value="@Context.Session.GetString("CustomerContactNo")" class="form-control" placeholder="Contact no." type="number" name="SenderContact" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 class="shoping-checkboxt-title pb-1 mb-3">Delivery Details</h3>
+                            <div class="">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label><span>Recipient Name *</span></label>
+                                        <input id="CustomerName" class="form-control" placeholder="Name" type="text" name="CustomerName" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><span>Recipient Contact *</span></label>
+                                        <input id="ContactNo" class="form-control" placeholder="Contact no." type="text" name="ContactNo" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label><span>Delivery Date *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input id="DeliveryDate" class="form-control bg-white" type="text" placeholder="mm-dd-yyyy" readonly name="DeliveryDate" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="ion-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><span>Delivery Time *</span></label>
+                                        <select id="DeliveryTime" class="custom-select" required>
+                                            <option value="">Choose Delivery Time...</option>
+                                            <option>12:01 pm to 03:00 PM</option>
+                                            <option>03:01 pm to 06:00 PM</option>
+                                            <option>06:01 pm to 08:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><span class="">Area *</span></label>
+                                    @Html.DropDownListFor(model => model.Name, ViewBag.DeliveryAreaList as SelectList, "--Select Area--", new { @class = "custom-select", @id = "Area", @Name = "DLA" })
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label><span class="">Country *</span></label>
+                                        <select id="Country" class="custom-select" required>
+                                            <option value="" disabled>Select Country...</option>
+                                            <option selected>Pakistan</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><span class="">City *</span></label>
+                                        <select id="City" class="custom-select" required>
+                                            <option value="">Select City...</option>
+                                            <option selected>Karachi</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label><span class="">Recipient Address *</span></label>
+                                    <input id="Address" maxlength="100" class="form-control" type="text" placeholder="House, Street, unit etc." name="Address" required>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label><span class="">Place Type *</span></label>
+                                        <select id="PlaceType" class="custom-select" required>
+                                            <option value="">Select Place Type...</option>
+                                            <option>Office</option>
+                                            <option>Hospital</option>
+                                            <option>House</option>
+                                            <option>Apartment</option>
+                                            <option>Shop</option>
+                                            <option>Outlet</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label><span class="">Nearest Place </span></label>
+                                        <input id="NearestPlace" class="form-control" type="text" placeholder="Park, Bank, Hotel etc." name="NearestPlace">
+                                    </div>
+                                </div>
+
+                                <div class="order-button-payment">
+                                    <a href="javascript:;" id="checkout" class="btn-place-order"><span>Place Order</span></a>
+                                    <a href="javascript:;" id="paypal-button" class="btn-block border-0"><span></span></a>
+                                    <a class="btn-place-order" id="btn-load">
+                                        <span class="spinner-border spinner-border-sm"></span>
+                                        Loading..
+                                    </a>
+                                    <p class="text-danger font-weight-bold text-center bg-category2 rounded mt-3 mb-2" id="payment-alert"></p>
+                                    <p class="text-danger font-weight-bold" id="Text-Error"></p>
+                                    <p class="text-danger font-weight-bold text-center bg-category2 rounded" id="paypal-validation"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- billing-details-wrap end -->
+                </div>
+
+                <!-- 2️⃣ Payment Section (Second on mobile, hidden on desktop) -->
+                <div class="container w-100 mobile-payments order-2 order-md-3">
+                    <h5 class="text-center m-0 mt-2">Payment Option</h5>
+                    <div class="row justify-content-center pb-50 pt-4 payment-btn">
+                        <div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="COD">
+                                <img src="/Content/assets/images/logo/cod.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>
+                        @*<div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="DebitCreditCard">
+                                <img src="/Content/assets/images/logo/visa.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>*@
+                        <div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="Easypaisa">
+                                <img src="/Content/assets/images/logo/easypaisa.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>
+                        @*<div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="Banktransfer">
+                                <img src="/Content/assets/images/logo/banktransfer.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>*@
+                        <div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="JazzCash">
+                                <img src="/Content/assets/images/logo/jazz-cash.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>
+                        @*<div class="col-4 mb-3 text-center">
+                            <button type="button" class="btn border-0 btn-pay" onclick="getbuttonvalue(this)" value="InternationPay">
+                                <img src="/Content/assets/images/logo/IntPayment.png" class="img-fluid" style="max-width:100px;">
+                            </button>
+                        </div>*@
+                    </div>
+                    <!-- Hide/show sections remain same -->
+                    <div class="mb-0 mt-10 p-3 hide paraJC">
+                        <h5>How to Pay</h5>
+
+                        1: Bring your original and valid Nadra CNIC along with one photocopy.
+                        <br />
+                        2: You should have your mobile phone number along with the receiving person’s mobile phone number.
+                        If you have these things, then
+                        <br />
+                        Feel free to visit any authorized Jazz Cash shop for sending the money and
+                        then follow the below mentioned steps:
+                        <br />
+                        Provide the retailer with the above mentioned things and tell him the amount of money you have to transfer, then he showing the message you're amount has been transferred.
+                        <hr />
+                        <h6>Account Details</h6>
+                        <p>Information : +92 300 2920640 </p>
+
+                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on JazzCash +92 300 2920640</p>
+                    </div>
+
+                    <div class="mb-0 mt-30 p-3 hide paraEP">
+                        <h5>How to Pay</h5>
+
+                        1: Bring your original and valid Nadra CNIC along with one photocopy.
+                        <br />
+                        2: You should have your mobile phone number along with the receiving person’s mobile phone number.
+                        If you have these things, then
+                        <br />
+                        Feel free to visit any authorized Easy Paisa shop for sending the money and
+                        then follow the below mentioned steps:
+                        <br />
+                        Provide the retailer with the above mentioned things and tell him the amount of money you have to transfer, then he showing the message you're amount has been transferred.
+                        <hr />
+                        <h6>Account Details</h6>
+                        <p>Information : Mohammad iqtedar - +923002920640 </p>
+
+                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on EasyPaisa +923002920640</p>
+                    </div>
+
+                    <div class="mb-0 mt-10 p-1 hide paraBT">
+                        <h5>How to Pay</h5>
+                        <br />
+                        Let’s understand through an example. If you are an HABIB bank Ltd customer, you can download HBL Mobile app on your phone. Once you activate the app, you will get a menu where you will find the money transfer option. Enter the receiver’s account number and IBAN code. Once you confirm the details, the money gets transferred instantly.
+                        <hr />
+                        <h6>Account Details</h6>
+                        <p>
+                            Account #: 22747900560703
+                            <br />IBAN: PK60 HABB 0022 7479 0056 0703
+                            <br />Al Hilal
+                            <br />Bank Name: Habib Bank Limited
+                        </p>
+                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on Banktransfer +923002920640</p>
+                    </div>
+
+                    <div class="mb-0 mt-10 p-1 hide paraIP">
+                        <h5>Internation Payment</h5>
+                        <br />
+                        For our international customers, we offer a secure and convenient way to make payments.
+                        You can use International Bank Transfer depending on your preference.
+                        <hr />
+                        <h6>Account Details</h6>
+                        <p>
+                            Account #: 313900061900001
+                            <br />IBAN: PK85BKIPL0313900061900001
+                            <br />Muhammad Iqtedar
+                            <br />Bank Islami
+                        </p>
+                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on Banktransfer +923002920640</p>
+                    </div>
+                    <p class="mb-0 mt-10 text-danger px-3 text-center">Invoice will be sent only by email and recipient will not get a printed copy.</p>
+                </div>
+
+                <!-- 3️⃣ Your Order (Last on mobile, second on desktop) -->
+                <div class="col-lg-6 col-md-7 order-3 order-md-2">
+                    <div class="your-order-wrapper">
+                        <h3 class="shoping-checkboxt-title pb-1 mb-3">Your Order</h3>
+                        <div class="your-order-wrap">
+                            <div class="your-order-table table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="product-name text-left font-weight-bold">Product</th>
+                                            <th class="product-total text-right font-weight-bold">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="cart-products"></tbody>
+                                    <tfoot>
+                                        <tr class="cart-subtotal">
+                                            <th class="text-left">Cart Subtotal</th>
+                                            <td class="text-right"><span class="amount semi-bold sub-total">RS00.00</span></td>
+                                        </tr>
+                                        <tr class="shipping">
+                                            <th class="text-left" id="coupon-text">Coupon Discount</th>
+                                            <td class="product-total text-right"><span class="amount coupon-amount">RS 0</span></td>
+                                        </tr>
+                                        <tr class="shipping">
+                                            <th class="text-left">Delivery Charges</th>
+                                            <td class="product-total text-right"><span class="amount delivery-charges">RS. 0.00</span></td>
+                                        </tr>
+                                        <tr class="shipping">
+                                            <th class="text-left">Tax Percentage <span id="taxper"></span></th>
+                                            <td class="product-total text-right"><span class="amount Tax-amount"></span></td>
+                                        </tr>
+                                        <tr class="order-total">
+                                            <th class="text-left">Order Total</th>
+                                            <td class="text-right"><strong><span id="totalamount" class="amount">RS. 0.00</span></strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="container w-100 desktop-payments">
+                                <h5 class="text-center m-0 mt-2">Payment Option</h5>
+                                <div class="justify-content-center pb-50 pt-4 row">
+                                    <div class="btn-group d-flex px-2 payment-btn" role="group" aria-label="Basic example">
+                                        <button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="COD">
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/cod.png" />
+                                        </button>
+                                        @*<button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="DebitCreditCard">
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/visa.png" />
+                                        </button>*@
+                                        @*<button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="Easypaisa">
+
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/easypaisa.png" />
+                                        </button>*@
+                                        @*<button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="Banktransfer">
+
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/banktransfer.png" />
+                                        </button>*@
+                                        @*<button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="JazzCash">
+
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/jazz-cash.png" />
+                                        </button>*@
+                                        @*<button id="COD" type="button" class="btn btn-pay button-apply-coupon border-0 " onclick="getbuttonvalue(this)" value="InternationPay">
+
+                                            <img style="width:100px;" src="~/Content/assets/images/logo/IntPayment.png" />
+                                        </button>*@
+
+                                    </div>
+                                    <br />
+                                    <div class="mb-0 mt-10 p-3 hide paraJC">
+                                        <h5>How to Pay</h5>
+
+                                        1: Bring your original and valid Nadra CNIC along with one photocopy.
+                                        <br />
+                                        2: You should have your mobile phone number along with the receiving person’s mobile phone number.
+                                        If you have these things, then
+                                        <br />
+                                        Feel free to visit any authorized Jazz Cash shop for sending the money and
+                                        then follow the below mentioned steps:
+                                        <br />
+                                        Provide the retailer with the above mentioned things and tell him the amount of money you have to transfer, then he showing the message you're amount has been transferred.
+                                        <hr />
+                                        <h6>Account Details</h6>
+                                        <p>Information : +92 300 2920640 </p>
+
+                                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on JazzCash +92 300 2920640</p>
+                                    </div>
+
+                                    <div class="mb-0 mt-30 p-3 hide paraEP">
+                                        <h5>How to Pay</h5>
+
+                                        1: Bring your original and valid Nadra CNIC along with one photocopy.
+                                        <br />
+                                        2: You should have your mobile phone number along with the receiving person’s mobile phone number.
+                                        If you have these things, then
+                                        <br />
+                                        Feel free to visit any authorized Easy Paisa shop for sending the money and
+                                        then follow the below mentioned steps:
+                                        <br />
+                                        Provide the retailer with the above mentioned things and tell him the amount of money you have to transfer, then he showing the message you're amount has been transferred.
+                                        <hr />
+                                        <h6>Account Details</h6>
+                                        <p>Information : Mohammad iqtedar - +923002920640 </p>
+
+                                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on EasyPaisa +923002920640</p>
+                                    </div>
+
+                                    <div class="mb-0 mt-10 p-1 hide paraBT">
+                                        <h5>How to Pay</h5>
+                                        <br />
+                                        Let’s understand through an example. If you are an HABIB bank Ltd customer, you can download HBL Mobile app on your phone. Once you activate the app, you will get a menu where you will find the money transfer option. Enter the receiver’s account number and IBAN code. Once you confirm the details, the money gets transferred instantly.
+                                        <hr />
+                                        <h6>Account Details</h6>
+                                        <p>
+                                            Account #: 22747900560703
+                                            <br />IBAN: PK60 HABB 0022 7479 0056 0703
+                                            <br />Al Hilal
+                                            <br />Bank Name: Habib Bank Limited
+                                        </p>
+                                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on Banktransfer +923002920640</p>
+                                    </div>
+
+                                    <div class="mb-0 mt-10 p-1 hide paraIP">
+                                        <h5>Internation Payment</h5>
+                                        <br />
+                                        For our international customers, we offer a secure and convenient way to make payments.
+                                        You can use International Bank Transfer depending on your preference.
+                                        <hr />
+                                        <h6>Account Details</h6>
+                                        <p>
+                                            Account #: 313900061900001
+                                            <br />IBAN: PK85BKIP0313900061900001
+                                            <br />Muhammad Iqtedar
+                                            <br />Bank Islami
+                                            <br />Branch code 03139
+                                            <br />Swift code BKIPPKKA
+                                            <br /> Phone 03002920640
+                                            <br /> Email krachiflora@gmail.com
+                                        </p>
+                                        <p class="mb-0 mt-10 text-danger text-left"><b>Note:</b> Whatsapp your Screenshot after payment on Banktransfer +923002920640</p>
+                                    </div>
+
+
+                                    <p class="mb-0 mt-10 text-danger px-3 text-center">Invoice will be sent only by email and recipient will not get a printed copy.</p>
+                                    <p id="Card-text-cs"></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- checkout-details-wrapper end -->
+    </div>
+</div>
+<!-- main-content-wrap end -->
+
+<input id="CouponID" type="hidden" value="0" />
+<input id="CouponCode" type="hidden" value="0" />
+<input id="CouponType" type="hidden" value="0" />
+
+@section Scripts {
+    <script type="text/JavaScript">
+        $(document).ready(function () {
+            $("#paraEP").hide();
+            $("#paraBT").hide();
+            $("#paraJC").hide();
+            $("#paraIP").hide();
+            localStorage.removeItem("_setting");
+            localStorage.setItem("_setting", "[]");
+            setting();
+
+            $("#paypal-button").hide();
+            $("#btn-load").hide();
+            var check = getCartLS();
+            if (check.length > 0) {
+                $("#checkout").show();
+            }
+            else {
+                $("#checkout").hide();
+                $("#Text-Error").html("Kindly add items in your cart then place order");
+            }
+        });
+        function getbuttonvalue(val) {
+            if (val.value == "PayPal") {
+                $("#paypal-button").show();
+                $("#checkout").hide();
+            }
+            else {
+                $('#paypal-validation').html("");
+                $("#paypal-button").hide();
+                $("#checkout").show();
+            }
+
+            if (val.value == "Easypaisa") {
+                $(".paraBT").hide();
+                $(".paraJC").hide();
+                $(".paraIP").hide();
+                $(".paraEP").show();
+            }
+            else if (val.value == "Banktransfer") {
+                $(".paraBT").show();
+                $(".paraJC").hide();
+                $(".paraEP").hide();
+                $(".paraIP").hide();
+ 
+            }
+            else if (val.value == "JazzCash") {
+                $(".paraBT").hide();
+                $(".paraJC").show();
+                $(".paraEP").hide();
+                $(".paraIP").hide();
+            }
+           else if (val.value == "InternationPay") {
+               $(".paraBT").hide();
+               $(".paraJC").hide();
+               $(".paraEP").hide();
+               $(".paraIP").show();
+            }
+            else {
+                $(".paraEP").hide();
+                $(".paraIP").hide();
+                $(".paraJC").hide();
+                $(".paraIP").hide();
+            }
+        }
+        function setting() {
+            //get settings
+            var chkLSsettings = localStorage.getItem("_setting");
+            if (chkLSsettings != null) {
+                $.ajax({
+                    type: "GET",
+                    url: '/Home/GetSetting',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+
+                    success: function (data) {
+                        var arrTemp = [];
+                        arrTemp = getsettingsLS();
+                        arrTemp.push({ DeliveryCharges: data.DeliveryCharges, ServiceCharges: data.ServiceCharges, OtherCharges: data.OtherCharges, TaxPercentage: data.TaxPercentage, MinimumOrderValue: data.MinimumOrderValue, COD: data.COD, Credimax: data.Credimax, PayPal: data.PayPal, BenefitPay: data.BenefitPay, TopHeaderText: data.TopHeaderText, IsDeliveryAllow: data.IsDeliveryAllow, OpenTime: data.OpenTime, CloseTime: data.CloseTime, ShopUrl: data.ShopUrl });
+                        if (data.COD != 1) {
+                            $('#COD').addClass('d-none');
+                        }
+                        if (data.Credimax != 1) {
+                            $('#Credimax').addClass('d-none');
+                        }
+                        if (data.PayPal != 1) {
+                            $('#PayPal').addClass('d-none');
+                        }
+                        if (data.BenefitPay != 1) {
+                            $('#BenefitPay').addClass('d-none');
+                        }
+                        setsettings(arrTemp);
+                        cartdata(0);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        //alert(xhr, textStatus, errorThrown);
+                    }
+                });
+            }
+        };
+        function setsettings(arr) {
+            var settings = localStorage.getItem("_setting");
+            if (settings != null) {
+                localStorage.setItem("_setting", JSON.stringify(arr));
+            }
+        };
+        function getsettingsLS() {
+            var settings = localStorage.getItem("_setting");
+            if (settings != null && settings != "")
+                return JSON.parse(settings);
+            else
+                return JSON.parse("[]");
+        };
+
+        var currency = localStorage.getItem("currency");
+        //checkout();
+        $("#checkout").click(function () {
+            
+           
+            if ($(".payactive").val() != "PayPal" && $('#SenderName').val() != "" && $('#SenderEmail').val() != "" && $('#SenderContact').val() != "" && $('#Address').val() != "" && $('#Country').val() != "" && $('#City').val() != "" && $('#ContactNo').val() != "" && $('#DeliveryDate').val() != "" && $('#DeliveryTime').val() != "" && $('#CustomerName').val() != "" && $('#Email').val() != "" ) {
+                var area = document.getElementById("Area").value;
+                if (!area) {
+                    $('#payment-alert').html('Kindly select Delivery Area');
+                }
+                else {
+                if ($(".payactive").val() == null) {
+                    $('#payment-alert').html('Kindly select payment option');
+                }
+                else {
+                    $('#payment-alert').html('');
+
+                        var Charges = $("#Area").val();
+                        checkout(Charges);
+
+                    }
+                }
+            }
+            else {
+            }
+        });
+        //coupon working
+        function CouponDiscount() {
+            var coupon = $("#coupon").val();
+            $.ajax({
+                type: "Get",
+                url: '/Order/Coupon?coupon=' + coupon,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.data != null) {
+                        $("#CouponResponse").removeClass();
+                        $("#CouponResponse").html('Coupon Applied').addClass("text-success");
+                        if (data.data.Type == 'Amount') {
+                            //$(".coupon-amount").html(currency + ' ' + data.data.Amount.toFixed(2));
+                            $("#coupon-text").html('Coupon Discount');
+                        }
+                        else {
+                            //$(".coupon-amount").html(currency + ' ' + data.data.Amount.toFixed(2));
+                            $("#coupon-text").html('Discount Percentage (' + data.data.Amount.toFixed(0) + '%)');
+                        }
+                        $('#CouponID').val(data.data.CouponID);
+                        $('#CouponCode').val(data.data.CouponCode);
+                        $('#CouponType').val(data.data.Type)
+                        CouponDis(data.data.CouponID);
+                        cartdata(data.data.Amount);
+                    }
+                    else {
+                        $("#CouponResponse").removeClass();
+                        $("#CouponResponse").html('Invalid Coupon').addClass("text-danger");
+                        $(".coupon-amount").html(currency +' '+ 0);
+                        CouponDis(0);
+                        cartdata(0);
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    //
+                }
+            });
+        }
+        function CouponDis(ID) {
+            return ID;
+        }
+
+        $(document).ready(function () {
+
+            $("#Area").change(function () {
+                var Charges = this.value;
+                var coupon = $("#coupon").val();
+
+                cartdata(coupon, Charges)
+            });
+        });
+
+
+        //Order working
+        function checkout(Charges) {
+            
+            $("#checkout").hide();
+            $("#btn-load").show();
+
+            //=============================== Date For Order# ===================
+            var TodayDate  = new Date();
+            var dd = String(TodayDate.getDate()).padStart(2, '0');
+            var mm = String(TodayDate.getMonth() + 1).padStart(2, '0');
+            var yyyy = (new Date().getFullYear() + '').slice(-2);
+            TodayDate = mm + dd + yyyy;
+
+            //=============================== Current Date ======================
+            var m = new Date();
+            var dateString =
+                m.getUTCFullYear() + "/" +
+                ("0" + (m.getUTCMonth() + 1)).slice(-2) + "/" +
+                ("0" + m.getUTCDate()).slice(-2) + " " +
+                ("0" + m.getUTCHours()).slice(-2) + ":" +
+                ("0" + m.getUTCMinutes()).slice(-2) + ":" +
+                ("0" + m.getUTCSeconds()).slice(-2);
+
+            //=============================== Order Details =====================
+
+            var shippingcharges = 0;
+            var total = 0;
+            var chkLScart = localStorage.getItem("_cartitems");
+            var data = JSON.parse(chkLScart);
+
+            var chkLSgift = localStorage.getItem("_giftitems");
+            var dataGift = JSON.parse(chkLSgift);
+            var totalPrice = 0;
+            var totalQty = 0;
+
+
+            for (var i = 0; i < data.length; i++) {
+                totalQty += Number(data[i].Qty);
+                totalPrice += data[i].Qty * data[i].UPrice;
+            }
+
+            if (dataGift.length > 0) {
+                for (var j = 0; j < dataGift.length; j++) {
+                    totalPrice += dataGift[j].DisplayPrice;
+                }
+            }
+            @*if (totalPrice <= 200) {
+                shippingcharges = 0;//change here
+            }
+            else {
+                shippingcharges = 0;
+            }*@
+            var LSsettings = JSON.parse(localStorage.getItem("_setting"));
+            var settings = LSsettings[0];
+
+            //total = settings.DeliveryCharges + settings.TaxPercentage +totalPrice;
+            var CouponDisount = parseFloat($(".coupon-amount").text().replace("RS.", ""));
+            //total = (total - CouponDisount).toFixed(2);
+
+            //=============================== Order Master =====================
+            //total = ((totalPrice - CouponDisount) + (settings.DeliveryCharges + (totalPrice *  (settings.TaxPercentage / 100)))).toFixed(2);
+            Taxamount = (totalPrice * (settings.TaxPercentage / 100)).toFixed(2);
+
+            //total = (((totalPrice + (totalPrice * (settings.TaxPercentage / 100))) - CouponDisount) + settings.DeliveryCharges).toFixed(2);
+
+            Charges = $('#Area option:selected').val();
+            if (Charges == "") {
+                Charges = "0";
+            }
+            total = parseFloat((((totalPrice + (totalPrice * (settings.TaxPercentage / 100))) - CouponDisount) + parseFloat(Delivery))).toFixed(2);
+
+            var Order = new Object();
+            Order.OrderNo = 'AL-' + TodayDate + '-' +@Convert.ToInt32(Session["CustomerID"])+'-' + Math.floor((Math.random() * 1000) + 1);
+            Order.CustomerID = @Convert.ToInt32(Session["CustomerID"]);
+            Order.AmountTotal = totalPrice;
+            Order.GrandTotal = total;
+            Order.Tax = Taxamount;
+            Order.DeliveryAmount = Charges;
+            Order.DiscountAmount = CouponDisount;
+            Order.TotalItems = totalQty;
+            Order.StatusID = 1;
+            Order.OrderDate = dateString;
+            Order.LastUpdatedDate = dateString;
+            Order.LastUpdatedBy = 0;
+            Order.CouponID = $('#CouponID').val();
+            Order.OpenTime = settings.OpenTime;
+            Order.CloseTime = settings.CloseTime;
+
+            var value = $("#Area option:selected");
+           
+            //========================== Customer Order Info ========================
+            Order.Address = $('#Address').val() + "|| Area: " + value.text();
+            Order.NearestPlace = $('#NearestPlace').val();
+            Order.Country = $('#Country').val();
+            Order.City = $('#City').val();
+            Order.ContactNo = $('#ContactNo').val();
+            Order.DeliveryDate = $('#DeliveryDate').val();
+            console.log(Order.DeliveryDate);
+            Order.SelectedTime = $('#DeliveryTime').val();
+            console.log(Order.SelectedTime);
+            Order.CustomerID = @Convert.ToInt32(Session["CustomerID"]);
+            Order.CustomerName = $('#CustomerName').val();
+            Order.Latitude = 'Not Defined';
+            Order.Longitude = 'Not Defined';
+            Order.PlaceType = $('#PlaceType').val();
+            //Order.Email = $('#Email').val();
+            Order.Email = 'Null';
+            Order.OrderDetailString = JSON.stringify(data);
+            Order.OrderGiftsString = JSON.stringify(dataGift);
+            Order.CardNotes = "";//$('#CardNotes').val();
+            Order.SenderName = $('#SenderName').val();
+            Order.SenderEmail = $('#SenderEmail').val();
+            Order.SenderContact = $('#SenderContact').val();
+            Order.CouponCode = $('#CouponCode').val();
+
+            var PaymentType = $(".payactive").val();
+            if (PaymentType == "Credimax") {
+                Order.PaymentMethodID = 2
+            }
+            else if (PaymentType == "PayPal") {
+                Order.PaymentMethodID = 3
+            }
+            else if (PaymentType == "JazzCash") {
+                Order.PaymentMethodID = 4
+            }
+            else if (PaymentType == "Easypaisa") {
+                Order.PaymentMethodID = 5
+            }
+            else if (PaymentType == "Banktransfer") {
+                Order.PaymentMethodID = 6
+            }
+            else if (PaymentType == "DebitCreditCard") {
+                Order.PaymentMethodID = 7
+            }
+            else {
+                Order.PaymentMethodID = 1
+            }
+
+            // =========================================================================
+
+            if (settings.IsDeliveryAllow == 0) {
+
+
+                swal({
+                    title: "We apologize,",
+                    text: "delivery is not available at this time!",
+                    type: "error"
+                });
+
+            }
+            else {
+
+                var Masterorder = JSON.stringify({ 'data': Order });
+                //callService('2', Order);
+                $.ajax({
+                    type: "POST",
+                    url: '/Order/PunchOrder',
+                    data: Masterorder,
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+
+                        if (data.data == 0) {
+                            var openTimeParts = settings.OpenTime.split(':');
+                            var closeTimeParts = settings.CloseTime.split(':');
+
+                            // Create Date objects with today's date and the specified time
+                            var openTime = new Date();
+                            openTime.setHours(parseInt(openTimeParts[0], 10));
+                            openTime.setMinutes(parseInt(openTimeParts[1], 10));
+
+                            var closeTime = new Date();
+                            closeTime.setHours(parseInt(closeTimeParts[0], 10));
+                            closeTime.setMinutes(parseInt(closeTimeParts[1], 10));
+
+                            // Format the time strings
+                            var deliveryMessage = "Order placement is available from"+" " + openTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + " to " + closeTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            swal({
+                                title: "We apologize for any inconvenience,",
+                                text: deliveryMessage,
+                                type: "error"
+                            });
+                        }
+                        else {
+                            if (data.data.OrderNo == null && data.data != "DebitCreditCard") {
+                                localStorage.clear();
+                                window.location.href = '/Order/OrderComplete?OrderID=' + data.data + '&OrderNo=' + Order.OrderNo;
+                            }
+                            else if (data.data == "DebitCreditCard") {
+                                localStorage.clear();
+                                orderNoURL = Order.OrderNo;
+                                Order.OrderID = data.OrderID;
+
+                                callService('2', Order);
+                            }
+                            //else if (data.data == "BenefitPay")
+                            //{
+                            //    localStorage.clear();
+                            //    window.location.href = '/Order/BenefitPay?OrderNo=' + Order.OrderNo + '&OrderID=' + data.OrderID + '&GrandTotal=' + Order.GrandTotal;
+                            //}
+                            else {
+                                //getCardDetails(data.data.sessionID, data.data.GrandTotal, data.data.OrderNo, data.data.Description);
+                            }
+                        }
+
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                    }
+                });
+            }
+
+
+        };
+
+        function getCardDetails(sessionID, amount, OrderID, description) {
+
+            Checkout.configure({
+                merchant: 'E10561950',
+                order: {
+                    amount: function () {
+                        return amount; // Transaction Amount
+                    },
+                    currency: 'RS',
+                    description: ''+description+'',
+                    id: ''+OrderID+'' //Pass new order id
+                },
+                session: {
+                    id: sessionID // PASS the session id generated in the api  --> -->
+                },
+                interaction: {
+                    operation: 'PURCHASE', // set this field to 'PURCHASE' for Hosted Checkout to perform a Pay Operation when LIVE. -->
+                    merchant: {
+                        name: 'KarachiFlora',
+                        logo: 'https://www.karachiflora.com/images/logo.png'
+                    },
+                    displayControl: {
+                        billingAddress: 'HIDE'
+                    },
+                }
+            });
+            Checkout.showPaymentPage();
+        };
+        function getgiftLS() {
+            var getgiftItem = localStorage.getItem("_giftitems");
+            if (getgiftItem != null && getgiftItem != "")
+                return JSON.parse(getgiftItem);
+            else
+                return JSON.parse("[]");
+        }
+        function cartdata(coupon, Charges) {
+
+            var gifts = getgiftLS();
+            var checkLSsetting = localStorage.getItem("_setting");
+            var LSsettings = JSON.parse(localStorage.getItem("_setting"));
+            var settings = LSsettings[0];
+
+            var shippingcharges = 0;
+            var total = 0;
+            var chkLScart = localStorage.getItem("_cartitems");
+            var data = JSON.parse(chkLScart);
+            var html = '';
+            var totalPrice = 0;
+            var totalQty = 0;
+
+            for (var i = 0; i < data.length; i++) {
+                var giftPrice = 0;
+                totalQty += Number(data[i].Qty);
+                totalPrice += data[i].Qty * data[i].UPrice;
+                html += '<tr class="cart_item" >'
+                    + '<td class="product-name  text-left">' + data[i].Title + '<strong class="product-quantity">' + ' × ' + data[i].Qty + '</strong>'
+                if (gifts.length > 0) {
+                    var _dataGiftFilter = gifts.filter(function (obj) {
+                        return (obj.ItemKey === data[i].Key);
+                    });
+
+                    for (var j = 0; j < _dataGiftFilter.length; j++) {
+                        totalPrice += _dataGiftFilter[j].DisplayPrice;
+                        giftPrice += _dataGiftFilter[j].DisplayPrice;
+                        html +='<p class="mb-0 text-default small lh-16 ">' +'- '+ _dataGiftFilter[j].Title + '</p>'
+                    }
+                }
+
+                html += '</td>'
+                    + '<td class="product-total text-right">'
+                    + '<span class="amount">' + currency + ' ' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span>'
+                    + '</td>'
+                    + '</tr>'
+            }
+            $(".cart-products").html(html)
+
+            @*if (totalPrice <= 0) {//change max amount delivery amount
+                if (data.length > 0) {
+                    shippingcharges = 0;//change value for delivery charges
+                    $(".shipping-amount").html(currency + ' ' + settings.DeliveryCharges.toFixed(2));
+                }
+                else {
+                    $(".shipping-amount").html(current + ' ' + settings.DeliveryCharges.toFixed(2));
+                }
+            }
+            else {
+                shippingcharges = 0;
+                $(".shipping-amount").html(settings.DeliveryCharges.toFixed(2));
+            }*@
+            if (data.length > 0) {
+
+                Charges = $('#Area option:selected').val();
+                if (Charges == "") {
+                    Charges = "0";
+                }
+                $(".sub-total").html(currency + ' ' + (totalPrice).toFixed(2));
+
+                //$(".shipping-amount").html(currency + ' ' + settings.DeliveryCharges.toFixed(2));
+                Delivery = Charges;
+                $('.delivery-charges').html(currency + ' ' + Delivery);
+
+
+                Taxamount = (totalPrice * (settings.TaxPercentage / 100)).toFixed(2);
+                $('.Tax-amount').html(currency + ' ' + Taxamount);
+                $('#taxper').html(' (' + settings.TaxPercentage + '%)');
+                if ($('#CouponType').val() == 'Amount') {
+                    total = parseFloat((((totalPrice + (totalPrice * (settings.TaxPercentage / 100))) - coupon) + parseFloat(Delivery))).toFixed(2);
+                    $(".coupon-amount").html(currency + ' ' + coupon.toFixed(2));
+                }
+                else {
+                    total = parseFloat((((totalPrice + (totalPrice * (settings.TaxPercentage / 100))) - (totalPrice * (coupon / 100))) + parseFloat(Delivery))).toFixed(2);
+                    $(".coupon-amount").html(currency + ' ' + (totalPrice * (coupon / 100)).toFixed(2));
+                }
+
+                $("#totalamount").html(currency + ' ' + total);
+            }
+            else {
+                $(".sub-total").html("");
+                $('.Tax-amount').html("");
+                $(".delivery-charges").html("");
+                $("#totalamount").html("");
+            }
+
+
+            if (total < settings.MinimumOrderValue && total > 0) {
+                $("#checkout").hide();
+                $("#Text-Error").html("Minimum Order Value is RS " + settings.MinimumOrderValue.toFixed(2) + ". Please get some more product to proceed your order.");
+            }
+            else if (total > settings.MinimumOrderValue) {
+                $("#checkout").show();
+            }
+        };
+
+        $('.payment-btn').on('click', '.btn-pay', function () {
+            $('.payment-btn .btn-pay').removeClass('payactive');
+            $(this).addClass('payactive');
+
+            $('#payment-alert').html('');
+        });
+
+
+
+        function callService(tran_Type, order) {
+
+            var data = getData(tran_Type, order);
+            $('.loader').css('display', 'initial');
+            $('#overlay').css('display', 'initial');
+            $.ajax({
+                url: '@Url.Action("Direct_Transfer", "Order")',
+                headers: { "Accept": "application/json" },
+                type: 'POST',
+                data: data,
+                success: function (vdata) {
+
+                    if (vdata.length > 0) {
+                        vdata = JSON.parse(vdata);
+                    }
+                    if (vdata.IsSuccess) {
+
+                        var sessionID = vdata.Data.SESSION_ID;
+                        window.location.href = 'https://digitalbankingportal.hbl.com/hostedcheckout/Site/index.html#/checkout?data=' + sessionID;
+
+                    }
+                    else {
+                        console.log(vdata);
+                        $('.loader').css('display', 'none');
+                        $('#overlay').css('display', 'none');
+                        alert(JSON.stringify(vdata));
+                    }
+                },
+                error: function (request, error) {
+                    $('.loader').css('display', 'none');
+                    $('#overlay').css('display', 'none');
+                    alert('Failed To Connect To Server !!');
+                }
+            });
+        }
+        function getData(tran_type, order) {
+
+
+            var data = {
+                "SHIPPING_DETAIL": {
+                    "NAME": order.SenderName,
+                    "DELIEVERY_DAYS": "0",
+                    "SHIPPING_COST": "0",
+                },
+                "ORDER": {
+                    "DISCOUNT_ON_TOTAL": "0",
+                    "SUBTOTAL": order.GrandTotal.toString(),
+                    "OrderSummaryDescription": [
+                        {
+                            "ITEM_NAME": "NA",
+                            "QUANTITY": "1",
+                            "UNIT_PRICE": "1",
+                            "OLD_PRICE": "1",
+                            "CATEGORY": "0",
+                            "SUB_CATEGORY": "0"
+                        }
+                    ]
+                },
+                "ADDITIONAL_DATA": {
+                    "PAYMENT_TOKEN": "",
+                    "CURRENCY": "PKR",
+                    "REFERENCE_NUMBER": order.OrderID.toString(),
+                    "BILL_TO_FORENAME": order.SenderName,
+                    "BILL_TO_SURNAME": "NA",
+                    "BILL_TO_EMAIL": order.SenderEmail,
+                    //"BILL_TO_PHONE": "000000000",
+                    "BILL_TO_PHONE": "+92" + order.SenderContact,
+                    //"BILL_TO_ADDRESS_LINE": "KHI PK",
+                    "BILL_TO_ADDRESS_LINE": order.Address,
+                    "BILL_TO_ADDRESS_CITY": "Karachi",
+                    "BILL_TO_ADDRESS_STATE": "SD",
+                    "BILL_TO_ADDRESS_COUNTRY": "PK",
+                    "BILL_TO_ADDRESS_POSTAL_CODE": "75300",
+
+                    "SHIP_TO_FORENAME": order.CustomerName,
+                    "SHIP_TO_SURNAME": "NA",
+                    "SHIP_TO_EMAIL": order.SenderEmail,
+                    //"SHIP_TO_PHONE": "00000000",
+                    "SHIP_TO_PHONE": "+92" + order.SenderContact,
+                    //"SHIP_TO_ADDRESS_LINE": "khi pak",
+                    "SHIP_TO_ADDRESS_LINE": order.Address,
+                    "SHIP_TO_ADDRESS_CITY": "Karachi",
+                    "SHIP_TO_ADDRESS_STATE": "SD",
+                    "SHIP_TO_ADDRESS_COUNTRY": "PK",
+                    "SHIP_TO_ADDRESS_POSTAL_CODE": "75300",
+                    "MerchantFields": {
+                        "MDD1": "WC",
+                        "MDD2": "Yes",
+                        "MDD3": "Online flower shop",
+                        "MDD4": "KarachiFlora",
+                        "MDD5": "No",
+                        "MDD6": "Standard",
+                        "MDD7": "0",
+                        "MDD8": "Pakistan",
+                        "MDD9": "",
+                        "MDD10": "",
+                        "MDD11": "",
+                        "MDD12": "",
+                        "MDD13": "",
+                        "MDD14": "",
+                        "MDD15": "",
+                        "MDD16": "",
+                        "MDD17": "",
+                        "MDD18": "",
+                        "MDD19": "",
+                        "MDD20": "NO"
+                    },
+                    "ORDER_ID_TRACKING": order.OrderID,
+                    "CUSTOMER_ID_TRACKING": order.CustomerID,
+                    "PAYMENT_METHOD_TRACKING": "HBLPayment"
+                },
+
+                "USER_ID": 'karachifloraadmin',
+                "PASSWORD": 'EMEGx@p3@f',
+                "CHANNEL": 'HBLPay_Karachiflora_Website',
+                "RETURN_URL": 'https://www.karachiflora.com/Order/HBLPaymentApproved',
+                "CANCEL_URL": 'https://www.karachiflora.com/Order/HBLPaymentApproved',
+                "TYPE_ID": "0"
+            };
+            return data;
+        }
+    </script>
+
+
+    <script src="~/Content/assets/js/plugins/bootstrap-datepicker.min.js"></script>
+    <script src="~/Content/assets/js/plugins/bootstrap-datepicker.js"></script>
+    <script>
+        $("#DeliveryDate").on("change", function () {
+
+            if ($(this).val() != null || $(this).val() != '') {
+                $("#DeliveryDate").css('border','1px solid green');
+            }
+
+        });
+        $(document).ready(function () {
+
+            $("#DeliveryDate").css('border', '1px solid red');
+            var dt = new Date();
+            var time = dt.getHours();
+
+            if (time > 20) {
+                $('#DeliveryDate').datepicker({
+                startDate: '@DateTime.Today.AddDays(1).ToString("MM/dd/yyyy").ToString()',
+                endDate: '@DateTime.Today.AddDays(40).ToString("MM/dd/yyyy").ToString()',
+                autoclose: true,
+                toggleActive: true
+                });
+            }
+            else {
+                $('#DeliveryDate').datepicker({
+                startDate: '@DateTime.Today.AddDays(0).ToString("MM/dd/yyyy").ToString()',
+                endDate: '@DateTime.Today.AddDays(40).ToString("MM/dd/yyyy").ToString()',
+                autoclose: true,
+                todayHighlight: true,
+                toggleActive: true
+                });
+            }
+
+        });
+
+        $(document).ready(function () {
+
+            var storedCityName = getCookieValue("CityName");
+            function getCookieValue(name) {
+                var value = "; " + document.cookie;
+                var parts = value.split("; " + name + "=");
+
+                if (parts.length === 2) {
+                    return parts.pop().split(";").shift();
+                } else {
+                    return null; // Cookie not found or empty
+                }
+            }
+            $('#cityClick span').text(storedCityName);
+        });
+    </script>
+
+}

@@ -1,0 +1,688 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Home Page";
+    var categoryList = (List<samiacraft.Models.BLL.categoryBLL>)(ViewBag.categoryList ?? new List<samiacraft.Models.BLL.categoryBLL>());
+    var tenItems = (List<samiacraft.Models.BLL.itemBLL>)(ViewBag.TenItems ?? new List<samiacraft.Models.BLL.itemBLL>());
+    var newArrivals = (List<samiacraft.Models.BLL.itemBLL>)(ViewBag.NewArrivals ?? new List<samiacraft.Models.BLL.itemBLL>());
+    var reviews = (List<samiacraft.Models.BLL.reviewBLL>)(ViewBag.Reviews ?? new List<samiacraft.Models.BLL.reviewBLL>());
+    var allCategories = (List<samiacraft.Models.BLL.categoryBLL>)(ViewBag.Category ?? new List<samiacraft.Models.BLL.categoryBLL>());
+}
+
+@*-------Occasion Section-------*@
+<section class="occasion py-5 text-center" style="background-color: #fff;">
+    <p class="text-muted mb-1" style="color:var(--addbutton);">Occasions</p>
+    <h2 class="fw-bold mb-4">
+        Shop By <span style="color: var(--addbutton);">Occasions</span>
+    </h2>
+
+    <div class="container">
+        <div class="row justify-content-center g-4">
+            @if (categoryList != null && categoryList.Count > 0)
+            {
+                foreach (var item in categoryList)
+                {
+                    <div class="col-4 col-sm-4 col-md-2 col-lg-2">
+                        <a href="@Url.Action("shop", "shop", new {
+                              Category = "",
+                              CategoryIDs = item.CategoryID,
+                              SubCategoryIDs = "",
+                              ColorIDs = "",
+                              MinPrice = "RS0",
+                              MaxPrice = "RS50000",
+                              Searchtext = "",
+                              SortID = 0
+                              })" class="text-decoration-none">
+                            <div class="category-circle mx-auto d-flex align-items-center justify-content-center shadow-sm overflow-hidden">
+                                @if (!string.IsNullOrEmpty(item.Image))
+                                {
+                                    <img src="@(System.Configuration.ConfigurationManager.AppSettings["Image"]?.ToString() + item.Image)"
+                                         alt="@(item.Title ?? "Category")"
+                                         class="img-fluid" style="max-width: 70%; max-height: 70%; object-fit: contain;" />
+                                }
+                                else
+                                {
+                                    <img src="~/Content/assets/images/NA.png"
+                                         alt="@(item.Title ?? "Category")"
+                                         class="img-fluid" style="max-width: 70%; max-height: 70%; object-fit: contain;" />
+                                }
+                            </div>
+                            <span class="d-block mt-2 text-dark fw-medium">@(item.Title ?? "Category")</span>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@*-------Hero Section-------*@
+<section class="hero-slider hero-slider-one desktop-banner">
+    @if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
+    {
+        foreach (var item in ViewBag.Banner)
+        {
+            <div class="single-slide d-flex align-items-center bg-cover bg-center">
+                <img loading="lazy"
+                     style="width:100%; object-fit:cover;"
+                     src="@(System.Configuration.ConfigurationManager.AppSettings["Image"] + "/" + item.Image)"
+                     alt="@item.Title"
+                     title="@item.Title"
+                     onerror="this.style.display='none'" />
+            </div>
+        }
+    }
+</section>
+
+<section class="hero-slider hero-slider-one mobile-banner">
+    @if (ViewBag.MobileBanner != null && ViewBag.MobileBanner.Count > 0)
+    {
+        foreach (var item in ViewBag.MobileBanner)
+        {
+            <div class="single-slide d-flex align-items-center bg-cover bg-center">
+                <img loading="lazy"
+                     style="width:100%; object-fit:cover;"
+                     src="@(System.Configuration.ConfigurationManager.AppSettings["Image"] + "/" + item.Image)"
+                     alt="@item.Title"
+                     title="@item.Title"
+                     onerror="this.style.display='none'" />
+            </div>
+        }
+    }
+</section>
+
+<div class="deal-row"></div>
+
+<div id="mySidenav" class="sidenav border shadow">
+    <div class="d-flex justify-content-between">
+        <div class="px-3"><h5> </h5></div>
+        <div class="px-3">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+    </div>
+    <div class="off-canvas-inner">
+        <div class="mobile-navigation side-navigation">
+            <nav class="feature px-3">
+                <div class="shop-sidebar">
+                    <h4 class="">FILTER BY TEXT</h4>
+                </div>
+                <div class="input-group input-group-sm my-4">
+                    <input type="text" class="form-control Seachtxt" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <a href="javascript:;" class="filterOn btn btn-default-opposite btn-small">Search</a>
+                    </div>
+                </div>
+                <div class="shop-sidebar mb-4 pt-1">
+                    <div class="d-flex justify-content-between">
+                        <div class=""><h4 class="title">CATEGORIES</h4></div>
+                        <div class="">
+                            <a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong"></i></a>
+                        </div>
+                    </div>
+                    <ul class="scroll-style">
+                        @if (allCategories != null && allCategories.Count > 0)
+                        {
+                            foreach (var item in allCategories)
+                            {
+                                <li><label><input type="checkbox" name="Category" class="mr-2" value="@item.CategoryID">@item.Title</label></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "305px";
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+
+@*-------About us Section-------*@
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-md-5 text-center">
+                <img src="~/Content/assets/AlHilalImages/a03533e8e353d75c67097340b23b72c011c5c1de.png" alt="Florist" class="about-image">
+            </div>
+            <div class="col-md-7">
+                <p class="mb-2">About Us</p>
+                <h2 class="about-title mb-3">Al Hilal Traders</h2>
+                <p class="text-muted mb-4" style="color: #000 !important;">
+                    Al Hilal Traders is your trusted source for premium Arabian products. We specialize in authentic, high-quality items sourced directly from the best suppliers across the Arabian Peninsula. From premium dates to organic honey, we ensure every product meets our rigorous quality standards.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@*-------Product Section-------*@
+<div class="porduct-area section-pt section-pb-60 prod-banner">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title text-center">
+                    <h2 class="main-heading" style="text-align: start; font-weight: 500; font-size: 20px;">Our Products</h2>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h2 class="main-heading sec-heading">
+                            Our <span style="color: var(--addbutton);" class="instagram-text">Top Seller Products</span>
+                        </h2>
+                        <div class="align-self-center" style="margin-left:auto; padding:1px;">
+                            <a href="/Shop/shop" class="btn view-prod">View Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModalCenter">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-default"><span class="font-weight-lighter">Shop by</span> Category</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="background-image: url(../../Content/assets/images/kf-bg.jpg); background-size: 100% 100%; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;">
+                            <div class="porduct-area section-pt-30 section-pb-30">
+                                <div class="container w-100">
+                                    <div class="row justify-content-center">
+                                        @if (allCategories != null && allCategories.Count > 0)
+                                        {
+                                            foreach (var item in allCategories)
+                                            {
+                                                <div class="col-6 col-md-4">
+                                                    <div style="background-color: #006783;margin-bottom:10px">
+                                                        <div style="top: 10px; left: 10px;">
+                                                            <span class="pl-15 pt-10" style="color: white;">
+                                                                <a class="mt-10 im" style="font-size: 20px; font-family: Poppins; font-weight: 600; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal;" href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                                    @item.Title.ToUpper()
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        <div class="mobCat" style="position: relative; padding-left: 10px; height: 150px; width: 100%;">
+                                                            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.CategoryID, SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                                <img style="max-width: 100%; height: 100%; position: absolute; bottom: 0; right: 0;" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title" onerror="this.style.display='none'" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row all-products d-flex">
+            @if (tenItems != null && tenItems.Count > 0)
+            {
+                foreach (var item in tenItems)
+                {
+                    <div class="col-lg-3 col-6 mb-4 pt-3">
+                        <div class="position-relative rounded-3 overflow-hidden shadow-sm">
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/Content/assets/images/NA.png") : System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)"
+                                     alt="@item.Title"
+                                     class="img-fluid rounded-3 shadow-sm"
+                                     style="object-fit: cover; width: 100%; aspect-ratio: 1/1;"
+                                     onerror="this.style.display='none'" />
+                            </a>
+
+                            @if (item.DiscountedPrice != null && item.DiscountedPrice > 0)
+                            {
+                                <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-info text-white small px-3 py-1">
+                                    @(Math.Round((double)((item.Price - item.DiscountedPrice) / item.Price * 100)))% off
+                                </span>
+                            }
+
+                            <div class="hover-icons d-flex flex-column align-items-center">
+                                <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })" class="icon-btn" title="Preview">
+                                    <img src="~/Content/assets/images/preview.png" alt="Preview">
+                                </a>
+                                <a onclick="addtoWishlist(@item.ItemID, '@item.Title.Replace("'", " ")', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false;" class="icon-btn" title="Wishlist">
+                                    <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                                </a>
+
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <a onclick="addtocart(@item.ItemID,'@item.Title.Replace("'", " ")','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a onclick="addtocart(@item.ItemID,'@item.Title.Replace("'", " ")','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                            <small class="text-card fw-semibold">@item.Category</small>
+                            <div class="d-flex align-items-center gap-1">
+                                @if (item.Stars != null && item.Stars > 0)
+                                {
+                                    <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                    <span class="fw-semibold rating-number">@item.Stars</span>
+                                }
+                                else
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e0e0e0" class="bi bi-star" viewBox="0 0 16 16">
+                                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.725 3.522-3.361c.33-.32.159-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.38 5.218l-4.898.696c-.441.062-.612.63-.282.95l3.522 3.36-.83 4.726z" />
+                                    </svg>
+                                    <span class="fw-semibold">0</span>
+                                }
+                            </div>
+                        </div>
+
+                        <h6 class="mb-1 fw-semibold">@item.Title</h6>
+
+                        <div class="d-flex justify-content-between">
+                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                            {
+                                <span class="text-price fw-bold">Rs. @((double)item.Price)</span>
+                            }
+                            else
+                            {
+                                <span class="text-price fw-bold">Rs. @((double)item.DiscountedPrice)</span>
+                                <del class="text-del ms-2">Rs. @((double)item.Price)</del>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="col-md-12 text-center my-4 pt-lg-5">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default btn-large" tabindex="0"><span>View All</span></a>
+        </div>
+    </div>
+</div>
+
+<section class="new-arrival">
+    <h2 class="fw-bold mb-4 text-center" style="font-size: 32px;">
+        New Arrival <span style="color: var(--addbutton);">Products</span>
+    </h2>
+
+    <div class="container-fluid">
+        <div class="row g-4 product-active-lg-4 product-active mt-4">
+            @if (newArrivals != null && newArrivals.Count > 0)
+            {
+                foreach (var item in newArrivals)
+                {
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm border rounded-4 p-1 h-100" style="font-family: 'Segoe UI', sans-serif;">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-6 position-relative text-center">
+                                    @if (string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                            <img src="~/Content/assets/images/NA.png" alt="@item.Title" class="product-image img-fluid">
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                            <img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image"
+                                                 alt="@item.Title"
+                                                 class="product-image img-fluid"
+                                                 onerror="this.style.display='none'" />
+                                        </a>
+
+                                        <div class="hover-icons d-flex flex-column align-items-center">
+                                            <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })" class="icon-btn" title="Preview">
+                                                <img src="~/Content/assets/images/preview.png" alt="Preview">
+                                            </a>
+                                            <a onclick="addtoWishlist(@item.ItemID, '@item.Title.Replace("'", " ")', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false;" class="icon-btn" title="Wishlist">
+                                                <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                                            </a>
+
+                                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                            {
+                                                <a onclick="addtocart(@item.ItemID,'@item.Title.Replace("'", " ")','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a onclick="addtocart(@item.ItemID,'@item.Title.Replace("'", " ")','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+
+                                    @if (item.DiscountedPrice != null && item.DiscountedPrice > 0 && item.Price > item.DiscountedPrice)
+                                    {
+                                        var discount = Math.Round(100 - ((double)item.DiscountedPrice / (double)item.Price * 100));
+                                        <div class="badge bg-info text-white position-absolute top-0 end-0 mt-2 me-2">@discount% off</div>
+                                    }
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-card small">@(item.Category ?? "N/A")</span>
+                                        <span class="fw-bold d-inline-flex align-items-center p-2">
+                                            @if (item.Stars.HasValue && item.Stars > 0)
+                                            {
+                                                <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                                <span>@item.Stars</span>
+                                            }
+                                            else
+                                            {
+                                                <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                                <span>0</span>
+                                            }
+                                        </span>
+                                    </div>
+
+                                    <h6 class="mb-2">@(item.Title ?? "Product")</h6>
+
+                                    <div class="mb-2">
+                                        @if (item.DiscountedPrice != null && item.DiscountedPrice > 0)
+                                        {
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.DiscountedPrice</span>
+                                            <span class="text-del text-decoration-line-through ms-2">Rs. @item.Price</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.Price</span>
+                                        }
+                                    </div>
+
+                                    <p class="text-muted small mb-3">
+                                        @(string.IsNullOrEmpty(item.Description) ? "No description available." : item.Description.Length > 60 ? item.Description.Substring(0, 60) + "..." : item.Description)
+                                    </p>
+
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"
+                                       class="text-shopnow fw-semibold text-decoration-none d-inline-flex align-items-center">
+                                        Shop Now <img class="img-arrow" src="~/Content/assets/images/arrow.png" alt="arrow" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<section class="weekly-deals-section">
+    <div class="container-fluid">
+        <div class="deals-banner">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <div class="deals-content">
+                        <div class="deals-label">Weekly Deals</div>
+                        <h2 class="deals-title">Unbeatable Weekly Offers</h2>
+                        <h3 class="deals-subtitle">on Beautiful Products</h3>
+                        <p class="deals-description">Lorem Ipsum Is Simply Dummy Text Of The Printing Industry.</p>
+                        <a href="@ViewBag.shopButtonURL" class="btn shop-now-btn">
+                            Shop Now
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="deals-image">
+                        <img src="/Content/assets/AlHilalImages/a03533e8e353d75c67097340b23b72c011c5c1de.png" alt="Woman with beautiful flower bouquet" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (reviews != null && reviews.Count > 0)
+{
+    <div class="testimonial-area testimonial-bg bg-gray overly-image pt-60 pb-60 mobimg" style="background-image: var(--bgtestimonials);">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 offset-md-3 col-md-8 col-sm-12">
+                    <div class="testimonial-slider">
+                        @foreach (var item in reviews)
+                        {
+                            <div class="text-center pb-35">
+                                <div class="test-cont">
+                                    <img src="~/Content/assets/images/icon/quite.png" alt="">
+                                    <p style="font-size:20px;line-height:24px">@item.Description</p>
+                                </div>
+                                <br />
+                                <div class="test-author">
+                                    <h5>@item.Name</h5>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- FAQs Section -->
+<section class="py-5 faqs">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="text-muted mb-2 sec-para">FAQs</p>
+            <h2 class="fw-bold sec-heading">Question? <span style="color: var(--addbutton);">Look Here.</span></h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false">
+                                <span>What Products And Services Does Al Hilal Offer?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Al Hilal is a full-service premium product retailer offering a wide range of authentic Arabian products including dates, honey, spices, and curated gift boxes.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+                                <span>Do They Provide Delivery Within Karachi?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Yes, we provide delivery within Karachi city limits.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+                                <span>How Do I Place An Order?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                You can place an order through our website, phone, or visit our store directly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+                                <span>What Are The Payment Methods?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                We accept cash, card payments, and online transfers.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false">
+                                <span>Do You Ship Outside Karachi?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Currently, we only serve within Karachi city limits.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+                <div class="contact-card text-white p-4 h-75 h-md-100 d-flex flex-column justify-content-center text-center">
+                    <div class="mb-4">
+                        <div class="d-inline-flex p-3">
+                            <img class="faquser_icon pt-2" src="~/Content/assets/images/Faq/faquser_icon.png">
+                        </div>
+                        <h4 class="fw-bold mb-2">You Have Different Questions?</h4>
+                        <p class="mb-0">Our Team Will Answer All Your Questions.</p>
+                        <p class="mb-4">We Ensure A Quick Response.</p>
+                        <button class="btn btn-light text-dark fw-semibold">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="newsletter-label">Our Newsletter</div>
+                <h2 class="newsletter-title">Subscribe To Our Newsletter To</h2>
+                <h2 class="newsletter-subtitle">Get Updates On Our Latest Offers</h2>
+                <p class="newsletter-description">Get 20% Off On Your First Order Just By Subscribing To Our Newsletter</p>
+                <div class="input-group">
+                    <input type="email" class="form-control email-input" placeholder="Your Email Address" aria-label="Email address">
+                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Al Hilal!', 1); return false;" class="btn subscribe-btn"><span>Subscribe</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function CountDownTimer() {
+            var currency = "Rs. ";
+            var html = '';
+            var item = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Deal ?? new List<object>()));
+
+            html += '<div class="bg-deal section-ptb d-lg-block d-none">'
+                + '<div class="container w-100">'
+                + '<div class="row align-items-center">'
+                + '<div class="col-lg-12">'
+                + '<div class="section-title text-center">'
+                + '<h2 class="text-default"><span class="font-weight-lighter">Deals of</span> The Month</h2>'
+                + '</div>'
+                + '</div>'
+                + '</div>'
+                + '<div class="row">'
+
+            for (var i = 0; i < item.length; i++) {
+                html += '<div class="col-md-6">'
+                    + '<div class="card my-3">'
+                    + '<div class="card-body row">'
+                    + '<div class="align-self-center col-sm-5 col-4">'
+                    + '<img src="~/Content/assets/images/product-' + ((i % 15) + 1) + '.jpg" style="height: 200px; object-fit: contain;" />'
+                    + '</div>'
+                    + '<div class="align-self-center col-8 col-sm-7">'
+                    + '<p class="card-text mt-3 mb-0">' + item[i].Title + ' </p>'
+                    + '<div class="price-box">'
+                    + '<span class="price-regular font-weight-bolder">' + currency + item[i].DiscountedPrice + '</span>'
+                    + '</div>'
+                    + '<a href="../product/productdetails?ItemID=' + item[i].ItemID + '" class="mt-0 mb-0 btn btn-small card-link btn-deal3">Get Deal</a>'
+                    + '<div class="countdown-titmer">'
+                    + '<h5 class="offer-text">' + item[i].Description + '</h5>'
+                    + '<div class="product-countdown" data-countdown="2020/04/25">'
+                    + '<div class="single-countdown"><span id="Days-' + item[i].DealID + '" class="single-countdown__time">00</span><span class="single-countdown__text">Days</span></div>'
+                    + '<div class="single-countdown"><span id="Hours-' + item[i].DealID + '" class="single-countdown__time">00</span><span class="single-countdown__text">Hours</span></div>'
+                    + '<div class="single-countdown"><span id="Mins-' + item[i].DealID + '" class="single-countdown__time">00</span><span class="single-countdown__text">Mins</span></div>'
+                    + '<div class="single-countdown"><span id="Secs-' + item[i].DealID + '" class="single-countdown__time">00</span><span class="single-countdown__text">Secs</span></div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+
+
+                counter(item[i].EndDate, item[i].DealID);
+            }
+
+            html += '</div>'
+                + '</div>'
+                + '</div>'
+
+            if (item.length > 0) {
+                $(".deal-row").html(html);
+            }
+
+            function counter(EndDate, id) {
+                var end = new Date(EndDate);
+                var _second = 1000;
+                var _minute = _second * 60;
+                var _hour = _minute * 60;
+                var _day = _hour * 24;
+                var timer;
+
+                function showRemaining() {
+                    var now = new Date();
+                    var distance = end - now;
+                    if (distance < 0) {
+                        clearInterval(timer);
+                        return;
+                    }
+                    var days = Math.floor(distance / _day);
+                    var hours = Math.floor((distance % _day) / _hour);
+                    var minutes = Math.floor((distance % _hour) / _minute);
+                    var seconds = Math.floor((distance % _minute) / _second);
+
+                    document.getElementById("Days-" + id).innerHTML = days;
+                    document.getElementById("Hours-" + id).innerHTML = hours;
+                    document.getElementById("Mins-" + id).innerHTML = minutes;
+                    document.getElementById("Secs-" + id).innerHTML = seconds;
+                }
+                timer = setInterval(showRemaining, 1000);
+            }
+        }
+
+        $(document).ready(function () {
+            CountDownTimer();
+        });
+    </script>
+}

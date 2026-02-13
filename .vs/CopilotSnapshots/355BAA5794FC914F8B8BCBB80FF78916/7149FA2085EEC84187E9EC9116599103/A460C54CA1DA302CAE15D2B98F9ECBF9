@@ -1,0 +1,2592 @@
+﻿@* @{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+
+    .hero-slider-one .slider-text-info h1, .hero-slider-two .slider-text-info h1 {
+        color: var(--addbutton);
+    }
+
+    .hero-slider .single-slide .slider-text-info .badge {
+        font-size: 14px;
+        margin-top: 10%;
+    }
+
+    .hero-slider-one .buttons .shop-btn {
+        border: none;
+        font-family: "Lato", sans-serif;
+        font-weight: 100;
+        background-color: #217E79;
+        font-size: 16px;
+        border-radius: 30px;
+        padding: 14px 24px;
+        margin-top: 3rem;
+    }
+
+    .hero-slider-one .buttons .prod-btn {
+        font-size: 16px;
+        text-decoration: underline;
+        text-decoration-color: black;
+        text-underline-offset: 3px;
+        margin: 3rem 0 0 3rem;
+    }
+
+    .hero-slider-one .flower-img {
+        border-radius: 50px;
+        background: #C6E6E4;
+        width: 30px;
+        height: 30px;
+    }
+
+
+    .hero-slider-one .buttons .shop-btn:hover::before {
+        background-color: var(--addbutton);
+    }
+
+    .hero-slider-one .slider-text-info p {
+        font-size: 16px;
+        color: var(--addbutton)
+    }
+
+    .desktop-banner {
+        display: block;
+    }
+
+    .mobile-banner {
+        display: none;
+    }
+
+
+    .sec-heading {
+        font-size: 32px !important;
+    }
+
+    .sec-para {
+        font-size: 16px !important;
+    }
+
+    .occasion h2 {
+        font-size: 32px;
+    }
+
+    .occasion-active .rounded-circle {
+        width: 100px;
+        height: 100px;
+        background: var(--addbutton);
+    }
+
+
+    .category-circle {
+        width: 100px;
+        height: 100px;
+        transition: transform 0.3s;
+        border-radius: 50%;
+        padding: 1px 1px;
+        border: 1px solid #C6A45B;
+    }
+
+        .category-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+    /*About us*/
+    .about-section {
+        background-color: #16563B26;
+        padding: 60px 0;
+    }
+
+    .about-image {
+        width: 100%;
+        max-width: 350px;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid white;
+        box-shadow: 0 0 0 5px #fff, 0 0 0 10px #e8f8f5;
+        position: relative;
+        z-index: 1;
+        border-color: #16563B;
+    }
+
+    .about-title {
+        font-size: 45px;
+        font-weight: 700;
+    }
+
+    /*        .about-title span {
+                color: var(--addbutton);
+            }*/
+
+    .about-box {
+        background-color: var(--addbutton);
+        border-radius: 15px;
+        padding: 20px 30px;
+        color: #fff;
+    }
+
+        .about-box .col {
+            border-right: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+            .about-box .col:last-child {
+                border-right: none;
+            }
+
+        .about-box .number {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+    .signature {
+        font-family: 'Dancing Script', cursive;
+        font-size: 28px;
+        margin-top: 30px;
+    }
+
+    @@media (max-width: 575.98px) {
+        .about-section .container,
+        .faqs .container {
+            max-width: 100% !important; /* behave like container-fluid */
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+
+
+    /*Product*/
+    .all-products .img-a {
+        display: block;
+        overflow: hidden;
+        border-radius: 20px;
+        position: relative;
+    }
+
+        .all-products .img-a img {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border-radius: 12px;
+        }
+
+        .all-products .img-a:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .text-card {
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--addbutton);
+    }
+
+    .text-shopnow {
+        color: var(--addbutton);
+    }
+
+    .rating-icon {
+        width: 15px;
+        display: inline-block;
+        height: auto;
+    }
+
+    .rating-number {
+        font-size: 15px;
+        padding: 0 5px;
+    }
+
+    .all-products h6 {
+        font-weight: 500;
+    }
+
+    .text-price {
+        color #16563B;
+        font-weight: 500;
+    }
+
+    .text-del {
+        color: #33B6AE;
+    }
+
+
+    .hover-icons {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .all-products .position-relative:hover .hover-icons {
+        opacity: 1;
+        right: 15px;
+    }
+
+    .icon-btn img {
+        width: 36px;
+        height: 36px;
+        background: #fff;
+        border-radius: 50%;
+        padding: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        transition: 0.3s;
+        border: 0.77px solid #C6E6E4;
+    }
+
+        .icon-btn img:hover { /* Change to your theme color */
+            transform: scale(1.1);
+        }
+
+    .view-prod {
+        background-color: var(--addbutton);
+        border: none;
+        color: white;
+        padding: 12px 22px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+        .view-prod:hover::before {
+            background-color: var(--addbutton);
+            color: white;
+        }
+    /*New Arrivals*/
+    .new-arrival {
+        margin-top: 5%;
+    }
+
+        .new-arrival .slick-list .card {
+            border: 1px solid #16563B !important;
+            border-radius: 20px;
+        }
+
+        .new-arrival h6 {
+            font-weight: 500;
+        }
+
+        .new-arrival .img-arrow {
+            width: 25px;
+            padding-left: 10px;
+        }
+
+
+
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 20px;
+        display: block;
+    }
+
+    .product-title {
+        font-family: Lato;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .product-price {
+    }
+
+    .new-arrival .position-relative:hover .hover-icons {
+        opacity: 1;
+        right: 15px;
+    }
+
+
+
+    /*  Weekly Deals - 2 */
+    .weekly-deals-section {
+        padding: 80px 20px;
+        background-color: #f8f9fa;
+    }
+
+    .deals-banner {
+        background: var(--addbutton);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .deals-content {
+        padding: 60px 50px;
+        color: white;
+    }
+
+    .deals-label {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        opacity: 0.9;
+    }
+
+    .deals-title {
+        font-size: 3rem;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .deals-subtitle {
+        font-size: 3rem;
+        font-weight: 400;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        opacity: 0.9;
+        color: var(--headertoparea);
+    }
+
+    .deals-description {
+        font-size: 16px;
+        margin-bottom: 35px;
+        opacity: 0.9;
+    }
+
+    .shop-now-btn {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+        .shop-now-btn:hover::before {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+    .deals-image {
+        position: relative;
+        height: 100%;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .deals-image img {
+            max-width: 60%;
+            height: auto;
+            object-fit: cover;
+        }
+
+
+
+    /*Testimonial*/
+    .star {
+        color: #f9a825;
+        font-size: 1.1rem;
+        line-height: 1;
+        margin-right: 0.1rem;
+    }
+
+    .avatar-border {
+        border: 2px solid #dee2e6;
+    }
+
+    .pagination-indicator {
+        width: 40px;
+        height: 7px;
+        border-radius: 50px;
+        margin: 0 5px;
+    }
+
+        .pagination-indicator.active {
+            background-color: #3b8686;
+        }
+
+        .pagination-indicator.inactive {
+            background-color: #d6e6e6;
+        }
+
+    .today-deals .vertical-img {
+        min-width: 650px;
+    }
+
+
+
+    .teal-bg {
+        background-color: var(--addbutton);
+        padding: 0 12px;
+    }
+
+    .teal-text {
+        color: var(--addbutton);
+    }
+
+    .category-strip {
+        background-color: var(--headertoparea);
+        white-space: nowrap;
+        overflow: hidden;
+        padding: 15px 0;
+        position: relative;
+    }
+
+    .category-strip-inner {
+        display: inline-flex;
+        animation: slide-left 30s linear infinite;  
+        will-change: transform;
+    }
+
+    .circle-bg {
+        width: 34px;
+        height: 34px;
+        background-color: white;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: soft shadow */
+        padding: 5px; /* Optional: adjust space around PNG */
+    }
+
+    .circle-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .category-item {
+        padding: 10px 30px;
+        font-weight: 500;
+        font-size: 1rem;
+        white-space: nowrap;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+        .category-item span {
+            font-size: 1.2rem;
+        }
+
+    /* ====== INFINITE ANIMATION KEYFRAMES ====== */
+    @@keyframes slide-left {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    /* ====== HOVER PAUSE EFFECT (OPTIONAL) ====== */
+    .category-strip:hover .category-strip-inner {
+        animation-play-state: paused;
+    }
+
+    /* ====== DEMO SECTION STYLES ====== */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .demo-section {
+        padding: 50px 0;
+        text-align: center;
+    }
+
+    .demo-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .demo-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+
+    /*instagram*/
+    .instagram-section {
+        background-color: #e8f4f8;
+        padding: 60px 0;
+    }
+
+    .follow-text {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .main-heading {
+        color: #16563B;
+        font-weight: 600;
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+    }
+
+    .instagram-text {
+        color: #4a9fb8;
+    }
+
+    .instagram-grid img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+
+        .instagram-grid img:hover {
+            transform: scale(1.05);
+        }
+
+    .instagram-item {
+        margin-bottom: 20px;
+    }
+
+
+
+
+
+
+
+    /*Faq section*/
+
+    .faqs .feature-icon {
+        height: 40px;
+        object-fit: contain;
+        display: block;
+        width: 50px;
+    }
+
+    .faq-card {
+        border: 1px solid #C6A45B;
+        border-radius: 20px;
+    }
+
+    .faqs .faq-card button {
+        line-height: 24px;
+        min-height: 60px;
+    }
+
+    .faqs h4 {
+        color: #ffff;
+    }
+
+    .contact-card {
+        background-color: var(--addbutton);
+        border-radius: 20px;
+    }
+
+        .contact-card .btn {
+            border-radius: 200px;
+            background-color: #C6E6E480;
+            color: white !important;
+            padding: 12px 20px;
+        }
+
+            .contact-card .btn:hover::before {
+                background-color: #C6E6E480;
+            }
+
+    .faquser_icon {
+        width: 80px;
+        height: auto !important;
+    }
+
+    .accordion-body {
+        border-radius: 4px;
+        padding: 2px 15px;
+    }
+
+    .accordion-button:not(.collapsed) {
+        border: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: #217e79;
+    }
+
+    .accordion-button {
+        background: transparent;
+        width: 100%;
+        text-align: left;
+    }
+
+        .accordion-button img {
+            width: 20px;
+        }
+
+    .accordion-header {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+
+        .accordion-header .collapsed {
+            border: none;
+        }
+
+    .newsletter-icon {
+        color: white !important;
+    }
+
+    .product-content .price-box .new-price {
+        color: var(--addbutton);
+    }
+
+    .btn-newsletter {
+        background: var(--addbutton);
+        border: 1px solid var(--addbutton);
+    }
+
+    .btn-default:hover {
+        color: var(--addbutton);
+        background-color: white !important;
+        border-color: var(--addbutton);
+    }
+
+    .btn-default {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: var(--addbutton);
+    }
+
+    .btn::before, .btn-2::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 0;
+        width: 150%;
+        background-color: white;
+        color: #000 !important;
+        transition: all 0.3s ease 0s;
+        content: "";
+        transform: translateX(-50%) translateY(-50%) rotate(-10deg);
+        opacity: 0;
+        z-index: -1;
+    }
+
+    .col-sm-8 {
+        position: relative;
+        width: 50% !important;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .text-default {
+        color: var(--addbutton);
+    }
+
+    .text-default-white {
+        color: white !important;
+    }
+
+    .section-title.text-center p {
+        margin-left: auto;
+        margin-right: auto;
+        color: #000;
+    }
+
+    .col-sm-4 {
+        position: relative;
+        width: 50%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    @@media only screen and (max-width: 480px) {
+
+
+        .hero-slider-one .buttons .shop-btn {
+            font-size: 10px;
+            padding: 6px 12px;
+            margin: 10px;
+        }
+
+        .hero-slider-one .buttons .prod-btn {
+            font-size: 12px;
+            margin: 10px 0 0 10px;
+        }
+
+        .hero-slider .single-slide .slider-text-info .badge {
+            font-size: 10px;
+        }
+
+
+            .hero-slider .single-slide .slider-text-info .badge img {
+                height: 10px;
+                width: 10px;
+            }
+
+        .header-top-area {
+            font-size: 12px;
+        }
+
+        .occasion h2 {
+            font-size: 26px;
+            line-height: 32px;
+        }
+
+
+        .category-circle {
+            width: 80px;
+            height: 80px;
+        }
+
+        .Feature-tiem > a img, .product-image > a img {
+            height: auto;
+            min-height: 165px;
+            max-height: 165px;
+        }
+
+        .occasion-active .slick-slide .rounded-circle {
+            width: 60px;
+            height: 60px;
+        }
+
+        .faquser_icon {
+            width: 60px;
+        }
+
+        .contact-card .btn {
+            padding: 6px 10px;
+        }
+
+        .occasionSwiper .slick-slide span {
+            font-size: 12px
+        }
+
+        .about-title {
+            font-size: 26px;
+            line-height: 32px;
+        }
+
+        .porduct-area .sec-heading {
+            font-size: 13px !important;
+        }
+
+        .newsletter-section .newsletter-title {
+            font-size: 24px;
+        }
+
+        .newsletter-section .newsletter-subtitle {
+            font-size: 24px;
+        }
+
+        .product-image {
+            height: auto;
+        }
+
+        .mSlider {
+            padding-top: 9px !important;
+            margin-left: -5px !important;
+        }
+
+        .newsletter-section .input-group {
+            width: 300px;
+        }
+
+
+        .email-input {
+            padding: 20px 20px;
+            font-size: 12px;
+        }
+
+        .newsletter-section .subscribe-btn {
+            font-size: 11px;
+            padding: 10px 20px;
+        }
+    }
+
+
+    @@media only screen and (max-width: 430px) {
+
+        .hero-slider-one .slider-text-info h1 {
+            font-size: 18px;
+        }
+
+        .hero-slider-one .buttons .shop-btn {
+            margin: 0;
+        }
+
+        .hero-slider-one .slider-text-info p {
+            font-size: 10px;
+            line-height: 18px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .desktop-banner {
+            display: none;
+        }
+
+        .mobile-banner {
+            display: block;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .col-md-3 {
+            -ms-flex: 0 0 25%;
+            -webkit-box-flex: 0;
+            flex: 0 0 25%;
+            max-width: 100%;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0.2rem;
+        }
+
+        .mobview {
+            padding-top: 0px;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCatImg {
+            -ms-flex: 0 0 50%;
+            -webkit-box-flex: 0;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .main-heading {
+            font-size: 1.8rem;
+        }
+
+        .instagram-grid img {
+            height: 120px;
+        }
+
+        .weekly-deals-section {
+            padding: 40px 15px;
+        }
+
+        .deals-content {
+            padding: 30px 20px;
+        }
+
+        .deals-title,
+        .deals-subtitle {
+            font-size: 1.8rem;
+        }
+
+        .deals-label {
+            font-size: 16px;
+        }
+
+        .deals-description {
+            font-size: 14px;
+        }
+    }
+
+    @@media (min-width: 425px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0.2rem;
+        }
+
+        .mobview {
+            padding-top: 0px;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCat {
+            height: 135px !important;
+        }
+
+        .mobCatImg {
+            -ms-flex: 0 0 50%;
+            -webkit-box-flex: 0;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @@media (min-width: 375px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0rem;
+            font-size: 15px !important;
+        }
+
+        .mobview {
+            padding-top: 12px;
+            text-align: right;
+            font-size: 16px !important;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCat {
+            height: 135px !important;
+        }
+
+        .mobCatImg {
+            -webkit-box-flex: 0;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+
+
+    @@media only screen and (min-width: 481px ) and (max-width: 767px) {
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .about-title {
+            font-size: 28px;
+        }
+
+        .about-box {
+            text-align: center;
+        }
+
+            .about-box .col {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+            }
+
+                .about-box .col:last-child {
+                    border-bottom: none;
+                }
+
+        .main-heading {
+            font-size: 2rem;
+        }
+
+        .instagram-grid img {
+            height: 150px;
+        }
+
+        .deals-content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .deals-title,
+        .deals-subtitle {
+            font-size: 2.2rem;
+        }
+
+        .deals-image {
+            min-height: 300px;
+            margin-top: 20px;
+        }
+    }
+
+    @@media only screen and (min-width: 768px ) and (max-width: 1024px) {
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 115px;
+        }
+    }
+
+    @@media only screen and (min-width: 1025px ) {
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 84px;
+        }
+    }
+
+    @@media (min-width: 768px) {
+
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+    }
+
+    @@media (max-width: 1024px) {
+
+        .deals-image {
+            display: none;
+        }
+
+        .contact-card .btn {
+            margin-bottom: 20px;
+        }
+    }
+
+    @@media (min-width: 1024px) {
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        .pt-lg-5, .py-lg-5 {
+            padding-top: 0rem !important;
+        }
+    }
+
+
+    .mb-4, .my-4 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .categorybox img {
+        border-radius: 20px;
+        height: 220px;
+        width: 220px;
+        margin: auto;
+    }
+
+    .zoom {
+        transition: transform .5s;
+        margin: 0 auto;
+    }
+
+        .zoom:hover {
+            -ms-transform: scale(3.5);
+            -webkit-transform: scale(3.5);
+            transform: scale(1.1);
+        }
+
+    .all-product-image {
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+    }
+
+    .product-image > a img {
+        height: 275px;
+        object-fit: fill;
+    }
+
+    .add-button {
+        margin-top: -5px !important;
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 7px 15px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .add-Slide-button {
+        margin-top: 5% !important;
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 7px 15px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .add-Slide-button:hover {
+            background-color: white;
+            border: 2px solid var(--addbutton);
+        }
+
+            .add-Slide-button:hover .add-icon {
+                color: black;
+            }
+
+    .add-button:hover {
+        background-color: white;
+        border: 1px solid var(--addbutton);
+    }
+
+        .add-button:hover .add-icon {
+            color: black;
+        }
+
+    .imgcon {
+        position: relative;
+        display: inline-block; /*add this to make container wrap around image*/
+    }
+
+        .imgcon img {
+            position: relative;
+            display: block;
+            max-width: 100%; /* make sure image does not overflow container */
+            max-height: 100%;
+            object-fit: fill;
+        }
+
+    .im:hover {
+        color: white !important;
+    }
+
+    .btn-default-custom {
+        color: var(--addbutton);
+        background-color: White !important;
+        border-color: white !important;
+        border: 2px solid white;
+    }
+
+        .btn-default-custom:hover {
+            color: var(--addbutton);
+            background-color: white !important;
+            border-color: var(--addbutton);
+            border-radius: 6px;
+        }
+
+
+    /*  @@media only screen and (max-width: 479px) {
+            .add-button {
+                background-color: var(--addbutton);
+                border: none;
+                border-radius: 50%;
+                color: white;
+                font-weight: 500;
+                cursor: pointer;
+                padding: 5px 12px;
+                transition: background-color 0.3s ease-in-out;
+            }
+        }
+
+        @@media only screen and (max-width: 479px) {
+            .add-Slide-button {
+                margin-top: 5% !important;
+                background-color: var(--addbutton);
+                border: none;
+                border-radius: 50%;
+                color: white;
+                font-weight: 500;
+                cursor: pointer;
+                padding: 4px 10px;
+                transition: background-color 0.3s ease-in-out;
+            }
+        }*/
+
+    .modal-body {
+        position: relative;
+        -ms-flex: 1 1 auto;
+        -webkit-box-flex: 1;
+        flex: 1 1 auto;
+        padding: 0rem !important;
+    }
+
+    .modal-header {
+        display: -ms-flexbox;
+        display: -webkit-box;
+        display: flex;
+        -ms-flex-align: start;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        -ms-flex-pack: justify;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        padding: 1rem 1rem;
+        border-bottom: 1px solid #dee2e6;
+        border-top-left-radius: .7rem !important;
+        border-top-right-radius: .7rem !important;
+        background-color: #FFF9E6 !important;
+    }
+
+
+    .newsletter-section {
+        background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+        padding: 80px 0;
+        min-height: 400px;
+    }
+
+    .newsletter-label {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .newsletter-title {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #16563B;
+        margin-bottom: 10px;
+        line-height: 1.2;
+    }
+
+    .newsletter-subtitle {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--addbutton);
+        margin-bottom: 25px;
+        line-height: 1.2;
+    }
+
+    .newsletter-description {
+        color: var(--headertoparea);
+        font-size: 14px;
+        margin-bottom: 35px;
+        font-weight: 500;
+    }
+
+    .email-input {
+        border: none;
+        border-radius: 50px !important;
+        padding: 25px 25px;
+        font-size: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        width: 300px;
+        outline: none;
+    }
+
+        .email-input::placeholder {
+            color: #adb5bd;
+        }
+
+    .subscribe-btn {
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50px;
+        padding: 15px 25px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        margin-left: 10px;
+        box-shadow: 0 2px 10px rgba(32, 201, 151, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .subscribe-btn:hover::before {
+            background-color: var(--addbutton);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(32, 201, 151, 0.4);
+        }
+
+    .input-group {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    /* City button wrapper */
+    .citycol {
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Label as button */
+    .city-name-Occasion {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 2px solid #16563B;
+        border-radius: 10px;
+        padding: 0px 22px;
+        min-width: 100px;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-direction: row;
+    }
+        /* Base image styling */
+        .city-name-Occasion img {
+            width: 100%; /* Responsive width */
+            max-width: 40px; /* Adjust max size */
+            height: auto;
+            display: block;
+        }
+
+        /* Text styling */
+        .city-name-Occasion span {
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #000;
+        }
+
+        /* Hover effect */
+        .city-name-Occasion:hover {
+            background-color: #f5fffd;
+            border: 1px solid #16563B;
+            border-radius: 8px;
+        }
+
+    /* Active (radio checked) */
+    .imgbgchk:checked + .city-name-Occasion {
+        background-color: #38b2a3;
+        border-radius: 8px;
+    }
+
+        .imgbgchk:checked + .city-name-Occasion span {
+            color: #fff;
+        }
+
+        .imgbgchk:checked + .city-name-Occasion img {
+            filter: brightness(0) invert(1);
+        }
+
+    /* Remove image container extra spacing */
+    .image-container,
+    .figure {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Grid and responsive adjustments */
+    .citycol {
+        padding: 5px; /* Small spacing between buttons */
+    }
+
+    /* Mobile responsive */
+    @@media (max-width: 768px) {
+        .citycol {
+            flex: 0 0 50%; /* Two per row on tablets/small screens */
+            max-width: 50%;
+        }
+
+        .city-name-Occasion {
+            flex-direction: row;
+            padding: 0px 22px;
+            gap: 12px;
+        }
+
+            .city-name-Occasion span {
+                font-size: 14px;
+            }
+
+            .city-name-Occasion img {
+                max-width: 60px;
+            }
+    }
+
+    @@media (max-width: 399px) {
+        .citycol {
+            flex: 0 0 33.333%; /* Three per row on mobile */
+            max-width: 33.333%;
+            padding: 5px;
+        }
+
+        .city-name-Occasion {
+            flex-direction: row;
+            padding: 8px 12px;
+            gap: 8px;
+            min-width: auto;
+            border-radius: 15px;
+            justify-content: flex-start;
+        }
+
+            .city-name-Occasion span {
+                font-size: 11px;
+                margin: 0;
+                white-space: nowrap;
+            }
+
+            .city-name-Occasion img {
+                max-width: 35px;
+                flex-shrink: 0;
+            }
+    }
+</style>
+
+
+@* -------- City Buttons Section -------- *@
+@*<section class="city-selector py-4">
+    <div class="container">
+        <div class="row justify-content-center g-3">
+
+            @foreach (var option in ViewBag.City)
+            {
+                <div class="col-md-2 col-sm-6 col-xs-12 citycol">
+                    <input type="radio" name="radioOptions" id="@option.CityID" class="d-none imgbgchk" value="@option.CityID">
+                    <label for="@option.CityID" class="city-name-Occasion">
+                        @if (option.CityID == 1)
+                        {
+                            <div class="image-container" style="cursor:pointer;">
+                                <div class="figure">
+                                    <img class="Sirv image-main" src="~/Content/assets/images/banner/lahore-main.png" alt="City Image" />
+                                </div>
+                            </div>
+                        }
+                        else if (option.CityID == 2)
+                        {
+                            <div class="image-container" style="cursor:pointer;">
+                                <div class="figure">
+                                    <img class="Sirv image-main" src="~/Content/assets/images/banner/karachi-main.png" alt="City Image" />
+                                </div>
+                            </div>
+                        }
+                        else if (option.CityID == 3)
+                        {
+                            <div class="image-container" style="cursor:pointer;">
+                                <div class="figure">
+                                    <img class="Sirv image-main" src="~/Content/assets/images/banner/islamabad-main.png" alt="City Image" />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="https://dummyimage.com/600x400/000/fff" alt="Image Not Found">
+                        }
+
+                        <span class="" style="font-size:18px;font-weight:500;">@option.CityName</span>
+                    </label>
+                </div>
+            }
+
+        </div>
+    </div>
+</section>*@
+
+@*-------Occasion Section-------*@
+<section class="occasion py-5 text-center" style="background-color: #fff;">
+    <!-- Top Heading -->
+    <p class="text-muted mb-1" style="color:var(--addbutton);">Occasions</p>
+    <h2 class="fw-bold mb-4">
+        Shop By <span style="color: var(--addbutton);">Occasions</span>
+    </h2>
+
+    <div class="container">
+        <div class="row justify-content-center g-4">
+            @foreach (var item in ViewBag.categoryList)
+            {
+                <div class="col-4 col-sm-4 col-md-2 col-lg-2">
+                    <a href="@Url.Action("shop", "shop", new {
+                          Category = "",
+                          CategoryIDs = item.CategoryID,
+                          SubCategoryIDs = "",
+                          ColorIDs = "",
+                          MinPrice = "RS0",
+                          MaxPrice = "RS50000",
+                          Searchtext = "",
+                          SortID = 0
+                          })" class="text-decoration-none">
+                        <div class="category-circle mx-auto d-flex align-items-center justify-content-center shadow-sm overflow-hidden">
+                            <img src="@(System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)"
+                                 alt="@item.Title"
+                                 class="img-fluid" style="max-width: 70%; max-height: 70%;" />
+                        </div>
+                        <span class="d-block mt-2 text-dark fw-medium">@item.Title</span>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+@*-------Hero Section-------*@
+
+<!-- Desktop banners -->
+<section class="hero-slider hero-slider-one desktop-banner">
+    @if (ViewBag.Banner != null)
+    {
+        foreach (var item in ViewBag.Banner)
+        {
+            <div class="single-slide d-flex align-items-center bg-cover bg-center">
+                <img loading="lazy" f.hero-slider-one
+                     style="width:100%; object-fit:cover;"
+                     src="@(System.Configuration.ConfigurationManager.AppSettings["Image"] + "/" + item.Image)"
+                     alt="@item.Title"
+                     title="@item.Title" />
+            </div>
+        }
+    }
+</section>
+
+<!-- Mobile banners -->
+<section class="hero-slider hero-slider-one mobile-banner">
+    @if (ViewBag.MobileBanner != null)
+    {
+        foreach (var item in ViewBag.MobileBanner)
+        {
+            <div class="single-slide d-flex align-items-center bg-cover bg-center">
+                <img loading="lazy"
+                     style="width:100%; object-fit:cover;"
+                     src="@(System.Configuration.ConfigurationManager.AppSettings["Image"] + "/" + item.Image)"
+                     alt="@item.Title"
+                     title="@item.Title" />
+            </div>
+        }
+    }
+</section>
+
+
+
+
+
+
+
+
+
+
+<div class="deal-row"></div>
+
+<div id="mySidenav" class="sidenav border shadow">
+    <div class="d-flex justify-content-between">
+        <div class="px-3">
+            <h5> </h5>
+        </div>
+        <div class="px-3">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+    </div>
+    <div class="off-canvas-inner">
+        <div class="mobile-navigation side-navigation">
+            <nav class="feature px-3">
+                <div class="shop-sidebar">
+                    <h4 class="">FILTER BY TEXT</h4>
+                </div>
+                <div class="input-group input-group-sm my-4">
+                    <input type="text" class="form-control Seachtxt" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <a href="javascript:;" class="filterOn btn btn-default-opposite btn-small">Search</a>
+                    </div>
+                </div>
+                <div class="shop-sidebar mb-4 pt-1">
+
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="title">CATEGORIES</h4>
+                        </div>
+                        <div class="">
+                            <a href="javascript:;" class=" filterOn"><i class="ion-ios-search-strong"></i></a>
+                        </div>
+                    </div>
+                    <ul class="scroll-style ">
+                        @foreach (var item in ViewBag.Category)
+                        {
+                            <li><label><input type="checkbox" name="Category" class="mr-2" value="@item.CategoryID">@item.Title</label></li>
+
+                        }
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <div class=" shop-sidebar filter-price-content">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="mb-0">FILTER BY PRICE</h4>
+                            </div>
+                            <div class="">
+                                <a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong"></i></a>
+                            </div>
+                        </div>
+
+                        <form action="#" method="post">
+                            <div id="price-slider-home" class="price-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 16.6667%; width: 79.1667%;"></div><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 16.6667%;"></span><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 95.8333%;"></span></div>
+                            <div class="filter-price-wapper">
+                                <div class="filter-price-cont">
+                                    <span>Price:</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mr-1 pr-0 min-price" id="min-price-home" readonly="">
+                                    </div>
+                                    <span>—</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mx-1 pr-0 max-price" id="max-price-home" readonly="">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+</div>
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "305px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+
+@*-------About us Section-------*@
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-md-5 text-center">
+                <img src="~/Content/assets/AlHilalImages/a03533e8e353d75c67097340b23b72c011c5c1de.png" alt="Florist" class="about-image">
+            </div>
+            <div class="col-md-7">
+                <p class=" mb-2">About Us</p>
+                <h2 class="about-title mb-3">
+                    Al Hilal Traders
+                </h2>
+                <p class="text-muted mb-4" style="color: #000 !important;">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.
+                </p>
+
+                @*<div class="about-box row text-center">
+                    <div class="col">
+                        <div class="number">20+</div>
+                        <div>Categories</div>
+                    </div>
+                    <div class="col">
+                        <div class="number">1000+</div>
+                        <div>Products</div>
+                    </div>
+                    <div class="col">
+                        <div class="number">99%</div>
+                        <div>Satisfied Customer</div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</section>
+
+@*-------Product  Section-------*@
+
+<div class="porduct-area section-pt section-pb-60 prod-banner">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title text-center">
+                    <h2 class="main-heading" style="text-align: start; font-weight: 500; font-size: 20px;">
+                        Our Products
+                    </h2>
+                    <div class="d-flex justify-content-between mb-3 ">
+
+                        <h2 class="main-heading sec-heading">
+                            Our <span style="color: var(--addbutton);" class="instagram-text">Top Seller Products</span>
+                        </h2>
+
+                        <div class="align-self-center " style="margin-left:auto; padding:1px;">
+                            <a href="/Shop/shop" class="btn view-prod">
+                                View Products
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModalCenter">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title text-default"><span class="font-weight-lighter">Shop by</span> Category</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div style="background-image: url(../../Content/assets/images/kf-bg.jpg); background-size: 100% 100%; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;">
+                            <div class="porduct-area section-pt-30 section-pb-30 ">
+                                <div class="container w-100 ">
+                                    <div class="row justify-content-center">
+                                        @foreach (var item in ViewBag.Category)
+                                        {
+                                            <div class="col-6 col-md-4">
+                                                <div style="background-color: #006783;margin-bottom:10px">
+                                                    <div class="" style="top: 10px; left: 10px;">
+                                                        <span class="pl-15 pt-10" style="color: white;">
+                                                            <a class="mt-10 im" style="font-size: 20px; font-family: Poppins; font-weight: 600; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal;" href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                                @item.Title.ToUpper()
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="mobCat" style="position: relative; padding-left: 10px; height: 150px; width: 100%;">
+                                                        <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.CategoryID, SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                            <img style="max-width: 100%; height: 100%; position: absolute; bottom: 0; right: 0;" src="@(System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)" alt="" />
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="row all-products d-flex">
+            @foreach (var item in ViewBag.TenItems)
+            {
+                <div class="col-lg-3 col-6 mb-4 pt-3">
+                    <div class="position-relative rounded-3 overflow-hidden shadow-sm">
+                        <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                            <img src="@(string.IsNullOrEmpty(item.Image) ? Url.Content("~/Content/assets/images/NA.png") : System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)"
+                                 alt="@item.Title"
+                                 class="img-fluid rounded-3 shadow-sm"
+                                 style="object-fit: cover; width: 100%; aspect-ratio: 1/1;"
+                                 onerror="this.style.display='none'" />
+                        </a>
+
+                        @if (item.DiscountedPrice != null && item.DiscountedPrice > 0)
+                        {
+                            <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-info text-white small px-3 py-1">
+                                @(((item.Price - item.DiscountedPrice) / item.Price * 100).ToString("0"))% off
+                            </span>
+                        }
+
+                        @*--Hover Icons--*@
+                        <div class="hover-icons d-flex flex-column align-items-center">
+                            <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })" class="icon-btn" title="Preview">
+                                <img src="~/Content/assets/images/preview.png" alt="Preview">
+                            </a>
+                            <a onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; " class="icon-btn" title="Wishlist">
+                                <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                            </a>
+
+                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                            {
+                                <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                </a>
+                            }
+                            else
+                            {
+                                <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                        <small class="text-card fw-semibold">@item.Category</small>
+                        <div class="d-flex align-items-center gap-1">
+                            @if (item.Stars != null)
+                            {
+                                <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                <span class="fw-semibold rating-number">@item.Stars</span>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e0e0e0" class="bi bi-star" viewBox="0 0 16 16">
+                                    <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.725 3.522-3.361c.33-.32.159-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.38 5.218l-4.898.696c-.441.062-.612.63-.282.95l3.522 3.36-.83 4.726z" />
+                                </svg>
+                                <span class="fw-semibold">0</span>
+                            }
+                        </div>
+                    </div>
+
+                    <h6 class="mb-1 fw-semibold">@item.Title</h6>
+
+                    <div class="d-flex justify-content-between">
+                        @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                        {
+                            <span class="text-price fw-bold">Rs. @item.Price.ToString("0.00")</span>
+                        }
+                        else
+                        {
+                            <span class="text-price fw-bold">Rs. @item.DiscountedPrice?.ToString("0.00")</span>
+                            <del class="text-del ms-2">Rs. @item.Price.ToString("0.00")</del>
+                        }
+
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-12 text-center my-4 pt-lg-5">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default  btn-large" tabindex="0"><span>View All</span></a>
+        </div>
+
+    </div>
+</div>
+
+<!--  New Arrival  -->
+<section class="new-arrival">
+
+    <h2 class="fw-bold mb-4 text-center" style="font-size: 32px;">
+        New Arrival <span style="color: var(--addbutton);">Products</span>
+    </h2>
+
+    <div class="container-fluid">
+        <div class="row g-4 product-active-lg-4 product-active mt-4">
+            @foreach (var item in ViewBag.NewArrivals)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow-sm border rounded-4 p-1 h-100" style="font-family: 'Segoe UI', sans-serif;">
+                        <div class="row g-3 align-items-center">
+
+                            <!-- Image Column -->
+                            <div class="col-6 position-relative text-center">
+                                @if (string.IsNullOrEmpty(item.Image))
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                        <img src="~/Content/assets/images/NA.png" alt="@item.Title" class="product-image img-fluid">
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                        <img src="@(System.Configuration.ConfigurationManager.AppSettings["Image"].ToString() + item.Image)"
+                                             alt="@item.Title"
+                                             class="product-image img-fluid">
+                                    </a>
+
+                                    @*--Hover Icons--*@
+                                    <div class="hover-icons d-flex flex-column align-items-center">
+                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })" class="icon-btn" title="Preview">
+                                            <img src="~/Content/assets/images/preview.png" alt="Preview">
+                                        </a>
+                                        <a onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; " class="icon-btn" title="Wishlist">
+                                            <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                                        </a>
+
+                                        @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                        {
+                                            <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                                <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                                <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                                            </a>
+                                        }
+
+
+                                    </div>
+
+
+
+                                }
+
+                                <!-- Discount Badge -->
+                                @if (item.DiscountedPrice != null && item.DiscountedPrice > 0 && item.Price > item.DiscountedPrice)
+                                {
+                                    var discount = Math.Round(100 - ((double)item.DiscountedPrice / (double)item.Price * 100));
+                                    <div class="badge bg-info text-white position-absolute top-0 end-0 mt-2 me-2">@discount% off</div>
+                                }
+                            </div>
+
+                            <!-- Content Column -->
+                            <div class="col-6">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-card small">@item.Category</span>
+                                    <span class="fw-bold d-inline-flex align-items-center p-2">
+                                        <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
+                                        @item.Stars
+                                    </span>
+                                </div>
+
+                                <h6 class="mb-2">@item.Title</h6>
+
+                                <div class="mb-2">
+                                    @if (item.DiscountedPrice != null && item.DiscountedPrice > 0)
+                                    {
+                                        <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.DiscountedPrice</span>
+                                        <span class="text-del text-decoration-line-through ms-2">Rs. @item.Price</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.Price</span>
+                                    }
+                                </div>
+
+                                <p class="text-muted small mb-3">
+                                    @(string.IsNullOrEmpty(item.Description)
+                                ? "No description available."
+                                : item.Description.Length > 60
+                                    ? item.Description.Substring(0, 60) + "..."
+                                    : item.Description)
+                                </p>
+
+                                <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"
+                                   class="text-shopnow fw-semibold text-decoration-none d-inline-flex align-items-center">
+                                    Shop Now <img class="img-arrow" src="~/Content/assets/images/arrow.png" alt="arrow" />
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!--  Weekly Deals -->
+<section class="weekly-deals-section">
+    <div class="container-fluid">
+        <div class="deals-banner">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <div class="deals-content">
+                        <div class="deals-label">Weekly Deals</div>
+                        <h2 class="deals-title">Unbeatable Weekly Offers</h2>
+                        <h3 class="deals-subtitle">on Beautiful Flowers</h3>
+                        <p class="deals-description">Lorem Ipsum Is Simply Dummy Text Of The Printing Industry.</p>
+                        <a href="@ViewBag.shopButtonURL" class="btn shop-now-btn">
+                            Shop Now
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                            </svg>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="deals-image">
+                        <img src="/Content/assets/AlHilalImages/a03533e8e353d75c67097340b23b72c011c5c1de.png" alt="Woman with beautiful flower bouquet" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+{
+    <div class="testimonial-area testimonial-bg bg-gray overly-image pt-60 pb-60  mobimg" style="background-image: var(--bgtestimonials); ">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-9 offset-md-3 col-md-8 col-sm-12">
+                    <div class="testimonial-slider">
+                        @foreach (var item in ViewBag.Reviews)
+                        {
+                            <div class="text-center pb-35">
+                                <div class="test-cont">
+                                    <img src="~/Content/assets/images/icon/quite.png" alt="">
+                                    <p style="font-size:20px;line-height:24px">@item.Description</p>
+                                </div>
+                                <br />
+                                <div class="test-author">
+                                    <h5>@item.Name</h5>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ====== INFINITE CATEGORY STRIP START ====== -->
+<!-- Category Strip Bottom -->
+<div class="category-strip overflow-hidden">
+    <div class="category-strip-inner d-flex">
+        <!-- Reusable circular icon item -->
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Arabian Dates
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            AAb-eZamzam
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Honey & Organic Food
+        </div>
+
+        <!-- Replacing spans with PNG circle icons -->
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Seeds & Herbs
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Signature Gift Boxes
+        </div>
+
+        <!--<div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Ceremony
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Get Well Soon
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Love & Romance
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Congratulations
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Mother's Day
+        </div>-->
+
+        <!-- Duplicate set for seamless loop -->
+        <!--<div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Birthday" class="circle-img">
+            </div>
+            Birthday
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Wedding
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Anniversary
+        </div>-->
+
+        <!-- Repeat a few from above -->
+        <!--<div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Thank You
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Graduation
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Ceremony
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Get Well Soon
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Love & Romance
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Congratulations
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+            </div>
+            Mother's Day
+        </div>-->
+    </div>
+</div>
+
+
+<!-- Instagram Section -->
+<!-- Instagram Section -->
+<section class="instagram-section">
+    <div class="container">
+        <div class="text-center">
+            <p class="follow-text mb-2 sec-para">Follow Us</p>
+            <h2 class="main-heading sec-heading">
+                Follow Us On <span style="color: var(--addbutton);" class="instagram-text">Instagram</span>
+            </h2>
+        </div>
+
+        <div class="row instagram-grid">
+            <div class="col-lg-2 col-md-4 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/305c23d5bfc5853b18f288ee7fb8bc7ae1de7abb.png" alt="Image 1" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/95e4d4dcaf149ca52f381cae16e9fd742104dcce.png" alt="Image 2" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-4 col-12 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/c6b5febacf88a518d3f3fa7eabdbe8e2c8f7ebad.png" alt="Image 3" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-6 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/42e410ea4ac8be15020de0ac1c3fdfe48299fbdd.png" alt="Image 4" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-6 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/c6b5febacf88a518d3f3fa7eabdbe8e2c8f7ebad.png" alt="Image 5" class="img-fluid" />
+                </a>
+            </div>
+        </div>
+
+        <div class="row instagram-grid mt-3">
+            <div class="col-lg-4 col-md-4 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/c866d2e44cfdab7d2b06803021ff53b636247d56.png" alt="Image 6" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/bf09bb8044b849b91da3bcff294f26f75519a616.png" alt="Image 7" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/5fec192fd9734efdbea75779a8c9bf39726188f6.png" alt="Image 8" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-12 col-6 instagram-item">
+                <a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank" class="d-block w-100">
+                    <img src="~/Content/assets/AlHilalImages/35f99bb6506fd094bfd7ff6045c78f0183a1c03e.png" alt="Image 9" class="img-fluid" />
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Category Strip Bottom -->
+<div class="category-strip overflow-hidden">
+    <div class="category-strip-inner d-flex">
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Arabian Dates
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            AAb-eZamzam
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Honey & Organic Food
+        </div>
+
+        <!-- Replacing spans with PNG circle icons -->
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Seeds & Herbs
+        </div>
+
+        <div class="category-item d-flex align-items-center justify-content-center">
+            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                <img src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="Fly" class="circle-img">
+            </div>
+            Signature Gift Boxes
+        </div>
+    </div>
+</div>
+
+
+<!-- FAQs Section -->
+<section class="py-5 faqs">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="text-muted mb-2 sec-para">FAQs</p>
+            <h2 class="fw-bold sec-heading">Question? <span style="color: var(--addbutton);">Look Here.</span></h2>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false">
+                                <span>What Products And Services Does Al Hilal Offer?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Al Hilal is a full-service florist based in Karachi, offering a wide range of fresh floral arrangements, bouquets, and gift combos. They import fragrant flowers from global suppliers and also handle flower arrangements for events, including bridal bouquets and floral decor.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+                                <span>Do They Provide Delivery Within Karachi?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Yes, we provide delivery within Karachi city limits.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+                                <span>How Do I Place An Order?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                You can place an order through our website, phone, or visit our store directly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+                                <span>What Are The Payment Methods?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                We accept cash, card payments, and online transfers.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-3 faq-card">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false">
+                                <span>Do You Ship Outside Karachi?</span>
+                                <img src="~/Content/assets/images/plus.png" class="faq-icon">
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body teal-bg text-white">
+                                Currently, we only serve within Karachi city limits.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+                <div class="contact-card text-white p-4 h-75 h-md-100 d-flex flex-column justify-content-center text-center">
+                    <div class="mb-4">
+                        <div class=" d-inline-flex p-3">
+                            <img class="faquser_icon  pt-2" src="~/Content/assets/images/Faq/faquser_icon.png">
+                        </div>
+                        <h4 class="fw-bold mb-2">You Have Different Questions?</h4>
+                        <p class="mb-0">Our Team Will Answer All Your Questions.</p>
+                        <p class="mb-4">We Ensure A Quick Response.</p>
+                        <button class="btn btn-light text-dark fw-semibold">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mt-5 pt-4">
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
+                    <img src="/Content/assets/images/Faq/free-shiping.png" class="feature-icon mb-2 mb-md-0" alt="Free Shipping">
+                    <div class="text-md-start text-center px-md-3">
+                        <h5 class="teal-text fw-bold mb-1">Free Shipping</h5>
+                        <p class="text-muted mb-0 small">For Order Above Rs. 5000</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
+                    <img src="/Content/assets/images/Faq/payment.png" class="feature-icon mb-2 mb-md-0" alt="Payment">
+                    <div class="text-md-start text-center px-md-3">
+                        <h5 class="teal-text fw-bold mb-1">Flexible Payment</h5>
+                        <p class="text-muted mb-0 small">Multiple Secure Payment Options</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
+                    <img src="/Content/assets/images/Faq/support.png" class="feature-icon mb-2 mb-md-0" alt="Support">
+                    <div class="text-md-start text-center px-md-3">
+                        <h5 class="teal-text fw-bold mb-1">24 x 7 Support</h5>
+                        <p class="text-muted mb-0 small">We Support Online All Days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ====== NEWSLETTER SECTION START ====== -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="newsletter-label">Our Newsletter</div>
+
+                <h2 class="newsletter-title">Subscribe To Our Newsletter To</h2>
+                <h2 class="newsletter-subtitle">Get Updates On Our Latest Offers</h2>
+
+                <p class="newsletter-description">Get 20% Off On Your First Order Just By Subscribing To Our Newsletter</p>
+
+                <div class="input-group">
+                    <input type="email" class="form-control email-input" placeholder="Your Email Address" aria-label="Email address">
+                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Al Hilal. we will keep you updated with our latest news and offers', 1); return false; this.value = '';" class="btn subscribe-btn"><span>Subscribe</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function CountDownTimer() {
+            var currency = localStorage.getItem("currency");
+            var html = '';
+            var item = @Html.Raw(Json.Encode(ViewBag.Deal));
+
+           html +='<div class="bg-deal section-ptb d-lg-block d-none">'
+            +'<div class="container w-100">'
+            +'<div class="row align-items-center">'
+            +'<div class="col-lg-12">'
+            +'<div class="section-title text-center">'
+            +'<h2 class="text-default"><span class="font-weight-lighter">Deals of</span> The Month</h2>'
+            +'</div>'
+            +'</div>'
+            +'</div>'
+            +'<div class="row ">'
+
+
+            for (var i = 0; i < item.length; i++) {
+
+
+                html += '<div class="col-md-6">'
+                    + '<div class="card my-3 ">'
+                    + '<div class="card-body row">'
+                    + '<div class="align-self-center col-sm-5 col-4">'
+                    + '<img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()'+item[i].DealImage+'" style="height: 200px; object-fit: contain;" />'
+                    + '</div>'
+                    + '<div class=" align-self-center col-8 col-sm-7">'
+                    + '<p class="card-text mt-3 mb-0">' + item[i].Title+' </p>'
+                    + '<div class="price-box">'
+                    + '<span class="price-regular font-weight-bolder">'+currency + item[i].DiscountedPrice + '</span>'
+                    + '</div>'
+                    + '<a href="../product/productdetails?ItemID=' + item[i].ItemID +'" class="mt-0 mb-0 btn btn-small card-link btn-deal3">Get Deal</a>'
+                    + '<div class="countdown-titmer ">'
+                    + '<h5 class="offer-text">' + item[i].Description +'</h5>'
+                    + '<div class="product-countdown" data-countdown="2020/04/25">'
+                    + '<div class="single-countdown"><span id="Days-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Days</span></div>'
+                    + '<div class="single-countdown"><span id="Hours-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Hours</span></div>'
+                    + '<div class="single-countdown"><span id="Mins-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Mins</span></div>'
+                    + '<div class="single-countdown"><span id="Secs-' + item[i].DealID+'" class="single-countdown__time">00</span><span class="single-countdown__text">Secs</span></div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+
+                counter(item[i].EndDate, item[i].DealID);
+
+            }
+            html +=  '</div>'
+                    +'</div>'
+                + '</div>'
+            if (item.length > 0) {
+                $(".deal-row").html(html);
+            }
+
+
+
+            function counter(EndDate, id) {
+
+
+                var end = new Date(EndDate);
+
+
+                var _second = 1000;
+                var _minute = _second * 60;
+                var _hour = _minute * 60;
+                var _day = _hour * 24;
+                var timer;
+
+                function showRemaining() {
+                    var now = new Date();
+                    var distance = end - now;
+                    if (distance < 0) {
+
+                        clearInterval(timer);
+
+                        return;
+                    }
+                    var days = Math.floor(distance / _day);
+                    var hours = Math.floor((distance % _day) / _hour);
+                    var minutes = Math.floor((distance % _hour) / _minute);
+                    var seconds = Math.floor((distance % _minute) / _second);
+
+                    document.getElementById("Days-" + id).innerHTML = days;
+                    document.getElementById("Hours-" + id).innerHTML = hours;
+                    document.getElementById("Mins-" + id).innerHTML = minutes;
+                    document.getElementById("Secs-" + id).innerHTML = seconds;
+                }
+                timer = setInterval(showRemaining, 1000);
+            }
+
+        };
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var Category = [];
+            var SubCategory = [];
+            var Color = [];
+            $('input[name="Category"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    Category.push($(this).val());
+                    @*window.history.pushState($(this).val(), "Category", "/Filter");*@
+                }
+                else {
+                    Category.splice($(this).val(), 1);
+                }
+            });
+            $('input[name="Color"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    Color.push($(this).val());
+                }
+                else {
+                    Color.splice($(this).val(), 1);
+                }
+            });
+            $('input[name="SubCategory"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    SubCategory.push($(this).val());
+                }
+                else {
+                    SubCategory.splice($(this).val(), 1);
+                }
+            });
+            $(".filterOn").click(function () {
+                var Searchtxt = $(".Seachtxt").val();
+                var MinPrice = $(".min-price").val();
+                var MaxPrice = $(".max-price").val();
+                var SortID = 0;
+
+                var CategoryIDs =  Category.join();
+                var SubCategoryIDs =  SubCategory.join();
+                var ColorIDs =  Color.join();
+                window.location.href = '/shop/shop?Category=""&CategoryIDs=' + CategoryIDs + '&SubCategoryIDs=' + SubCategoryIDs + '&ColorIDs=' + ColorIDs + '&MinPrice=' + MinPrice + '&MaxPrice=' + MaxPrice + '&Searchtext=' + Searchtxt + '&SortID=' + SortID + '';
+            });
+        });
+    </script>
+}

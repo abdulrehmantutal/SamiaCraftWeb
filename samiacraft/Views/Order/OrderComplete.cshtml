@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Order Complete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .card {
+        width: 350px;
+        border: none;
+        box-shadow: 0px 0px 10px 0px #a2a2a2;
+        border-radius: 12px;
+    }
+
+    .circle-image img {
+        border: 6px solid #fff;
+        border-radius: 100%;
+        padding: 9px;
+        top: -28px;
+        position: relative;
+        width: 65px;
+        height: 65px;
+        border-radius: 100%;
+        z-index: 1;
+        background: #e7d184;
+        cursor: pointer
+    }
+
+    .help-text {
+        margin-top: -21px
+    }
+
+    .fw-500 {
+        font-weight: 500 !important
+    }
+    .mb-50 {
+        margin-bottom: 10px !important;
+    }
+    .mt-5 {
+        margin-top: 30px !important;
+    }
+</style>
+<div class="jumbotron main-content-wrap mb-0 section-ptb contact-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="search-error-wrapper">
+                    @if (ViewBag.OrderNo == "Reject")
+                    {
+                        <h2 class="text-danger" style="font-size: 40px;">Order Cancel</h2>
+
+                        <p class="home-link">
+                            Your order is not successfully done. If you have paid by debit/credit card kindly contact to your bank. <br>
+                            or contact ot us on live chat.
+                        </p>
+                        <a href="~/order/checkout" class="home-bacck-button">Try Again</a>
+                    }
+                    else
+                    {
+                        <h2 style="font-size: 40px;">Thank You for your order.</h2>
+                        <h5 class="mb-1  font-weight-lighter">Your order numer is #SC-@ViewBag.OrderNo</h5>
+                        <h2 style="font-size: 30px;">Thank you for shopping with us! You will receive the updated through email.</h2>
+                        <script>localStorage.clear();</script>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        
+        var storedCityName = getCookieValue("CityName");
+        function getCookieValue(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            } else {
+                return null; // Cookie not found or empty
+            }
+        }
+        $('#cityClick span').text(storedCityName);
+    });
+</script>

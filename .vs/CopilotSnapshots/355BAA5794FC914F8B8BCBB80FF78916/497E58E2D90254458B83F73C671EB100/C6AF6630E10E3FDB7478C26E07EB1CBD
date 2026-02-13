@@ -1,0 +1,151 @@
+﻿@model AlHilal.Models.BLL.contactBLL
+@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .btn-default-opposite {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: white !important;
+        border: 2px solid white;
+    }
+        .btn-default-opposite:hover {
+            color: var(--addbutton);
+            background-color: white !important;
+            border-color: var(--addbutton);
+            border-radius: 6px;
+        }
+    .btn::before, .btn-2::before {       
+        background-color: white;        
+    }
+   
+</style>
+
+@if (ViewBag.Banner.Count > 0)
+{
+<div class="breadcrumb-area section-ptb" style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="breadcrumb-title">Contact Us</h2>
+                <!-- breadcrumb-list start -->
+                <ul class="breadcrumb-list">
+                    <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                    <li class="breadcrumb-item active">Contact</li>
+                </ul>
+                <!-- breadcrumb-list end -->
+            </div>
+        </div>
+    </div>
+</div>
+}
+else
+{
+
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">Contact</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+}
+
+<!-- Page Conttent -->
+<div class="page-content section-ptb contact-bg">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col-lg-7 col-sm-12">
+                <div class="contact-form">
+                    <div class="contact-form-info">
+                        <div class="contact-title">
+                            <h3>ANY QUERY</h3>
+                        </div>
+                        <form action="#" method="post" class="needs-validation" novalidate="" name="myform">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="Name" placeholder="Name *" required="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input type="email" class="form-control" name="Email" placeholder="Email *" required="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="Phone" placeholder="Contact *" required="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" name="Subject" placeholder="Subject *" required="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" name="Message" placeholder="Message *" rows="5" required=""></textarea>
+                            </div>
+                            <div class="text-center text-md-left">
+                                <button type="submit" class="btn btn-default-opposite"><span>Submit</span></button>
+                            </div>
+                        </form>
+                        <p class="mt-3 text-success">@ViewBag.Contact</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-sm-12">
+                <div class="contact-infor">
+                    <div class="contact-title">
+                        <h3>CONTACT US</h3>
+                    </div>
+
+                    <div class="contact-address">
+                        <ul>
+                            <li>
+                                <strong>Address :</strong> <span>
+    Al Hilal, street 32nd building 12 c 3rd floor
+    Phase V Saba Commercial Area Defence V
+    Defence Housing Authority, Karachi,75500 Sindh, Pakistan
+</span>
+                            </li>
+                            <li><strong>Email : </strong>krachiflora@gmail.com</li>
+                            <li>
+                                <strong>Mobile :</strong> 03002920640
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="work-hours">
+                        <h5>Working hours</h5>
+                        <p class="mb-1"><span><strong>Monday &ndash; Saturday</strong> 11:00 AM &ndash; 11:00 PM  </span> </p>
+                        <p class="text-danger"><span><strong>Sunday </strong>: Closed</span> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //$(document).ready(function () {
+    //    
+    //    var storedCityName = getCookieValue("CityName");
+    //    function getCookieValue(name) {
+    //        var value = "; " + document.cookie;
+    //        var parts = value.split("; " + name + "=");
+
+    //        if (parts.length === 2) {
+    //            return parts.pop().split(";").shift();
+    //        } else {
+    //            return null; // Cookie not found or empty
+    //        }
+    //    }
+    //    $('#cityClick span').text(storedCityName);
+    //});
+</script>
+<!--// Page Conttent -->

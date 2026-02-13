@@ -1,0 +1,236 @@
+﻿using AlHilal.Models.BLL;
+using AlHilal.Models.Service;
+using Microsoft.AspNetCore.Mvc;
+using samiacraft.Models.BLL;
+using System.Configuration;
+using System.Net.Mail;
+
+namespace AlHilal.Controllers
+{
+    public class HomeController : Controller
+    {
+
+        public ActionResult Index()
+        {
+            var settng = new settingBLL().GetSettings();
+            var dyn = settng?.DynamicList?.FirstOrDefault();
+
+            ViewBag.TopheaderArea = dyn?.HeaderToparea ?? string.Empty;
+            ViewBag.AddButton = dyn?.AddButton ?? string.Empty;
+            ViewBag.BgWorkflow = dyn?.BgWorkflow ?? string.Empty;
+            ViewBag.BgFeaturedProduct = dyn?.BgFeaturedProduct ?? string.Empty;
+            ViewBag.BgPopularProduct = dyn?.BgPopularProduct ?? string.Empty;
+            ViewBag.BgNewArrivals = dyn?.BgNewArrivals ?? string.Empty;
+            ViewBag.BgNewsletter = dyn?.BgNewsletter ?? string.Empty;
+            ViewBag.BgTestimonials = dyn?.BgTestimonials ?? string.Empty;
+            ViewBag.shopButtonURL = settng?.ShopUrl ?? "#";
+            ViewBag.Logo = dyn?.Logo ?? string.Empty;
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData ?? new List<cityBLL>();
+            
+            // Initialize default ViewBag properties
+            ViewBag.categoryList = new List<categoryBLL>();
+            ViewBag.Category = new List<categoryBLL>();
+            ViewBag.itemList = new List<itemBLL>();
+            ViewBag.Featureditems = new List<itemBLL>();
+            ViewBag.NewArrivals = new List<itemBLL>();
+            ViewBag.TenItems = new List<itemBLL>();
+            ViewBag.PopularProducts = new List<itemBLL>();
+            ViewBag.Deal = new List<dealBLL>();
+            ViewBag.Banner = new List<bannerBLL>();
+            ViewBag.Reviews = new List<reviewBLL>();
+            
+            if (settng == null)
+            {
+                // Return error view or default view if settings cannot be loaded
+                return View();
+            }
+            ViewBag.shopButtonURL = settng.ShopUrl;
+            if (settng.IsMaintenance == 1)
+            {
+                return RedirectToAction("Maintenance");
+            }
+            else
+            {
+                int cityID = 1;
+                //var cityIDCookie = Request.Cookies["CityID"];
+                var cityIDCookie = "2";
+                if (cityIDCookie == null)
+                {
+
+                    //if (int.TryParse(cityIDCookie.Value, out cityID))
+                    //{
+
+
+                    //}
+                }
+                var itemData = new itemService().GetAll(cityID);
+                ViewBag.itemList = itemData.Where(x => x.DisplayOrder > 0).OrderBy(x => x.DisplayOrder).ToList();
+                ViewBag.Featureditems = itemData.OrderByDescending(x => x.DisplayOrder).Where(x => x.IsFeatured == true).OrderBy(c => Guid.NewGuid()).Take(8).ToList();
+                ViewBag.NewArrivals = itemData.OrderByDescending(c => c.LastUpdatedDate).Take(8).ToList();
+                //ViewBag.TenItems = itemData.Where(x => x.DisplayOrder > 0).OrderBy(x => x.DisplayOrder).Take(16).ToList();
+                //ViewBag.TenItems = itemData.ToList();
+                ViewBag.TenItems = itemData.Take(40).ToList();
+                //new itemService().GetAllFeatured();
+                //ViewBag.Category = new categoryBLL().GetAll();
+
+                var catlist = new categoryBLL().GetAll();
+
+                ViewBag.categoryList = catlist.Take(6).ToList();
+                ViewBag.Category = catlist.ToList();
+
+                var popularProduct = new itemService().GetAllPopular(cityID);
+                ViewBag.PopularProducts = popularProduct.Take(8).ToList();
+
+                //var valentineDaySpecial = new itemService().GetAllValentineDay();
+                //ViewBag.ValentineDaySpecial = valentineDaySpecial.Take(10).ToList();
+
+                //ViewBag.SubCategory = new subcategoryBLL().GetAll();
+                //ViewBag.Color = new colorBLL().GetAll();
+                ViewBag.Deal = new dealBLL().GetAll();
+
+                //new itemService().GetSelecteditems(); 
+                ViewBag.Banner = new bannerBLL().GetBanner("Home");
+                ViewBag.Reviews = new bannerBLL().GetReviews();
+            }
+            return View();
+        }
+        public ActionResult Maintenance()
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("About");
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Contact()
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Banner = new bannerBLL().GetBanner("Contact");
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Contact(contactBLL obj)
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            ViewBag.Contact = "";
+            string ToEmail, SubJect, cc, Bcc;
+            cc = "";
+            Bcc = "";
+            ToEmail = ConfigurationManager.AppSettings["From"].ToString();
+            SubJect = "New Query From Customer";
+            string BodyEmail = System.IO.File.ReadAllText(Server.MapPath("~/Template") + "\\" + "contact.txt");
+            DateTime dateTime = DateTime.UtcNow.Date;
+            BodyEmail = BodyEmail.Replace("#Date#", dateTime.ToString("dd/MMM/yyyy"))
+            .Replace("#Name#", obj.Name.ToString())
+            .Replace("#Email#", obj.Email.ToString())
+            .Replace("#Contact#", obj.Phone.ToString())
+            .Replace("#Subject#", obj.Subject.ToString())
+            .Replace("#Message#", obj.Message.ToString());
+            try
+            {
+                //WebMail.SmtpServer = ConfigurationManager.AppSettings["SmtpServer"].ToString();
+                //WebMail.SmtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpPort"].ToString());
+                //WebMail.SmtpUseDefaultCredentials = true;
+                //WebMail.EnableSsl = false;
+                //WebMail.UserName = ConfigurationManager.AppSettings["UserName"].ToString();
+
+                //WebMail.From = ConfigurationManager.AppSettings["From"].ToString();
+                //WebMail.Password = ConfigurationManager.AppSettings["Password"].ToString();
+                //WebMail.Send(to: ToEmail, subject: SubJect, body: Body, cc: cc, bcc: Bcc, isBodyHtml: true);
+                MailMessage mail = new MailMessage();
+                mail.To.Add(ToEmail);
+                mail.From = new MailAddress(ConfigurationManager.AppSettings["From"].ToString());
+                mail.Subject = SubJect;
+                string Body = BodyEmail;
+                mail.Body = Body;
+                mail.IsBodyHtml = true;
+
+                SmtpClient smtp = new SmtpClient();
+                smtp.UseDefaultCredentials = false;
+                smtp.Port = int.Parse(ConfigurationManager.AppSettings["SmtpPort"].ToString());
+                smtp.Host = ConfigurationManager.AppSettings["SmtpServer"].ToString(); //Or Your SMTP Server Address
+                smtp.Credentials = new System.Net.NetworkCredential
+                     (ConfigurationManager.AppSettings["From"].ToString(), ConfigurationManager.AppSettings["Password"].ToString());
+                //Or your Smtp Email ID and Password
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+                ViewBag.Contact = "Your Query is received. Our support department contact you soon.";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Contact = "";
+            }
+            return View();
+        }
+        public JsonResult Subscribe(string email)
+        {
+            string ToEmail, SubJect, cc, Bcc;
+            cc = "";
+            Bcc = "";
+            ToEmail = ConfigurationManager.AppSettings["From"].ToString();
+            SubJect = "New Subscribtion at AlHilal";
+            string BodyEmail = System.IO.File.ReadAllText(Server.MapPath("~/Template") + "\\" + "newsletter.txt");
+            BodyEmail = BodyEmail.Replace("#email#", email.ToString());
+            try
+            {
+                //WebMail.SmtpServer = ConfigurationManager.AppSettings["SmtpServer"].ToString();
+                //WebMail.SmtpPort = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpPort"].ToString());
+                //WebMail.SmtpUseDefaultCredentials = true;
+                //WebMail.EnableSsl = false;
+                //WebMail.UserName = ConfigurationManager.AppSettings["UserName"].ToString();
+
+                //WebMail.From = ConfigurationManager.AppSettings["From"].ToString();
+                //WebMail.Password = ConfigurationManager.AppSettings["Password"].ToString();
+                //WebMail.Send(to: ToEmail, subject: SubJect, body: Body, cc: cc, bcc: Bcc, isBodyHtml: true);
+                MailMessage mail = new MailMessage();
+                mail.To.Add(ToEmail);
+                mail.From = new MailAddress(ConfigurationManager.AppSettings["From"].ToString());
+                mail.Subject = SubJect;
+
+                mail.Body = BodyEmail;
+                mail.IsBodyHtml = true;
+
+                SmtpClient smtp = new SmtpClient();
+                smtp.UseDefaultCredentials = false;
+                smtp.Port = int.Parse(ConfigurationManager.AppSettings["SmtpPort"].ToString());
+                smtp.Host = ConfigurationManager.AppSettings["SmtpServer"].ToString(); //Or Your SMTP Server Address
+                smtp.Credentials = new System.Net.NetworkCredential
+                     (ConfigurationManager.AppSettings["From"].ToString(), ConfigurationManager.AppSettings["Password"].ToString());
+                //Or your Smtp Email ID and Password
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+                ViewBag.Status = "";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Status = "";
+            }
+
+            return Json(email, JsonRequestBehavior.AllowGet);
+        }
+        //Get Setting Details
+        public ActionResult GetSetting()
+        {
+
+            return Json(new settingBLL().GetSettings(), JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Policy()
+        {
+            var cityData = new cityService().GetAll();
+            ViewBag.City = cityData;
+            return View();
+        }
+    }
+}

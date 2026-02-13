@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <InvariantGlobalization>false</InvariantGlobalization>
+	  <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="iPayBenefitPipe">
+      <HintPath>Libraries\iPayBenefitPipe.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>Libraries\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security">
+      <HintPath>Libraries\IKVM.OpenJDK.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>Libraries\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>Libraries\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>Libraries\IKVM.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Content\assets\emailtemplates\" />
+    <Folder Include="Services\" />
+    <Folder Include="Views\Components\MobileNavigation\" />
+  </ItemGroup>
+
+  <!-- Include folders in publish -->
+  <ItemGroup>
+    <ContentItem Include="Content\**" />
+    <TemplateItem Include="Template\**" />
+    <BenefitItem Include="BenefitPay\**" />
+  </ItemGroup>
+
+  <!-- Ensure these folders are copied on publish -->
+  <Target Name="CopyPublishItems" BeforeTargets="Publish">
+    <Copy SourceFiles="@(ContentItem)" DestinationFolder="$(PublishDir)Content\%(RecursiveDir)" />
+    <Copy SourceFiles="@(TemplateItem)" DestinationFolder="$(PublishDir)Template\%(RecursiveDir)" />
+    <Copy SourceFiles="@(BenefitItem)" DestinationFolder="$(PublishDir)BenefitPay\%(RecursiveDir)" />
+  </Target>
+
+</Project>

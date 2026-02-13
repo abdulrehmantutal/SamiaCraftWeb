@@ -1,0 +1,22 @@
+﻿@model IEnumerable<samiacraft.Models.BLL.navigationBLL>
+<nav>
+    <ul class="mobile-menu">
+        @foreach (var item in Model)
+        {
+        <li class="menu-item-has-children">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.ID, SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">@item.Name</a>
+
+            @if (item.SubCategories.Count > 0)
+            {
+                <ul class="dropdown">
+                    @foreach (var sub in item.SubCategories)
+                    {
+                            <li><a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = 0, ColorIDs = "", MinPrice = "RS0", MaxPrice = "RS50000", Searchtext = "", SortID = 0 })">@sub.Name</a></li>
+
+                    }
+                </ul>
+            }
+        </li>
+        }
+    </ul>
+</nav>

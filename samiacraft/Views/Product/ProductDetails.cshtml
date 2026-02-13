@@ -1,0 +1,344 @@
+﻿@model samiacraft.Models.BLL.productBLL
+@inject IConfiguration Configuration
+@{
+    ViewBag.Title = "ProductDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .banner-area {
+        display: none
+    }
+
+    .modal-body {
+        display: flex;
+        justify-content: space-between;
+        padding: 40px 30px 0px;
+    }
+
+    @@media (max-width: 1440px) {
+        .ribbon-top-right {
+            top: -1px !important;
+            right: 51px !important;
+        }
+    }
+
+    @@media (max-width: 1024px) {
+        .ribbon-top-right {
+            top: -1px !important;
+            right: 15px !important;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .ribbon-top-right {
+            top: -1px !important;
+            right: 14px !important;
+        }
+    }
+
+    @@media (max-width: 425px) {
+        .ribbon-top-right {
+            top: -1px !important;
+            right: 15px !important;
+        }
+    }
+
+    @@media (max-width: 425px) {
+        .modal .close {
+            margin-right: 0px;
+        }
+
+        .modal-content {
+            position: relative;
+            display: -ms-flexbox;
+            display: block;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+
+        .modal-footer {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            /* align-items: center; */
+            -ms-flex-pack: end;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .modal .close {
+            margin-right: 0px;
+        }
+
+        .modal-content {
+            position: relative;
+            display: -ms-flexbox;
+            display: block;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+
+        .modal-footer {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            /* align-items: center; */
+            -ms-flex-pack: end;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+    }
+
+    @@media (max-width: 1024px) {
+        .modal .close {
+            margin-right: 0px;
+        }
+
+        .modal-content {
+            position: relative;
+            display: -ms-flexbox;
+            display: block;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+
+        .modal-footer {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            /* align-items: center; */
+            -ms-flex-pack: end;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+    }
+
+    @@media (max-width: 1440px) {
+        .modal .close {
+            margin-right: 0px;
+        }
+
+        .modal-content {
+            position: relative;
+            display: -ms-flexbox;
+            display: block;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.2);
+            border-radius: 0.3rem;
+            outline: 0;
+        }
+
+        .modal-footer {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            /* align-items: center; */
+            -ms-flex-pack: end;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+    }
+
+    .ribbon-top-right {
+        top: -1px;
+        right: 78px;
+    }
+
+        .ribbon-top-right::before,
+        .ribbon-top-right::after {
+            border-top-color: transparent;
+            border-right-color: transparent
+        }
+
+        .ribbon-top-right::before {
+            top: 0;
+            left: 17px
+        }
+
+        .ribbon-top-right::after {
+            bottom: 17px;
+            right: 0
+        }
+
+        .ribbon-top-right span {
+            left: 61px;
+            top: 26px;
+            transform: rotate( 45deg);
+        }
+
+    .ribbon {
+        width: 150px;
+        height: 126px;
+        overflow: hidden;
+        position: absolute;
+        z-index: 1;
+    }
+
+        .ribbon span {
+            position: absolute;
+            display: block;
+            width: 100%;
+            font-size: 12px;
+            background-color: #e38600;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            color: #fff;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            text-align: center;
+            margin-left: 0;
+            left: 40px;
+            top: 28px;
+        }
+</style>
+<div class="product-details-area hm-3-padding ptb-60">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left: Product Images -->
+            <div class="col-lg-6">
+                <div class="product-details-img-content">
+                    <div class="product-details-large tab-content text-center">
+                        @if (ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0)
+                        {
+                            for (int i = 0; i < ViewBag.ProductDetails.ImgList.Count; i++)
+                            {
+                                var item = ViewBag.ProductDetails.ImgList[i];
+                                var imageUrl = !string.IsNullOrEmpty(item?.Image)
+                                ? Configuration["Image"] + item.Image
+                                : Url.Content("~/Content/assets/images/NA.png");
+
+                                <div class="tab-pane @(i == 0 ? "active" : "")" id="img_@i">
+                                    <img class="img-fluid" src="@imageUrl" style="max-height: 500px; width:auto;" alt="">
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <!-- Thumbnails -->
+                    <div class="product-details-small nav mt-12 owl-carousel">
+                        @if (ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0)
+                        {
+                            for (int i = 0; i < ViewBag.ProductDetails.ImgList.Count; i++)
+                            {
+                                var item = ViewBag.ProductDetails.ImgList[i];
+                                var thumbUrl = !string.IsNullOrEmpty(item?.Image)
+                                ? Configuration["Image"] + item.Image
+                                : Url.Content("~/Content/assets/images/NA.png");
+
+                                <a href="#img_@i">
+                                    <img class="img-fluid" src="@thumbUrl" style="max-height: 120px; width:auto; margin:auto;" alt="">
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Product Info -->
+            <div class="col-lg-6">
+                <div class="product-details-content">
+                    <h3>@ViewBag.ProductDetails?.Name</h3>
+                    <p class="price">BHD @ViewBag.ProductDetails?.Price</p>
+
+                    <div class="product-overview">
+                        <h5>Product Overview</h5>
+                        <p>Add a touch of charm to your space with our hand-painted wall hanging plates. Each piece is a unique blend of art and tradition.</p>
+
+                        <ul>
+                            <li>Type: Wall hanging decorative plate</li>
+                            <li>Size: 33cm – 36cm diameter</li>
+                            <li>Material: High-quality ceramic</li>
+                            <li>Finish: Hand-painted with intricate designs</li>
+                            <li>Usage: Includes wall hook for easy hanging</li>
+                            <li>Care: Indoor décor only, not for food use</li>
+                        </ul>
+
+                        <div class="buy-section mt-3">
+                            <input type="number" id="cart_quantity" value="1" min="1" style="width:60px;">
+                            <button class="btn btn-primary buy-now add-to-cart" data-id="@ViewBag.ProductDetails?.ID" data-title="@ViewBag.ProductDetails?.Name" data-price="@ViewBag.ProductDetails?.Price" data-image-src="@(ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0 && !string.IsNullOrEmpty(ViewBag.ProductDetails.ImgList[0].Image) ? Configuration["Image"] + ViewBag.ProductDetails.ImgList[0].Image : Url.Content("~/Content/assets/images/NA.png"))">BUY NOW</button>
+                            <button class="btn btn-outline-secondary"><i class="fa fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift Modal -->
+        <div class="modal fade" id="giftModal" tabindex="-1" role="dialog" aria-labelledby="giftModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="giftModalLabel">Select Gift Items</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="item_hidden_id" type="hidden" />
+                        <div id="giftItemsList">
+                            @if (ViewBag.Gift != null && ViewBag.Gift.Count > 0)
+                            {
+                                @foreach (var Rec in ViewBag.Gift)
+                                {
+                                    var imgURL = !string.IsNullOrEmpty(Rec?.Image)
+                                        ? Configuration["Image"] + Rec.Image
+                                        : Url.Content("~/Content/assets/images/NA.png");
+
+                                    <div class="gift-item mb-3 p-3" style="border: 1px solid #eee; border-radius: 4px;">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input gift-checkbox" 
+                                                   id="gift_@Rec.ID" 
+                                                   data-id="@Rec.ID" 
+                                                   data-title="@Rec.Name" 
+                                                   data-image-src="@imgURL" 
+                                                   data-price="@Rec.Price">
+                                            <label class="form-check-label" for="gift_@Rec.ID">
+                                                <strong>@Rec.Name</strong> - BHD @Rec.Price
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted">No gifts available</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary add-to-gift">Add Gifts to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

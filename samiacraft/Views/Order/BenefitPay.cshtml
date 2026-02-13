@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Benefit Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="margin-top: 50px; text-align:center;">
+    <h2>Processing your payment with Benefit</h2>
+    <p>Please wait while we redirect you to the payment gateway...</p>
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<script>
+    // This view is for display only. The actual Benefit payment initialization
+    // happens in the BenefitPaymentInitialize action and redirects immediately.
+</script>

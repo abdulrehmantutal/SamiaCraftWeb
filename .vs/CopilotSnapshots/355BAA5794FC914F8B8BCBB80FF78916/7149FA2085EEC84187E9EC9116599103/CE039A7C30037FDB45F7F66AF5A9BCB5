@@ -1,0 +1,62 @@
+﻿using KarachiFlora.Models.BLL;
+using KarachiFlora.Models.Service;
+using System;
+using System.Text;
+using System.Web.Mvc;
+
+namespace KarachiFlora.Controllers
+{
+    public class SitemapController : Controller
+    {
+        [OutputCache(Duration = 86400)]
+        public ActionResult Index()
+        {
+            Response.ContentType = "application/xml";
+            
+            var sb = new StringBuilder();
+            sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+
+            // Add Home page
+            sb.AppendLine("<url>");
+            sb.AppendLine("<loc>https://www.karachiflora.com/</loc>");
+            sb.AppendLine($"<lastmod>{DateTime.Now:yyyy-MM-dd}</lastmod>");
+            sb.AppendLine("<changefreq>weekly</changefreq>");
+            sb.AppendLine("<priority>1.0</priority>");
+            sb.AppendLine("</url>");
+
+            // Add Shop page
+            sb.AppendLine("<url>");
+            sb.AppendLine("<loc>https://www.karachiflora.com/Shop/Shop</loc>");
+            sb.AppendLine($"<lastmod>{DateTime.Now:yyyy-MM-dd}</lastmod>");
+            sb.AppendLine("<changefreq>daily</changefreq>");
+            sb.AppendLine("<priority>0.9</priority>");
+            sb.AppendLine("</url>");
+
+            // Add individual product pages (exclude filtered versions)
+            try
+            {
+                var itemService = new itemService();
+                var allItems = itemService.GetAll(2); // cityID = 2 as per your code
+                
+                foreach (var item in allItems)
+                {
+                    sb.AppendLine("<url>");
+                    sb.AppendLine($"<loc>https://www.karachiflora.com/Product/ProductDetails?ItemID={item.ItemID}</loc>");
+                    sb.AppendLine($"<lastmod>{item.LastUpdatedDate:yyyy-MM-dd}</lastmod>");
+                    sb.AppendLine("<changefreq>weekly</changefreq>");
+                    sb.AppendLine("<priority>0.8</priority>");
+                    sb.AppendLine("</url>");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Sitemap generation error: {ex.Message}");
+            }
+
+            sb.AppendLine("</urlset>");
+            
+            return Content(sb.ToString(), "application/xml");
+        }
+    }
+}

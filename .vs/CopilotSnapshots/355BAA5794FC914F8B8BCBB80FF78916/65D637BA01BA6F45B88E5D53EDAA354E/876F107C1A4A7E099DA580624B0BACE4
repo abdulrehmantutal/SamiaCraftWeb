@@ -1,0 +1,172 @@
+﻿@model samiacraft.Models.BLL.loginBLL
+@{
+    ViewBag.Title = "Login_Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var addbutton = ViewBag.AddButton;
+}
+<style>
+    .login-register-tab-list a.active h4, .login-register-tab-list a:hover h4 {
+        color: var(--addbutton);
+    }
+    .btn-default-opposite {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: white !important;
+        border: 2px solid white;
+    }
+
+        .btn-default-opposite:hover {
+            color: var(--addbutton);
+            background-color: white !important;
+            border-color: var(--addbutton);
+            border-radius: 6px;
+        }
+
+    .btn::before, .btn-2::before {
+        background-color: white;
+    }
+</style>
+@if (ViewBag.Banner.Count > 0)
+{
+<div class="breadcrumb-area section-ptb" style="background: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size:cover;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                <ul class="breadcrumb-list">
+                    <li class="breadcrumb-item"><a href="~/Account/Login_Register">Home</a></li>
+                    <li class="breadcrumb-item active">Account</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+}
+else
+{
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="breadcrumb-title">Login  / Register</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
+}
+
+
+<!-- main-content-wrap start -->
+<div class="main-content-wrap section-ptb login-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                <div class="login-register-wrapper">
+                    <!-- login-register-tab-list start -->
+                    <div class="login-register-tab-list nav">
+                        <a class="active" data-toggle="tab" href="#lg1">
+                            <h4> login </h4>
+                        </a>
+                        <a data-toggle="tab" href="#lg2">
+                            <h4> register </h4>
+                        </a>
+                    </div>
+                    <!-- login-register-tab-list end -->
+                    <div class="tab-content">
+                        <div id="lg1" class="tab-pane active">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+                                    <form action="@Url.Action("Login_Register", "Account")" method="post" class="needs-validation" novalidate name="myform">
+                                        <div class="login-input-box">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control mb-0" name="Email" placeholder=" Email " required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" class="form-control mb-0" name="Password" placeholder="Password" required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+
+                                        </div>
+                                        <div class="button-box d-flex flex-column">
+                                            <div class="login-toggle-btn">
+                                                <a href="#">@Context.Session.GetString("LoginNote")</a>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-default-opposite flex-shrink-1 login-btn px-3 py-2" id="login-btn" type="submit"><span>Login</span></button>
+                                                <a href="@Url.Action("Checkout", "Order", new { id = 0 })" class="btn flex-shrink-0 login-btn p-2"><span>Continue as Guest</span></a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="lg2" class="tab-pane">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+                                    <form action="@Url.Action("Login_Register", "Account")" method="post" class="needs-validation" novalidate name="myform">
+                                        <div class="login-input-box">
+                                            <div class="form-group">
+                                                <input type="text" name="FirstName" class="form-control mb-0" placeholder="First Name" required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" name="LastName" class="form-control mb-0" placeholder="Last Name" required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input name="Email" placeholder="Email" class="form-control mb-0" type="email" required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" name="Password" class="form-control mb-0" placeholder="Password" required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" value="" name="ContactNo" class="form-control mb-0" placeholder="Contact no." required>
+                                                <div class="valid-feedback">Valid.</div>
+                                                <div class="invalid-feedback">Invalid.</div>
+                                            </div>
+                                        </div>
+                                        <div class="button-box">
+                                            <button class="register-btn btn btn-default-opposite" type="submit"><span>Register</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- main-content-wrap end -->
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        
+        var storedCityName = getCookieValue("CityName");
+        function getCookieValue(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            } else {
+                return null; // Cookie not found or empty
+            }
+        }
+        $('#cityClick span').text(storedCityName);
+    });
+
+</script>

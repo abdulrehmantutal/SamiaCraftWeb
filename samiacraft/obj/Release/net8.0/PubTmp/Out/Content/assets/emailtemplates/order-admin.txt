@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>New Order Received</h2>
+    <p>Customer: #Customer#</p>
+    <p>Order #: #OrderNo#</p>
+    <p>Amount: RS #GrandTotal#</p>
+    <p>Address: #Address#</p>
+    <p>Contact: #Contact#</p>
+</body>
+</html>

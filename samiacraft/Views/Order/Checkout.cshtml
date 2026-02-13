@@ -1,0 +1,591 @@
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .coupon-accordion h3 {
+        background: #f6f6f6;
+        border-top: 3px solid var(--addbutton);
+        color: #515151;
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0 0 30px;
+        padding: 1em 2em 1em 3.5em;
+        position: relative;
+        text-transform: capitalize;
+    }
+
+    .btn-place-order {
+        background: var(--addbutton);
+        border: medium none;
+        color: #ffffff !important;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        padding: 12px;
+        text-transform: uppercase;
+        width: 100%;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+        cursor: pointer;
+    }
+
+    .btn-place-order:hover {
+        opacity: 0.9;
+    }
+
+    .paymenttype .active {
+        border: 2px solid #004270 !important;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .payment-method {
+        margin-top: 20px;
+    }
+
+    .payment-method h5 {
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+</style>
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-area section-ptb">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="breadcrumb-title">Checkout</h2>
+                <ul class="breadcrumb-list">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Checkout</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Checkout Area Start -->
+<div class="checkout-area pt-20 pb-100">
+    <div class="container">
+        <!-- Coupon Area -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="coupon-accordion">
+                    <h3><span>Have a coupon?</span> <span class="coupon" id="showcoupon" style="cursor: pointer;">Click here to enter your code</span></h3>
+                    <div class="coupon-content" id="checkout-coupon" style="display: none;">
+                        <div class="coupon-info">
+                            <form action="#">
+                                <p class="checkout-coupon">
+                                    <input id="coupon" type="text" placeholder="Coupon code">
+                                    <button onclick="CouponDiscount(); return false;" type="submit" class="btn ml-2">Apply coupon</button>
+                                </p>
+                                <p id="CouponResponse"></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Checkout Form -->
+        <div class="row">
+            <!-- Left Column: Checkout Form -->
+            <div class="col-lg-6 col-md-12 col-12">
+                <form id="FormCheckOut" method="post" class="checkout-form">
+                    <!-- Sender Details -->
+                    <div class="checkbox-form">
+                        <h3>Sender Details</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Sender Name <span class="required">*</span></label>
+                                    <input id="SenderName" name="SenderName" type="text" class="form-control" placeholder="Sender Name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Sender Email <span class="required">*</span></label>
+                                    <input id="SenderEmailAddress" name="SenderEmailAddress" type="email" class="form-control" placeholder="Sender Email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Sender Mobile No <span class="required">*</span></label>
+                                    <input id="SenderMobileNumber" name="SenderMobileNumber" type="text" class="form-control" placeholder="Mobile Number" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details -->
+                    <div class="checkbox-form">
+                        <h3>Delivery Details</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Recipient Name <span class="required">*</span></label>
+                                    <input id="RecipientName" name="RecipientName" type="text" class="form-control" placeholder="Recipient Name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Recipient Mobile No <span class="required">*</span></label>
+                                    <input id="RecipientMobileNumber" name="RecipientMobileNumber" type="text" class="form-control" placeholder="Mobile Number" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Country <span class="required">*</span></label>
+                                    <select id="Country" name="Country" class="form-control" required>
+                                        <option value="Bahrain">Bahrain</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>City <span class="required">*</span></label>
+                                    <input id="City" name="City" type="text" class="form-control" placeholder="City" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label>Recipient Address <span class="required">*</span></label>
+                                    <input id="RecipientAddress" name="RecipientAddress" type="text" class="form-control" placeholder="Address" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Place Type <span class="required">*</span></label>
+                                    <select id="PlaceType" name="PlaceType" class="form-control" required>
+                                        <option value="">Select Place Type...</option>
+                                        <option value="Office">Office</option>
+                                        <option value="Hospital">Hospital</option>
+                                        <option value="House">House</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Shop">Shop</option>
+                                        <option value="Outlet">Outlet</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label>Nearest Place</label>
+                                    <input id="NearestPlace" name="NearestPlace" type="text" class="form-control" placeholder="Nearest Place">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label>Customization Description <span class="required">*</span></label>
+                                    <textarea id="Notes" name="Notes" class="form-control" placeholder="Special notes..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="checkbox-form">
+                        <div class="payment-method">
+                            <h5>Please Select Payment Method</h5>
+
+                            <div class="btn-group paymenttype w-100" data-toggle="buttons" style="padding: 20px 0;">
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                    <img src=https://www.samiacrafts.com/assets/images/benefit.png" style="max-height: 50px;" />
+                                </label>
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                    <img src="https://www.samiacrafts.com/assets/images/Mastercard.svg" style="max-height: 50px;" />
+                                </label>
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                    <img src="https://www.samiacrafts.com/assets/images/bank-transfer.png" style="max-height: 50px; max-width: 120px;" />
+                                </label>
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                    <img src="https://www.samiacrafts.com/assets/images/cod.png" style="max-height: 50px;" />
+                                </label>
+                            </div>
+
+                            <div class="p-3 bg-light" id="BankDetails" style="display: none; margin-top: 20px; border-radius: 5px;">
+                                <h5>Bank Account Details</h5>
+                                <p>
+                                    Account #: 100000390487<br />
+                                    Account Name: SHAZI TRADING COMPANY WLL<br />
+                                    IBAN: BH06-BBKU-0010-0000-3904-87<br />
+                                    Bank Name: BBK<br />
+                                    Branch: MAIN OFFICE<br />
+                                    Swift Code: BBK
+                                </p>
+                            </div>
+
+                            <button type="button" class="btn btn-place-order" id="btn_checkout" style="margin-top: 20px;">
+                                <span>Place Order</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Fields for Form Data -->
+                    <input type="hidden" id="SessionData" name="SessionData" />
+                    <input type="hidden" id="GiftData" name="GiftData" />
+                    <input type="hidden" id="DiscountData" name="DiscountData" />
+                    <input type="hidden" id="SubTotal" name="SubTotal" />
+                    <input type="hidden" id="DiscountTotal" name="DiscountTotal" />
+                    <input type="hidden" id="DeliveryCharges" name="DeliveryCharges" value="0" />
+                    <input type="hidden" id="Tax" name="Tax" />
+                    <input type="hidden" id="GrandTotal" name="GrandTotal" />
+                    <input type="hidden" id="AmountDiscount" name="AmountDiscount" />
+                    <input type="hidden" id="DiscountPercent" name="DiscountPercent" />
+                    <input type="hidden" id="AmountTotal" name="AmountTotal" />
+                </form>
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="col-lg-6 col-md-12 col-12">
+                <div class="your-order">
+                    <h3>Your Order Summary</h3>
+                    <div class="your-order-table table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-total text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checkout_table_listing_area">
+                                <tr>
+                                    <td colspan="2" class="text-center">No items in cart</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Order Totals -->
+                    <div style="border-top: 2px solid #eee; padding-top: 15px; margin-top: 15px;">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Subtotal:</strong>
+                            <strong id="display-subtotal">BHD 0.00</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="coupon-line" style="display: none;">
+                            <strong>Coupon Discount:</strong>
+                            <strong id="display-discount">BHD 0.00</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="delivery-line" style="display: none;">
+                            <strong>Delivery Charges:</strong>
+                            <strong id="display-delivery">BHD 0.00</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Tax:</strong>
+                            <strong id="display-tax">BHD 0.00</strong>
+                        </div>
+                        <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                            <div class="d-flex justify-content-between" style="font-size: 18px; font-weight: bold;">
+                                <span>Grand Total:</span>
+                                <span id="display-grand-total">BHD 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="msg-area" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize checkout on page load
+        $(document).ready(function() {
+            LoadCheckoutWithItems();
+            WireUpPaymentMethodHandlers();
+            WireUpCouponHandlers();
+        });
+
+        // Load cart items and display
+        function LoadCheckoutWithItems() {
+            var cartItems = JSON.parse(localStorage.getItem("_cartitems") || "[]");
+            var giftItems = JSON.parse(localStorage.getItem("_giftitems") || "[]");
+
+            if (cartItems.length === 0) {
+                $('#checkout_table_listing_area').html(
+                    '<tr><td colspan="2" class="text-center text-danger">Your cart is empty. Please add items before checkout.</td></tr>'
+                );
+                $('#btn_checkout').prop('disabled', true);
+                return;
+            }
+
+            // Build display table
+            var tableHtml = '';
+            var subTotal = 0;
+
+            cartItems.forEach(function(item, index) {
+                var qty = parseInt(item.Qty) || 1;
+                var price = parseFloat(item.UPrice) || 0;
+                var itemTotal = qty * price;
+                subTotal += itemTotal;
+
+                tableHtml += '<tr>' +
+                    '<td class="product-name">' + item.Title + ' × ' + qty + '</td>' +
+                    '<td class="product-total text-right">BHD ' + itemTotal.toFixed(2) + '</td>' +
+                    '</tr>';
+
+                // Add gifts if any
+                var itemGifts = giftItems.filter(function(g) { return g.ItemKey === item.Key; });
+                if (itemGifts.length > 0) {
+                    tableHtml += '<tr style="background: #f9f9f9;">';
+                    tableHtml += '<td colspan="2">';
+                    tableHtml += '<div style="padding: 10px 0; border-top: 1px solid #ddd; margin-top: 5px;">';
+                    tableHtml += '<strong style="color: #666; font-size: 12px;">Addon Products:</strong>';
+                    
+                    itemGifts.forEach(function(gift) {
+                        var giftTotal = (parseFloat(gift.Qty) || 1) * (parseFloat(gift.DisplayPrice) || 0);
+                        tableHtml += '<div style="padding: 8px 0; padding-left: 20px; font-size: 13px;">';
+                        tableHtml += '<span>' + gift.Title + '</span>';
+                        tableHtml += ' <span style="float: right; color: #666;">× ' + gift.Qty + ' = BHD ' + giftTotal.toFixed(2) + '</span>';
+                        tableHtml += '</div>';
+                        subTotal += giftTotal;
+                    });
+                    
+                    tableHtml += '</div></td></tr>';
+                }
+            });
+
+            $('#checkout_table_listing_area').html(tableHtml);
+
+            // Calculate and update totals
+            var tax = subTotal * 0.05; // 5% tax
+            var grandTotal = subTotal + tax;
+
+            $('#SubTotal').val(subTotal.toFixed(2));
+            $('#Tax').val(tax.toFixed(2));
+            $('#GrandTotal').val(grandTotal.toFixed(2));
+            $('#AmountTotal').val(grandTotal.toFixed(2));
+            $('#DiscountTotal').val(0);
+            $('#AmountDiscount').val(0);
+            $('#DiscountPercent').val(0);
+
+            // Update display
+            UpdateOrderSummaryDisplay(subTotal, 0, tax, grandTotal);
+
+            // Set SessionData for submission
+            UpdateSessionData(cartItems, giftItems);
+        }
+
+        // Update SessionData hidden field
+        function UpdateSessionData(cartItems, giftItems) {
+            var sessionData = [];
+
+            cartItems.forEach(function(item, index) {
+                var qty = parseInt(item.Qty) || 1;
+
+                // Build gifts array for this item
+                var gifts = giftItems
+                    .filter(function(g) { return g.ItemKey === item.Key; })
+                    .map(function(g) {
+                        return {
+                            id: g.GiftID || 0,
+                            title: g.Title,
+                            price: g.DisplayPrice,
+                            image: g.Image
+                        };
+                    });
+
+                // Create cart record
+                var record = {
+                    id: item.ItemID,
+                    title: item.Title,
+                    image: item.Image,
+                    qty: qty,
+                    price: parseFloat(item.UPrice) || 0,
+                    newprice: parseFloat(item.NewPrice) || 0,
+                    gifts: JSON.stringify(gifts)
+                };
+
+                sessionData.push(record);
+            });
+
+            $('#SessionData').val(JSON.stringify(sessionData));
+        }
+
+        // Update display totals
+        function UpdateOrderSummaryDisplay(subtotal, discount, tax, grandtotal) {
+            $('#display-subtotal').text('BHD ' + subtotal.toFixed(2));
+            $('#display-tax').text('BHD ' + tax.toFixed(2));
+            $('#display-grand-total').text('BHD ' + grandtotal.toFixed(2));
+
+            if (discount > 0) {
+                $('#coupon-line').show();
+                $('#display-discount').text('BHD -' + discount.toFixed(2));
+            } else {
+                $('#coupon-line').hide();
+            }
+        }
+
+        // Wire up payment method handlers
+        function WireUpPaymentMethodHandlers() {
+            $('input[name="payment_type"]').on('change', function() {
+                var selectedPayment = $(this).val();
+                if (selectedPayment === 'Banktransfer') {
+                    $('#BankDetails').show();
+                } else {
+                    $('#BankDetails').hide();
+                }
+            });
+        }
+
+        // Wire up coupon handlers
+        function WireUpCouponHandlers() {
+            $('#showcoupon').on('click', function() {
+                $('#checkout-coupon').toggle();
+            });
+        }
+
+        // Apply coupon discount
+        function CouponDiscount() {
+            var couponCode = $('#coupon').val();
+            if (!couponCode) {
+                $('#CouponResponse').html('<span class="text-danger">Please enter coupon code</span>');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/Ajax/Page',
+                data: {
+                    url: 'coupon',
+                    code: couponCode
+                },
+                success: function(response) {
+                    if (response.Success) {
+                        var coupon = response.Data;
+                        var subtotal = parseFloat($('#SubTotal').val());
+                        var discount = 0;
+
+                        if (coupon.Type === 'Percent') {
+                            discount = (subtotal * coupon.Amount) / 100;
+                        } else {
+                            discount = parseFloat(coupon.Amount);
+                        }
+
+                        var tax = (subtotal - discount) * 0.05;
+                        var grandTotal = (subtotal - discount) + tax;
+
+                        $('#DiscountTotal').val(discount.toFixed(2));
+                        $('#AmountDiscount').val(discount.toFixed(2));
+                        $('#DiscountPercent').val(coupon.Type === 'Percent' ? coupon.Amount : 0);
+                        $('#Tax').val(tax.toFixed(2));
+                        $('#GrandTotal').val(grandTotal.toFixed(2));
+                        $('#AmountTotal').val(grandTotal.toFixed(2));
+
+                        UpdateOrderSummaryDisplay(subtotal, discount, tax, grandTotal);
+
+                        $('#DiscountData').val(JSON.stringify(coupon));
+                        $('#CouponResponse').html('<span class="text-success">Coupon applied successfully!</span>');
+                    } else {
+                        $('#CouponResponse').html('<span class="text-danger">' + response.Message + '</span>');
+                    }
+                },
+                error: function() {
+                    $('#CouponResponse').html('<span class="text-danger">Error applying coupon</span>');
+                }
+            });
+        }
+
+        // Place order
+        $('#btn_checkout').on('click', function() {
+            // Validate form
+            if (!ValidateCheckoutForm()) {
+                return;
+            }
+
+            // Validate payment method
+            if (!$('input[name="payment_type"]:checked').val()) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            // Disable button during submission
+            $(this).prop('disabled', true).text('Processing...');
+
+            // Get selected payment type
+            var selectedPaymentType = $('input[name="payment_type"]:checked').val();
+
+            // Populate GiftData from localStorage
+            var giftItems = JSON.parse(localStorage.getItem("_giftitems") || "[]");
+            $('#GiftData').val(JSON.stringify(giftItems));
+
+            // Submit form via AJAX
+            var formData = new FormData($('#FormCheckOut')[0]);
+
+            // Explicitly set payment type (remove and re-add to ensure it's set correctly)
+            formData.delete('payment_type');
+            formData.append('payment_type', selectedPaymentType);
+
+            // Submit to order placement endpoint
+            $.ajax({
+                type: 'POST',
+                url: '/Order/PlaceOrder',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Clear localStorage
+                        localStorage.removeItem('_cartitems');
+                        localStorage.removeItem('_giftitems');
+
+                        // Check payment method to determine redirect
+                        var paymentMethod = selectedPaymentType;
+                        
+                        // Redirect based on payment method
+                        if (paymentMethod === 'BenefitPay' && response.redirectUrl) {
+                            // BenefitPay - redirect to Benefit payment initialization
+                            window.location.href = response.redirectUrl;
+                        } else if (response.redirectUrl && response.sessionID) {
+                            // Gateway payment (Credimax/Mastercard) - redirect to payment gateway
+                            window.location.href = response.redirectUrl;
+                        } else if (response.paymentPending) {
+                            // Pending payment methods - redirect to order complete
+                            window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
+                        } else {
+                            // Cash and Bank Transfer - redirect to order complete
+                            window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
+                        }
+                    } else {
+                        alert('Error: ' + (response.message || 'Failed to place order'));
+                        $('#btn_checkout').prop('disabled', false).text('Place Order');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error placing order: ' + error);
+                    $('#btn_checkout').prop('disabled', false).text('Place Order');
+                }
+            });
+        });
+
+        // Validate checkout form
+        function ValidateCheckoutForm() {
+            var errors = [];
+
+            if (!$('#SenderName').val()) errors.push('Sender Name is required');
+            if (!$('#SenderEmailAddress').val()) errors.push('Sender Email is required');
+            if (!$('#SenderMobileNumber').val()) errors.push('Sender Mobile is required');
+            if (!$('#RecipientName').val()) errors.push('Recipient Name is required');
+            if (!$('#RecipientMobileNumber').val()) errors.push('Recipient Mobile is required');
+            if (!$('#City').val()) errors.push('City is required');
+            if (!$('#RecipientAddress').val()) errors.push('Address is required');
+            if (!$('#PlaceType').val()) errors.push('Place Type is required');
+            if (!$('#Notes').val()) errors.push('Notes are required');
+
+            if (errors.length > 0) {
+                alert('Please fill in all required fields:\n\n' + errors.join('\n'));
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+}

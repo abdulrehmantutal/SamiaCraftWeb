@@ -1,0 +1,887 @@
+﻿@using samiacraft.Models.BLL
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@ViewBag.Title - Al Hilal</title>
+    <meta name="robots" content="index, follow" />
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="">
+    @if (!string.IsNullOrEmpty(ViewBag.CanonicalUrl))
+    {
+        <link rel="canonical" href="@ViewBag.CanonicalUrl" />
+    }
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/assets/images/favicon.ico">
+    <link href="~/Content/assets/sweetalert/sweetalert.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/vendor/ionicons.min.css">
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/plugins/slick.css">
+    <link rel="stylesheet" href="~/Content/assets/css/plugins/animation.css">
+    <link rel="stylesheet" href="~/Content/assets/css/plugins/jqueryui.min.css">
+    <link href="~/Content/assets/css/plugins/flag-icon.min.css" rel="stylesheet" />
+
+
+    <!-- Swipper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/style.css">
+    
+    <!-- jQuery JS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/Content/assets/js/custom.js"></script>
+    @{
+        var headertoparea = ViewBag.TopheaderArea ?? string.Empty;
+        var addbutton = ViewBag.AddButton ?? "#FF6B6B";
+        var workflow = ViewBag.BgWorkflow ?? "/images/bg-workflow.jpg";
+        var featured = ViewBag.BgFeaturedProduct ?? "/images/bg-featured.jpg";
+        var popular = ViewBag.BgPopularProduct ?? "/images/bg-popular.jpg";
+        var newsletter = ViewBag.BgNewsletter ?? "/images/bg-newsletter.jpg";
+        var newarrival = ViewBag.BgNewArrivals ?? "/images/bg-new-arrivals.jpg";
+        var testimonial = ViewBag.BgTestimonials ?? "/images/bg-testimonials.jpg";
+        var logo = ViewBag.Logo ?? "/images/logo.png";
+    }
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-35G8V97V5F"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-35G8V97V5F');
+    </script>
+    <style>
+    :root {
+        --headertoparea: @(headertoparea) !important;
+        --logo: url('@(logo)');
+        --bgworkflow: url('@(workflow)');
+        --bgfeaturedproduct: url('@(featured)');
+        --bgpopularproduct: url('@(popular)');
+        --bgnewarrivals: url('@(newarrival)');
+        --bgtestimonials: url('@(testimonial)');
+        --bgnewsletter: url('@(newsletter)');
+        --addbutton: @(addbutton);
+    }
+
+    .btn-default-opposite {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: var(--addbutton);
+    }
+
+        .btn-default-opposite:hover {
+            color: var(--addbutton);
+            background-color: #ffffff !important;
+            border-color: var(--addbutton);
+        }
+
+        .nav-bg {
+            background-color: white !important;
+            transition: .3s all ease-out;
+        }
+
+        @@media only screen and (max-width: 479px) {
+            .container-topheader {
+                width: 100% !important;
+            }
+        }
+
+        .prod-detail img {
+            height: auto;
+            width: 100%;
+            object-fit: contain;
+            margin: auto;
+        }
+
+        @@media only screen and (max-width: 480px) {
+            .Feature-tiem > a img, .product-image > a img {
+                height: auto;
+                min-height: 165px;
+                max-height: 165px;
+            }
+
+            .shop-item > a img {
+                height: auto !important;
+                min-height: 165px;
+                max-height: 165px;
+            }
+        }
+
+        .hovereffect {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            cursor: default;
+            border-radius: 5px;
+        }
+
+            .hovereffect:hover img {
+                -ms-transform: scale(2.2);
+                -webkit-transform: scale(2.2);
+                transform: scale(2.2);
+            }
+
+            .hovereffect img {
+                display: block;
+                position: relative;
+                -webkit-transition: all .4s linear;
+                transition: all 1.2s linear;
+            }
+
+        #cart-total {
+            background: var(--addbutton);
+        }
+
+        .newsletter-footer .subscribe-btn {
+            background: var(--addbutton);
+        }
+
+        .btn-newsletter {
+            background: var(--addbutton);
+            border: 1px solid var(--addbutton);
+        }
+
+        .text-default {
+            color: var(--addbutton);
+        }
+
+        .main-menu-area ul > li:first-child {
+            color: #16563B;
+        }
+
+        #scrollUp {
+            background-color: var(--addbutton);
+        }
+
+        .breadcrumb-area h2 {
+            color: var(--addbutton);
+        }
+
+        .breadcrumb-list .breadcrumb-item.active {
+            color: var(--addbutton);
+        }
+
+        a:hover {
+            color: var(--addbutton);
+        }
+
+        .product-rating li {
+            color: var(--addbutton);
+        }
+
+        .mini-cart-btns .cart-btns a {
+            background: var(--addbutton);
+            border: 2px solid var(--addbutton);
+        }
+
+            .mini-cart-btns .cart-btns a:hover {
+                background: white;
+                border: 2px solid var(--addbutton);
+                color: var(--addbutton);
+            }
+
+        .fill {
+            color: var(--addbutton);
+        }
+
+            .fill:hover {
+                color: red;
+            }
+
+    .imgcon .wl {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2; /* add this to make icon stack over image */
+        margin-right: 8px;
+        margin-top: 8px;
+        border: 1px solid var(--addbutton);
+        justify-content: center;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        padding-top: 1%;
+    }
+
+        .social-top ul {
+            list-style: none; /* remove bullets */
+            margin: 0;
+            padding: 0;
+            display: flex; /* align in one row */
+            justify-content: flex-end; /* push them to right */
+            gap: 10px;
+        }
+
+        .social-top ul li {
+            display: inline-block;
+            margin-right: 2px !important;
+        }
+
+        .parent {
+            height: 100vh;
+        }
+
+            .parent > .row {
+                display: flex;
+                align-items: center;
+                height: 100%;
+            }
+
+        .col img {
+            height: 100px;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 1s;
+            object-fit: cover;
+        }
+
+        .col label {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .imgbgchk:checked + label > .tick_container {
+            opacity: 1;
+        }
+        /*         aNimation */
+        .imgbgchk:checked + label > img {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+
+        .tick_container {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .tick {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            padding: 6px 12px;
+            height: 40px;
+            width: 40px;
+            border-radius: 100%;
+        }
+
+        .image-container {
+            margin-bottom: 10px; /* Adjust the margin as needed */
+        }
+
+            .image-container img {
+                max-width: 100%; /* Make sure the image doesn't exceed its container */
+            }
+
+
+        .figure {
+            position: relative;
+            /*width: 360px;*/ /* can be omitted for a regular non-lazy image */
+            max-width: 100%;
+        }
+
+            .figure img.Sirv.image-hover {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0px;
+                bottom: 0;
+                object-fit: contain;
+                opacity: 0;
+                transition: opacity .2s;
+            }
+
+            .figure:hover img.Sirv.image-hover {
+                opacity: 1;
+            }
+
+
+
+        #popupModal {
+            /*background-color: transparent;*/
+            backdrop-filter: blur(70px);
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background for better readability */
+            backdrop-filter: blur(10px); /* Adjust the blur intensity as needed */
+            border: 1px solid rgba(255, 255, 255, 0.8); /* Add a border to enhance visibility */
+        }
+
+        /* Other styles remain unchanged */
+
+
+        @@media only screen and (max-width: 480px) {
+            .citymobile {
+                padding-top: 50px !important;
+                padding-bottom: 50px !important;
+            }
+
+            .figure img.Sirv.image-hover {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0px;
+                bottom: 0;
+                object-fit: contain;
+                opacity: 0;
+                transition: opacity .2s;
+                height: 50px;
+            }
+
+            .image-container img {
+                max-width: 90%;
+            }
+
+            .citycol {
+                width: 33.33%;
+            }
+
+            .cityvw {
+                font-size: 15px !important;
+            }
+        }
+
+        .modal-dialog {
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: auto;
+        }
+
+        @@media(max-width: 768px) {
+            .modal-dialog {
+                min-height: calc(100vh - 20px);
+            }
+        }
+
+        @@media (min-width: 992px) {
+            .hidedesktop {
+                display: none !important;
+            }
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <header class="fl-header">
+        <!-- Header Top Start -->
+        <div class="header-top-area " style="background: var(--headertoparea)">
+            <div class="container container-topheader">
+                <div class="row">
+                    <div class="col-lg-1 d-none d-lg-block">
+                        <div class="social-top">
+                            <ul>
+                                <li id="facebook" class=""><a href="https://www.facebook.com/khansflowers/" target="_blank"><img src="~/Content/assets/images/icon/fb.png" /></a></li>
+                                <li id="instagram" class=""><a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank"><img src="~/Content/assets/images/icon/ins.png" /></a></li>
+                                @*<li id="twitter" class=""><a href=""><i class="ion-social-twitter-outline" target="_blank"></i></a></li>*@
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 align-self-center text-center">
+                        <p class="m-0 small text-uppercase" id="TopHeaderText" style="color:white; line-height:15px;"></p>
+                    </div>
+                    <div class="col-lg-3 text-center">
+                        <div class="social-top">
+                            <ul>
+
+                                <li id="" class="">
+                                    @*<img src="~/Content/assets/images/logo/cod.png" width="50px" />*@
+                                    <img src="~/Content/assets/images/icon/cod.png" />
+                                </li>
+                                <!--<li id="" class="">-->
+                                    @*<img src="~/Content/assets/images/logo/banktransfer.png" width="50px" />*@
+                                    <!--<img src="~/Content/assets/images/icon/bank-transfer.png" />
+                                </li>-->
+
+                                <!--<li id="" class="">-->
+                                    @*<img src="~/Content/assets/images/logo/easypaisa.png" width="50px" />*@
+                                    <!--<img src="~/Content/assets/images/icon/easypaisa.png" />
+                                </li>-->
+                                <!--<li id="" class="">-->
+                                    @*<img style="width:50px;" src="~/Content/assets/images/logo/jazz-cash.png" />*@
+                                    <!--<img src="~/Content/assets/images/icon/jazz cash.png" />
+                                </li>-->
+                                <!--<li id="" class="">-->
+                                    @*<img style="width:50px;" src="~/Content/assets/images/logo/visaandmaster.png" />*@
+                                    <!--<img src="~/Content/assets/images/icon/visa.png" />
+                                </li>
+                                <li id="" class="">-->
+                                    @*<img style="width:50px;" src="~/Content/assets/images/logo/visaandmaster.png" />*@
+                                    <!--<img src="~/Content/assets/images/icon/master.png" />
+                                </li>-->
+                                @*<li id="" class="">
+                                        <a style="font-size: 14px;cursor: pointer;padding: 4px 15px;" class="bold border border-dark btn btn-default-opposite shadow-sm" id="cityClick"><i class="ion-location ml-1"></i> <span>Select City</span></a>
+                                    </li>
+                                    <li>
+                                        <a style="font-size: 14px;cursor: pointer;padding: 4px 15px;" class="bold border border-dark btn btn-default-opposite shadow-sm" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-android-list"></i> <span>Category</span></a>
+                                    </li>*@
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-center">
+                        <div class="social-top">
+                            <ul>
+                                <li class="hidedesktop">
+                                    <a style="font-size: 14px;cursor: pointer;padding: 4px 15px;" class="bold border border-dark btn btn-default-opposite shadow-sm" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-android-list"></i> <span>Category</span></a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- Header Top End -->
+        <!-- haeader bottom Start -->
+        <div class="haeader-bottom-area nav-bg" id="Head">
+            <div class="container w-100">
+                <div class="row align-items-center">
+                    <div class="col-lg-2 col-md-4 col-5">
+                        <div class="logo-area">
+                            <a href="~/home/index">
+                                <img class="main-logo" src="..\Content\assets\AlHilalImages\aeffbff0363c782407d05090c063ca3b7408379b.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 d-none d-lg-block">
+                        <div class="main-menu-area text-center">
+                            @{
+                                var categories = new navigationBLL().GetSubCategory();
+                                if (categories != null)
+                                {
+                                    foreach (var cat in categories)
+                                    {
+                                        <a href="/Shop/Shop?catid=@cat.SubCategoryID" class="nav-link">@cat.SubCategoryName</a>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-8 col-7">
+                        <div class="right-blok-box d-flex">
+                            <div class="search-wrap">
+                                <a href="#" class="trigger-search"><i class="ion-ios-search-strong"></i></a>
+                            </div>
+
+                            <div class="user-wrap">
+                                <a href="~/product/wishlist"><i class="ion-android-favorite-outline"></i></a>
+                            </div>
+
+                            <div class="shopping-cart-wrap">
+                                <a href="~/order/cart">
+                                    <img src="~/Content/assets/images/shopping-cart.png" width="23px" /> <span id="cart-total">0</span>
+                                </a>
+                                <ul class="mini-cart head-cart ">
+                                </ul>
+                            </div>
+                            <div class="login-icon ">
+
+                                @{
+                                    var customerName = Context.Session?.GetString("CustomerName");
+                                }
+                                @if (!string.IsNullOrEmpty(customerName))
+                                {
+                                    <a href="" data-toggle="dropdown"><i class="ion-ios-contact"></i></a>
+                                    <div class="dropdown-menu alignment p-0 mt-0">
+                                        <a class="dropdown-item border-bottom text-center" style="font-size:12px;" href="#"><span class="font-weight-bold">Hi!</span> @customerName</a>
+                                        <a href="~/Order/Myorders" class="about-bg border-bottom dropdown-item font-weight-bold py-4 text-center" style="font-size:12px;">My Orders</a>
+                                        <a class="dropdown-item text-center " style="font-size:12px;" href="~/account/logout">Logout</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a href="~/account/Login_Register?id=1"><i class="ion-ios-contact"></i></a>
+                                }
+
+                            </div>
+                            <div class="mobile-menu-btn d-block d-lg-none">
+                                <div class="off-canvas-btn">
+                                    <i class="ion-android-menu">
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- haeader bottom End -->
+        <!-- main-search start -->
+        <div class="main-search-active">
+            <div class="sidebar-search-icon">
+                <button class="search-close"><span class="ion-android-close"></span></button>
+            </div>
+            <div class="sidebar-search-input">
+                <form>
+                    <div class="form-search">
+                        <input id="search" class="input-text" value="" placeholder="Search by flower name..." type="search">
+                        <button id="search-btn" onclick="Search(); return false;" class="search-btn" type="button">
+                            <i class="ion-ios-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- main-search start -->
+        <!-- off-canvas menu start -->
+        <aside class="off-canvas-wrapper">
+            <div class="off-canvas-overlay"></div>
+            <div class="off-canvas-inner-content">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#menu">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#other">Other</a>
+                    </li>
+                </ul>
+                <div class="btn-close-off-canvas">
+                    <i class="ion-android-close"></i>
+                </div>
+                <div class="tab-content">
+                    <div id="menu" class="tab-pane active">
+                        <div class="off-canvas-inner">
+                            <!-- mobile menu start -->
+                            <div class="mobile-navigation">
+                                <!-- mobile menu navigation start -->
+                                @await Component.InvokeAsync("MobileNavigation")
+
+                                <!-- mobile menu navigation end -->
+                            </div>
+                            <!-- mobile menu end -->
+                            <!-- offcanvas widget area start -->
+                            <div class="offcanvas-widget-area pt-55">
+                                <div class="off-canvas-contact-widget">
+                                    <ul>
+                                        <li>
+                                            <a href="#">03002920640 </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">hanzalahhilal092@gmail.com</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="off-canvas-social-widget">
+
+                                    <a href="#"><i class="ion-social-facebook"></i></a>
+                                    <a href="#"><i class="ion-social-instagram-outline"></i></a>
+                                </div>
+
+                            </div>
+                            <!-- offcanvas widget area end -->
+                        </div>
+                    </div>
+                    <div id="other" class="tab-pane">
+                        <div class="off-canvas-inner">
+                            <!-- mobile menu start -->
+                            <div class="mobile-navigation">
+                                <!-- mobile menu navigation start -->
+                                <nav>
+                                    <ul class="mobile-menu">
+                                        <li><a href="~/home/index">Home</a></li>
+                                        <li><a href="~/home/contact">Contact</a></li>
+                                        <li><a href="~/home/about">About Us</a></li>
+
+                                        <li><a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">Shop</a></li>
+                                        @{
+                                            var mobileCustomerName = Context.Session?.GetString("CustomerName");
+                                        }
+                                        @if (!string.IsNullOrEmpty(mobileCustomerName))
+                                        {
+                                            <li><a href="~/account/logout">Logout</a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a href="~/account/login_register?id=1">Login</a></li>
+                                        }
+                                        <li><a href="~/home/Policy">Policy</a></li>
+                                    </ul>
+                                </nav>
+                                <!-- mobile menu navigation end -->
+                            </div>
+                            <!-- mobile menu end -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- off-canvas menu end -->
+    </header>
+
+    <div class="main-wrapper">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="footer-top  pt-20 pb-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="widget-footer mt-20">
+                            <div class="footer-logo">
+                                <a href="~/home/index">
+                                    <img src="@(ViewBag.Logo ?? "/images/logo.png")" style=" width: 130px;" alt="">
+                                </a>
+                            </div>
+                            <p>We are the distributors of world best and beautiful fragrance flowers, deals in variety of different flowers. We import fresh flowers from world best supplier. Good service with quality gifts attract more customers.</p>
+                            <div class="newsletter-footer">
+
+                                <div>
+                                    <a href="https://www.facebook.com/annuflowerz?mibextid=ZbWKwL" target="_blank">
+                                        <img src="/Content/assets/images/socialmedia/facebook.png" alt="Facebook" class="px-1">
+                                    </a>
+                                    <a href="https://www.instagram.com/karachiflora?igsh=Zm0xMXZ3czFmb2Y2" target="_blank">
+                                        <img src="/Content/assets/images/socialmedia/instagram.png" alt="Instagram" class="px-1">
+                                    </a>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="offset-lg-1"></div>
+                    <div class="col-lg-2 col-md-6">
+                        <div class="widget-footer mt-30">
+                            <h6 class="title-widget">QUICK LINK</h6>
+                            <ul class="footer-list">
+                                <li><a href="~/home/index">Home</a></li>
+                                <li><a href="~/home/contact">Contact</a></li>
+                                <li><a href="~/home/about">About Us</a></li>
+                                <li><a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">Shop</a></li>
+                                @{
+                                    var footerCustomerName = Context.Session?.GetString("CustomerName");
+                                }
+                                @if (!string.IsNullOrEmpty(footerCustomerName))
+                                {
+                                    <li><a href="~/account/logout">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="~/account/login_register?id=1">Login</a></li>
+                                }
+                                <li><a href="~/home/Policy" target="_blank">Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="offset-lg-1"></div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="widget-footer mt-30">
+                            <h6 class="title-widget">QUICK CONTACT</h6>
+                            <ul class="footer-contact">
+                                <li>
+                                    <label><span>Phone</span></label>
+                                    <a href="tel:03002920640"><span>03002920640 </span></a>
+                                </li>
+                                <li>
+                                    <label><span>Email</span></label>
+                                    <a href="mailto:krachiflora@gmail.com">krachiflora@gmail.com</a>
+                                </li>
+                                <li>
+                                    <label><span>Address</span></label>
+                                    <span>
+                                        Al Hilal, street 32nd building 12 c 3rd floor
+                                        Phase V Saba Commercial Area Defence V
+                                        Defence Housing Authority, Karachi,75500 Sindh, Pakistan
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" style="margin-top:5%;">
+                    <div class="col-12">
+                        <hr class="border-white">
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <!-- Left Side -->
+                    <div class="col-md-6 text-start">
+                        <p class="mb-0">© Al Hilal. All rights reserved. Powered by Airtech Solutions.</p>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="col-md-6 text-end">
+
+                        <div class="social-top">
+                            <ul>
+
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/cod.png">
+                                </li>
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/bank-transfer.png">
+                                </li>
+
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/easypaisa.png">
+                                </li>
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/jazz cash.png">
+                                </li>
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/visa.png">
+                                </li>
+                                <li id="" class="">
+
+                                    <img src="/Content/assets/images/icon/master.png">
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="toast toast-pos" style="z-index:10000000">
+            <div class="toast-header border-0 bg-transparent">
+                <strong class="mr-auto toast-head-text ">Item Added</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+            </div>
+            <div class="toast-body">
+                New Item added to cart
+            </div>
+        </div>
+
+    </footer>
+
+    <style>
+        .modal-content {
+            border-radius: 1rem;
+        }
+
+        .modal-content:hover {
+            box-shadow: 2px 2px 2px var(--addbutton);
+        }
+
+        .b1 {
+            background-color: #2b84be;
+            box-shadow: 0px 4px #337095;
+            font-size: 17px;
+        }
+
+        .r3 {
+            color: #c1c1c1;
+            font-weight: 500;
+        }
+    </style>
+
+
+
+
+
+
+    <script type="text/javascript">
+        (function () {
+            var options = {
+                whatsapp: "+923002920640", // WhatsApp number
+                call_to_action: "Message us", // Call to action
+                position: "right", // Position may be 'right' or 'left'
+                pre_filled_message: "How can i help you", // WhatsApp pre-filled message
+            };
+            var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+        })();
+    </script>
+
+    <script src="~/Content/assets/sweetalert.min.js"></script>
+    <!-- JS -->
+    <script src="~/Content/assets/js/product-menu.js"></script>
+    <!-- Modernizer JS -->
+    <script src="~/Content/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/Content/assets/js/vendor/popper.min.js"></script>
+    <script src="~/Content/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slick Slider JS -->
+    <script src="~/Content/assets/js/plugins/slick.min.js"></script>
+    <!--  Jquery ui JS -->
+    <script src="~/Content/assets/js/plugins/jqueryui.min.js"></script>
+    <!--  Scrollup JS -->
+    <script src="~/Content/assets/js/plugins/scrollup.min.js"></script>
+    <script src="~/Content/assets/js/plugins/ajax-contact.js"></script>
+
+    <script src="~/Content/assets/js/cookie/js.cookie.js"></script>
+    <script src="~/Content/assets/js/cookie/js.cookie.min.js"></script>
+
+    <!--  Swipper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Main JS -->
+    <script src="~/Content/assets/js/main.js"></script>
+    @RenderSection("scripts", false)
+
+    <script>
+
+
+        var input = document.getElementById("search");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("search-btn").click();
+            }
+        });
+
+        window.onscroll = function () { myFunction() };
+
+        var header = document.getElementById("Head");
+        var sticky = header.offsetTop;
+
+        function myFunction() {
+            if (window.pageYOffset > sticky) {
+                header.classList.add("nav-fixed-top");
+            } else {
+                header.classList.remove("nav-fixed-top");
+            }
+        }
+        function Search() {
+            var Searchtxt = $("#search").val();
+
+
+            window.location.href = '/shop/shop?Category=""&CategoryIDs=' + '' + '&SubCategoryIDs=' + "" + '&ColorIDs=' + '' + '&MinPrice=' + 'RS0' + '&MaxPrice=' + 'RS50000' + '&Searchtext=' + Searchtxt + '&SortID=' + 0 + '';
+        }
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/assets/js/cookie/js.cookie.js"></script>
+    <script src="~/Content/assets/js/cookie/js.cookie.min.js"></script>
+
+    @*<script src="~/language/translations.js"></script>*>
+</body>
+</html>

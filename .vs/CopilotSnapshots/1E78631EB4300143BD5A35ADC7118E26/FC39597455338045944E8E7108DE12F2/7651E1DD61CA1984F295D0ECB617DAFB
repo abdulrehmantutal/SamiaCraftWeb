@@ -1,0 +1,252 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using com.fss.plugin;
+
+namespace samiacraft.Services
+{
+    /// <summary>
+    /// Service for Benefit Gateway payment integration
+    /// Handles payment initialization and response processing
+    /// Uses the actual Benefit SDK (iPayBenefitPipe)
+    /// </summary>
+    public class BenefitGatewayService
+    {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string _benefitAlias;
+        private readonly string _benefitPayPath;
+        
+        public BenefitGatewayService(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        {
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+            _benefitAlias = configuration["BenefitPay:Alias"] ?? "PROD03822897";
+            _benefitPayPath = Path.Combine(webHostEnvironment.ContentRootPath, "BenefitPay");
+        }
+
+        /// <summary>
+        /// Initializes payment with Benefit Gateway using the Benefit SDK
+        /// </summary>
+        public PaymentInitializationResult InitializePayment(PaymentInitializationRequest request)
+        {
+            try
+            {
+                var result = new PaymentInitializationResult 
+                { 
+                    IsSuccessful = false,
+                    OrderID = request.OrderID
+                };
+
+                try
+                {
+                    var pipe = new iPayBenefitPipe();
+
+                    // Set required parameters in correct order
+                    pipe.setAction("1");                          // Action: Payment
+                    pipe.setCurrency("048");                      // Currency: BHD
+                    pipe.setLanguage("EN");                       // Language: English
+                    pipe.setType("D");                            // Type: Default
+
+                    // Set alias and paths
+                    pipe.setAlias(_benefitAlias);
+                    pipe.setResourcePath(_benefitPayPath);
+                    pipe.setKeystorePath(_benefitPayPath);
+
+                    // Set transaction details
+                    pipe.setTrackId(request.OrderID.ToString());
+                    pipe.setAmt(request.Amount.ToString("0.00"));
+
+                    // Set URLs
+                    pipe.setResponseURL(request.ResponseUrl);
+                    pipe.setErrorURL(request.ErrorUrl);
+
+                    // Set UDFs (User Defined Fields) for tracking
+                    pipe.setUdf1("");
+                    pipe.setUdf2("SamiaCrafts");
+                    pipe.setUdf3("");
+                    pipe.setUdf4("");
+                    pipe.setUdf5("");
+
+                    // Perform payment initialization
+                    int val = pipe.performPaymentInitializationHTTP();
+
+                    if (val == 0)
+                    {
+                        string webAddress = pipe.getWebAddress();
+                        
+                        if (!string.IsNullOrEmpty(webAddress))
+                        {
+                            result.IsSuccessful = true;
+                            result.RedirectUrl = webAddress;
+                        }
+                        else
+                        {
+                            result.ErrorMessage = "Benefit Gateway did not return a redirect URL";
+                        }
+                    }
+                    else
+                    {
+                        string errorMsg = pipe.getError();
+                        result.ErrorMessage = $"Benefit Gateway Error (Code: {val}): {errorMsg}";
+                    }
+                }
+                catch (Exception sdkEx)
+                {
+                    result.ErrorMessage = $"Benefit SDK Error: {sdkEx.Message}";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentInitializationResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Payment initialization failed: {ex.Message}",
+                    OrderID = request.OrderID
+                };
+            }
+        }
+
+        /// <summary>
+        /// Processes encrypted response from Benefit Gateway
+        /// Uses the Benefit SDK to decrypt and validate the transaction response
+        /// </summary>
+        public PaymentResponseResult ProcessPaymentResponse(PaymentResponseRequest request)
+        {
+            try
+            {
+                var result = new PaymentResponseResult 
+                { 
+                    IsSuccessful = false 
+                };
+
+                try
+                {
+                    var pipe = new iPayBenefitPipe();
+                    
+                    // Set up the pipe with merchant details
+                    pipe.setAlias(_benefitAlias);
+                    pipe.setResourcePath(_benefitPayPath);
+                    pipe.setKeystorePath(_benefitPayPath);
+
+                    // Parse encrypted request if provided
+                    if (!string.IsNullOrEmpty(request.TransactionData))
+                    {
+                        int parseStatus = pipe.parseEncryptedRequest(request.TransactionData);
+                        
+                        if (parseStatus == 0)
+                        {
+                            // Successfully parsed - extract response details
+                            result.Result = pipe.getResult();
+                            result.PaymentID = pipe.getPaymentId() ?? request.PaymentID;
+                            result.ResponseCode = pipe.getAuthRespCode();
+                            result.TransactionID = pipe.getTransId();
+                            result.ReferenceID = pipe.getRef();
+                            result.TrackID = pipe.getTrackId();
+                            result.Amount = pipe.getAmt();
+                            result.AuthCode = pipe.getAuth();
+                            result.PostDate = pipe.getDate();
+                            result.ErrorCode = pipe.getError();
+                            result.ErrorText = pipe.getError_text();
+
+                            // Check if payment was successful
+                            if (result.Result == "CAPTURED")
+                            {
+                                result.IsSuccessful = true;
+                                result.AuthorizationCode = result.AuthCode;
+                                
+                                // Extract OrderID from TrackID
+                                if (int.TryParse(result.TrackID, out int orderId))
+                                {
+                                    result.OrderID = orderId;
+                                }
+                            }
+                            else
+                            {
+                                result.ErrorMessage = GetErrorMessage(result.Result, result.ResponseCode);
+                            }
+                        }
+                        else
+                        {
+                            result.ErrorMessage = $"Failed to parse payment response: {pipe.getError_text()}";
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(request.ErrorText))
+                    {
+                        // Gateway returned an error
+                        result.ErrorMessage = request.ErrorText;
+                        result.ErrorCode = "GATEWAY_ERROR";
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "No transaction data received from Benefit Gateway";
+                    }
+                }
+                catch (Exception sdkEx)
+                {
+                    result.ErrorMessage = $"Benefit SDK Error: {sdkEx.Message}";
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new PaymentResponseResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Response processing failed: {ex.Message}"
+                };
+            }
+        }
+
+        /// <summary>
+        /// Maps Benefit Gateway response codes to user-friendly error messages
+        /// </summary>
+        private string GetErrorMessage(string result, string responseCode)
+        {
+            if (result == "NOT CAPTURED")
+            {
+                return responseCode switch
+                {
+                    "05" => "Please contact your bank/issuer",
+                    "14" => "Invalid card number",
+                    "33" => "This card has expired",
+                    "36" => "This card is restricted",
+                    "38" => "PIN attempts exceeded",
+                    "51" => "Insufficient funds",
+                    "54" => "This card has expired",
+                    "55" => "Incorrect PIN",
+                    "61" => "Exceeds withdrawal limit",
+                    "62" => "This card is restricted",
+                    "65" => "Exceeds withdrawal frequency limit",
+                    "75" => "PIN attempts exceeded",
+                    "76" => "Ineligible account",
+                    "78" => "Please refer to your issuer",
+                    "91" => "Bank is currently unavailable",
+                    _ => "Unable to process transaction. Please try again later or use another card."
+                };
+            }
+            else if (result == "CANCELED")
+            {
+                return "Transaction was cancelled by you";
+            }
+            else if (result == "DENIED BY RISK")
+            {
+                return "Transaction was denied due to risk assessment. Maximum daily limit exceeded.";
+            }
+            else if (result == "HOST TIMEOUT")
+            {
+                return "Transaction timeout. Please try again later.";
+            }
+            else
+            {
+                return $"Unable to process transaction: {result}";
+            }
+        }
+    }
+}

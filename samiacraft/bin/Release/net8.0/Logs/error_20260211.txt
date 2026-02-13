@@ -1,0 +1,69 @@
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:05:42 PM
+Message: InsertOrder failed: Procedure or function 'sp_InsertOrder_Website' expects parameter '@LocationID', which was not supplied.
+StackTrace:    at samiacraft.Helpers.DBHelper.GetTableFromSP(String sp, SqlParameter[] prms) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Helpers\DBHelper.cs:line 77
+   at samiacraft.Models.BLL.samiacraft.Models.BLL.checkoutBLL.InsertOrder(checkoutBLL data) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Models\BLL\checkoutBLL.cs:line 464
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:14:28 PM
+Message: InsertOrder failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Order_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderCheckout_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_CustomerOrder_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+StackTrace:    at samiacraft.Helpers.DBHelper.GetTableFromSP(String sp, SqlParameter[] prms) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Helpers\DBHelper.cs:line 77
+   at samiacraft.Models.BLL.samiacraft.Models.BLL.checkoutBLL.InsertOrder(checkoutBLL data) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Models\BLL\checkoutBLL.cs:line 465
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:18:30 PM
+Message: InsertOrder failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Order_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderCheckout_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_CustomerOrder_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+StackTrace:    at samiacraft.Helpers.DBHelper.GetTableFromSP(String sp, SqlParameter[] prms) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Helpers\DBHelper.cs:line 77
+   at samiacraft.Models.BLL.samiacraft.Models.BLL.checkoutBLL.InsertOrder(checkoutBLL data) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Models\BLL\checkoutBLL.cs:line 465
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:32:27 PM
+Message: InsertOrder failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Order_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderCheckout_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The INSERT statement conflicted with the FOREIGN KEY constraint "FK_CustomerOrder_Customer". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Customer", column 'ID'.
+The statement has been terminated.
+The statement has been terminated.
+The statement has been terminated.
+StackTrace:    at samiacraft.Helpers.DBHelper.GetTableFromSP(String sp, SqlParameter[] prms) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Helpers\DBHelper.cs:line 77
+   at samiacraft.Models.BLL.checkoutBLL.InsertOrder(checkoutBLL data) in E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\Models\BLL\checkoutBLL.cs:line 158
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:50:16 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:52:16 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:54:30 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:58:18 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 1:59:51 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Date: 2/11/2026 2:05:17 PM
+Message: Order details insertion failed: The INSERT statement conflicted with the FOREIGN KEY constraint "FK_OrderDetail_Item". The conflict occurred in database "db_a74425_premiumpos", table "dbo.Item", column 'ID'.
+The statement has been terminated.
+-----------------------------------------------------------------------------

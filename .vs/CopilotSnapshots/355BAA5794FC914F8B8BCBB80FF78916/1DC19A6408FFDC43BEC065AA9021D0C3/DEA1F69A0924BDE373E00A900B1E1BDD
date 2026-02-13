@@ -1,0 +1,1361 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    .hero-slider-one .slider-text-info h1, .hero-slider-two .slider-text-info h1 {
+        color: var(--addbutton);
+    }
+
+    .newsletter-icon {
+        color: white !important;
+    }
+
+    .product-content .price-box .new-price {
+        color: var(--addbutton);
+    }
+
+    .btn-newsletter {
+        background: var(--addbutton);
+        border: 1px solid var(--addbutton);
+    }
+
+    .btn-default:hover {
+        color: var(--addbutton);
+        background-color: white !important;
+        border-color: var(--addbutton);
+    }
+
+    .btn-default {
+        color: white !important;
+        background-color: var(--addbutton);
+        border-color: var(--addbutton);
+    }
+
+    .btn::before, .btn-2::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 0;
+        width: 150%;
+        background-color: white;
+        color: #000 !important;
+        transition: all 0.3s ease 0s;
+        content: "";
+        transform: translateX(-50%) translateY(-50%) rotate(-10deg);
+        opacity: 0;
+        z-index: -1;
+    }
+
+    .col-sm-8 {
+        position: relative;
+        width: 50% !important;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .text-default {
+        color: var(--addbutton);
+    }
+
+    .text-default-white {
+        color: white !important;
+    }
+
+    .section-title h2 span {
+        color: #000 !important;
+    }
+
+    .section-title.text-center p {
+        margin-left: auto;
+        margin-right: auto;
+        color: #000;
+    }
+
+    .col-sm-4 {
+        position: relative;
+        width: 50%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    @@media only screen and (max-width: 480px) {
+        .Feature-tiem > a img, .product-image > a img {
+            height: auto;
+            min-height: 165px;
+            max-height: 165px;
+        }
+    }
+
+
+    @@media (min-width: 768px) {
+        .col-md-3 {
+            -ms-flex: 0 0 25%;
+            -webkit-box-flex: 0;
+            flex: 0 0 25%;
+            max-width: 100%;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0.2rem;
+        }
+
+        .mobview {
+            padding-top: 0px;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCatImg {
+            -ms-flex: 0 0 50%;
+            -webkit-box-flex: 0;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @@media (min-width: 425px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0.2rem;
+        }
+
+        .mobview {
+            padding-top: 0px;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCat {
+            height: 135px !important;
+        }
+
+        .mobCatImg {
+            -ms-flex: 0 0 50%;
+            -webkit-box-flex: 0;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @@media (min-width: 375px) {
+        .mobileSlide {
+            display: block !important;
+        }
+
+        .pt-40 {
+            padding-top: 15px;
+        }
+
+        .mob {
+            padding-bottom: 0em;
+            margin-bottom: 0rem;
+            font-size: 15px !important;
+        }
+
+        .mobview {
+            padding-top: 12px;
+            text-align: right;
+            font-size: 16px !important;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+
+        .mobCat {
+            height: 135px !important;
+        }
+
+        .mobCatImg {
+            -webkit-box-flex: 0;
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+    @@media only screen and (min-width: 320px) and (max-width: 480px) {
+
+        .mSlider {
+            padding-top: 9px !important;
+            margin-left: -5px !important;
+        }
+    }
+
+    @@media only screen and (min-width: 481px ) and (max-width: 767px) {
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+    }
+
+    @@media only screen and (min-width: 768px ) and (max-width: 1024px) {
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 115px;
+        }
+    }
+
+    @@media only screen and (min-width: 1025px ) {
+
+        .mSlider {
+            padding-top: 21px;
+            margin-left: 84px;
+        }
+    }
+
+    @@media (min-width: 768px) {
+
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+    }
+
+    @@media (min-width: 1024px) {
+
+        .mobview {
+            padding-top: 21px !important;
+            text-align: right;
+        }
+
+        .mView {
+            width: 50% !important;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        .pt-lg-5, .py-lg-5 {
+            padding-top: 0rem !important;
+        }
+    }
+
+    .mb-4, .my-4 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .categorybox img {
+        border-radius: 20px;
+        height: 220px;
+        width: 220px;
+        margin: auto;
+    }
+
+    .zoom {
+        transition: transform .5s;
+        margin: 0 auto;
+    }
+
+        .zoom:hover {
+            -ms-transform: scale(3.5);
+            -webkit-transform: scale(3.5);
+            transform: scale(1.1);
+        }
+
+    .all-product-image {
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+    }
+
+    .product-image > a img {
+        height: 275px;
+        object-fit: fill;
+    }
+
+    .add-button {
+        margin-top: 5% !important;
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 7px 15px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .add-Slide-button {
+        margin-top: 5% !important;
+        background-color: var(--addbutton);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 7px 15px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .add-Slide-button:hover {
+            background-color: white;
+            border: 2px solid var(--addbutton);
+        }
+
+            .add-Slide-button:hover .add-icon {
+                color: black;
+            }
+
+    .add-button:hover {
+        background-color: white;
+        border: 2px solid var(--addbutton);
+    }
+
+        .add-button:hover .add-icon {
+            color: black;
+        }
+
+    .imgcon {
+        position: relative;
+        display: inline-block; /*add this to make container wrap around image*/
+    }
+
+        .imgcon img {
+            position: relative;
+            display: block;
+            max-width: 100%; /* make sure image does not overflow container */
+            max-height: 100%;
+            object-fit: fill;
+        }
+
+    .im:hover {
+        color: white !important;
+    }
+
+    .btn-default-custom {
+        color: var(--addbutton);
+        background-color: White !important;
+        border-color: white !important;
+        border: 2px solid white;
+    }
+
+        .btn-default-custom:hover {
+            color: var(--addbutton);
+            background-color: white !important;
+            border-color: var(--addbutton);
+            border-radius: 6px;
+        }
+
+    @@media only screen and (max-width: 479px) {
+        .mobimg {
+            background-image: var(--bgtestimonials) !important;
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
+        }
+    }
+
+    @@media only screen and (max-width: 479px) {
+        .bg-workflow {
+            background: var(--bgworkflow) !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+    }
+
+    @@media only screen and (max-width: 479px) {
+        .add-button {
+            margin-top: 5% !important;
+            background-color: var(--addbutton);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 12px;
+            transition: background-color 0.3s ease-in-out;
+        }
+    }
+
+    @@media only screen and (max-width: 479px) {
+        .add-Slide-button {
+            margin-top: 5% !important;
+            background-color: var(--addbutton);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 10px;
+            transition: background-color 0.3s ease-in-out;
+        }
+    }
+
+    .modal-body {
+        position: relative;
+        -ms-flex: 1 1 auto;
+        -webkit-box-flex: 1;
+        flex: 1 1 auto;
+        padding: 0rem !important;
+    }
+
+    .modal-header {
+        display: -ms-flexbox;
+        display: -webkit-box;
+        display: flex;
+        -ms-flex-align: start;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        -ms-flex-pack: justify;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        padding: 1rem 1rem;
+        border-bottom: 1px solid #dee2e6;
+        border-top-left-radius: .7rem !important;
+        border-top-right-radius: .7rem !important;
+        background-color: #FFF9E6 !important;
+    }
+</style>
+<div class="hero-slider hero-slider-one ">
+
+    @foreach (var item in ViewBag.Banner)
+    {
+        <div class="single-slide" style="background-image: url(@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image)">
+            <div class="hero-content-one container">
+                <div class="row text-center">
+                    <div class="col-lg-12">
+                        <div class="slider-text-info">
+                            <h2>@item.Title </h2>
+                            <h1>@item.MainHeading </h1>
+                            <p class="slider-para">@item.Description</p>
+                            @if (!string.IsNullOrEmpty(ViewBag.shopButtonURL))
+                            {
+
+                                <a href="@ViewBag.shopButtonURL" class="btn btn-default uppercase btn-large Shop-Now-Button"><span data-translate="000a3">SHOP NOW</span></a>
+                            }
+                            @*<a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default uppercase btn-large Shop-Now-Button"><span data-translate="000a3">SHOP NOW</span></a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+</div>
+<div class="deal-row"></div>
+
+
+<div class=" bg-workflow py-5 d-lg-block" style="background: var(--bgworkflow); background-repeat: no-repeat; background-size: cover;">
+
+    <div class="container">
+
+        <div class="row ">
+            <div class="col-lg-3 col-md-6 py-3">
+                <img class="flow-img" src="~/Content/assets/images/workflow/flowerm.png">
+                <p class="pt-20 px-1 text-center text-white mb-2">Choose your flower then add to basket.</p>
+                <img class="arrow" src="~/Content/assets/images/workflow/arrow.png">
+            </div>
+            <div class="col-lg-3 col-md-6 py-3">
+                <img class="flow-img" src="~/Content/assets/images/workflow/formm.png">
+                <p class="pt-20 px-1 text-center text-white mb-2">Fill in your order data  form & make sure everything fits.</p>
+                <img class="arrow" src="~/Content/assets/images/workflow/arrow.png">
+            </div>
+            <div class="col-lg-3 col-md-6 py-3">
+                <img class="flow-img" src="~/Content/assets/images/workflow/cardm.png">
+                <p class="pt-20 px-1 text-center text-white mb-2"> Secure Payment </p>
+                <img class="flow-img" src="~/Content/assets/images/workflow/securepayment.png">
+                <img class="arrow" src="~/Content/assets/images/workflow/arrow.png">
+            </div>
+            <div class="col-lg-3 col-md-6 py-3">
+                <img class="flow-img" src="~/Content/assets/images/workflow/busm.png">
+                <p class="pt-20 px-1 text-center text-white mb-2">Your flowers is ready to process & delivery to your address.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mySidenav" class="sidenav border shadow">
+    <div class="d-flex justify-content-between">
+        <div class="px-3">
+            <h5> </h5>
+        </div>
+        <div class="px-3">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+    </div>
+    <div class="off-canvas-inner">
+        <div class="mobile-navigation side-navigation">
+            <nav class="feature px-3">
+                <div class="shop-sidebar">
+                    <h4 class="">FILTER BY TEXT</h4>
+                </div>
+                <div class="input-group input-group-sm my-4">
+                    <input type="text" class="form-control Seachtxt" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <a href="javascript:;" class="filterOn btn btn-default-opposite btn-small">Search</a>
+                    </div>
+                </div>
+                <div class="shop-sidebar mb-4 pt-1">
+
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <h4 class="title">CATEGORIES</h4>
+                        </div>
+                        <div class="">
+                            <a href="javascript:;" class=" filterOn"><i class="ion-ios-search-strong"></i></a>
+                        </div>
+                    </div>
+                    <ul class="scroll-style ">
+                        @foreach (var item in ViewBag.Category)
+                        {
+                            <li><label><input type="checkbox" name="Category" class="mr-2" value="@item.CategoryID">@item.Title</label></li>
+
+                        }
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <div class=" shop-sidebar filter-price-content">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                <h4 class="mb-0">FILTER BY PRICE</h4>
+                            </div>
+                            <div class="">
+                                <a href="javascript:;" class="filterOn"><i class="ion-ios-search-strong"></i></a>
+                            </div>
+                        </div>
+
+                        <form action="#" method="post">
+                            <div id="price-slider-home" class="price-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 16.6667%; width: 79.1667%;"></div><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 16.6667%;"></span><span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 95.8333%;"></span></div>
+                            <div class="filter-price-wapper">
+                                <div class="filter-price-cont">
+                                    <span>Price:</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mr-1 pr-0 min-price" id="min-price-home" readonly="">
+                                    </div>
+                                    <span>—</span>
+                                    <div class="input-type">
+                                        <input type="text" class="mx-1 pr-0 max-price" id="max-price-home" readonly="">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+</div>
+<script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "305px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+<div class="porduct-area section-pt section-pb-60 prod-banner">
+    <div class="container w-100">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title text-center">
+                    <div class="d-flex justify-content-between mb-3 ">
+                        <div class="p-2"><h2 class=" "><span class="font-weight-lighter">All</span> Products</h2></div>
+                        <div class="align-self-center " style="margin-left:auto; padding:1px;">
+                            <button style="font-size: 14px;cursor: pointer;padding: 4px 15px;" class="bold border border-dark btn btn-default-opposite shadow-sm" data-toggle="modal" data-target="#exampleModalCenter"><i class="ion-android-list mr-1"></i> <span>Category</span></button>
+                        </div>
+                        <div class="align-self-center ">
+                            <a style="font-size: 14px;cursor: pointer;padding: 4px 15px;" class="bold border border-dark btn btn-default-opposite shadow-sm" onclick="openNav()"><i class="ion-funnel mr-1"></i> <span>Filter</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModalCenter">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                   <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title text-default"><span class="font-weight-lighter">Shop by</span> Category</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div style="background-image: url(../../Content/assets/images/kf-bg.jpg); background-size: 100% 100%; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;">
+                            <div class="porduct-area section-pt-30 section-pb-30 ">
+                                <div class="container w-100 ">
+
+                                    <div class="row justify-content-center ">
+                                        @foreach (var item in ViewBag.Category)
+                                        {
+                                            <div class="col-6 col-md-4">
+                                                <div style="background-color: #006783;margin-bottom:10px">
+                                                    <div class="" style="top: 10px; left: 10px;">
+                                                        <h6 class="pl-15 pt-10" style="color: white;">
+                                                            <a class="mt-10 im" style="font-size: 20px; font-family: Poppins; font-weight: 600; font-stretch: normal; font-style: normal; line-height: normal; letter-spacing: normal;" href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                                @item.Title.ToUpper()
+                                                            </a>
+                                                        </h6>
+                                                    </div>
+                                                    <div class="mobCat" style="position: relative; padding-left: 10px; height: 150px; width: 100%;">
+                                                        <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = item.CategoryID, SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})">
+                                                            <img style="max-width: 100%; height: 100%; position: absolute; bottom: 0; right: 0;" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="" />
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row all-products d-flex ">
+            @foreach (var item in ViewBag.TenItems)
+            {
+                <div class="col-lg-12 col-12 ">
+                    <div class="single-product-wrap" style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;">
+                        <div class="product-image card hovereffect imgcon">
+                            @if (item.Image == "" || item.Image == null)
+                            {
+                                <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                    <img src="~/Content/assets/images/NA.png" alt="@item.Title">
+                                </a>
+                                <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+                            }
+                            else
+                            {
+                                <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                    <img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title">
+                                </a>
+                                <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.DiscountedPrice, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+                            }
+                        </div>
+
+                        <div class="row" style="padding: 0px 10px 10px 10px; ">
+                            <div class="col-8">
+                                <div class="mt-0  product-content">
+                                    <p class="mob" style="text-align:left;"> <a class="mob" style="font-size: 18px; font-weight: 700" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"> @item.Title </a></p>
+
+                                    @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                    {
+                                        <div class="price-box" style="text-align:left;">
+                                            <span style="font-weight: 600" class="currency-text mx-0 text-default"></span><span style="font-weight: 600" class="new-price mx-0">@item.Price</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="price-box" style="text-align:left; ">
+                                            <span class="currency-text mx-0"></span><span class="old-price mx-0">@item.Price</span>
+                                            <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.DiscountedPrice</span>
+                                        </div>
+                                    }
+
+                                    <div class="pro_rating">
+                                        <ul class="product-rating m-auto d-flex">
+                                            @{
+                                                if (item.Stars != null)
+                                                {
+                                                    for (int i = 0; i < item.Stars; i++)
+                                                    {
+                                                        <li><span class="ion-android-star"></span></li>
+                                                    }
+                                                    for (int i = 0; i < (5 - item.Stars); i++)
+                                                    {
+                                                        <li><span class="ion-android-star-outline"></span></li>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-4" style="text-align:right;">
+                                <div class="mobview">
+                                    @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                    {
+                                        <button class="add-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;">
+                                            <span class="ion-android-add add-icon"></span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="add-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;">
+                                            <span class="ion-android-add add-icon"></span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+        <div class="col-md-12 text-center my-4 pt-lg-5">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default  btn-large" tabindex="0"><span>View All</span></a>
+        </div>
+        @*mobile View*@
+        @*<div class="row all-products d-flex d-lg-none">
+                @foreach (var item in ViewBag.TenItems)
+                {
+                    <div class="col-lg-3 col-6">
+                        <div class="single-product-wrap">
+                            @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                            {
+                                <a class="add-to-cart-mobile d-sm-none d-block addItemLS btnalert" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;">
+                                    <img src="~/Content/assets/images/basketwhite.png" width="16px" />
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="add-to-cart-mobile d-sm-none d-block addItemLS btnalert" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;">
+                                    <img src="~/Content/assets/images/basketwhite.png" width="16px" />
+                                </a>
+                            }
+                            <div class="product-image Feature-tiem card1">
+                                @if (item.Image == "" || item.Image == null)
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img src="~/Content/assets/images/NA.png" alt="@item.Title"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"><img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title"></a>
+                                }
+
+                            </div>
+                            <div class="mt-0 mt-sm-3 product-content Feature-tiem-content">
+                                <p><a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"> @item.Title </a></p>
+
+                                <div class="pro_rating d-flex ">
+                                    <ul class="product-rating m-auto d-flex">
+                                        @{
+                                            if (item.Stars != null)
+                                            {
+                                                for (int i = 0; i < item.Stars; i++)
+                                                {
+                                                    <li><span class="ion-android-star"></span></li>
+                                                }
+                                                for (int i = 0; i < (5 - item.Stars); i++)
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <div class="price-box">
+                                        <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.Price</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="price-box">
+                                        <span class="currency-text mx-0"></span><span class="old-price mx-0">@item.Price</span>
+                                        <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.DiscountedPrice</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-md-12 text-center my-4 pt-lg-5">
+                    <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default  btn-large" tabindex="0"><span>View All</span></a>
+                </div>
+            </div>*@
+    </div>
+</div>
+
+<div class="porduct-area section-pt section-pb-60 bg-product " style="background-image: var(--bgfeaturedproduct)">
+    <div class="container-fluid w-100">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="section-title text-center">
+                    <h2 class=""><span class="font-weight-lighter">Featured</span> Products</h2>
+                    <p>With Karachi Flora, you can buy happy birthday flowers, thoughtful get well gifts, funeral and sympathy flower arrangements, and your everyday beautiful florals.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row product-active-lg-4 product-active">
+
+            @foreach (var item in ViewBag.Featureditems)
+            {
+                <div class="col-lg-3 ">
+                    <div class="single-product-wrap" style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; background-color:white;border-radius:5px;">
+                        <div class="product-image card hovereffect imgcon">
+                            @if (item.Image == "" || item.Image == null)
+                            {
+
+                                <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                    <img src="~/Content/assets/images/NA.png" alt="@item.Title">
+                                </a>
+                                <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                            }
+                            else
+                            {
+
+                                <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                    <img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title">
+                                </a>
+                                <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.DiscountedPrice, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                            }
+
+                        </div>
+
+
+                        <div class="row" style="padding:0px 10px 6px 10px;">
+                            <div class="col-8">
+                                <div class="mt-0  product-content Feature-tiem-content" style="text-align:left">
+                                    <p> <a style="font-size: 18px; font-weight: 700" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"> @item.Title </a></p>
+
+                                    @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                    {
+                                        <div class="price-box">
+                                            <span style="font-weight: 600" class="currency-text mx-0 text-default"></span><span style="font-weight: 600" class="new-price mx-0">@item.Price</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="price-box">
+                                            <span class="currency-text mx-0"></span><span class="old-price mx-0">@item.Price</span>
+                                            <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.DiscountedPrice</span>
+                                        </div>
+                                    }
+
+                                    <div class="pro_rating">
+                                        <ul class="product-rating m-auto d-flex">
+                                            @{
+                                                if (item.Stars != null)
+                                                {
+                                                    for (int i = 0; i < item.Stars; i++)
+                                                    {
+                                                        <li><span class="ion-android-star"></span></li>
+                                                    }
+                                                    for (int i = 0; i < (5 - item.Stars); i++)
+                                                    {
+                                                        <li><span class="ion-android-star-outline"></span></li>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4" style="text-align:right;">
+                                <div class="mobview">
+                                    @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                    {
+                                        <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;">
+                                            <span class="ion-android-add add-icon"></span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;">
+                                            <span class="ion-android-add add-icon"></span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="col-md-12 text-center mt-50">
+            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default-custom  btn-large" tabindex="0"><span>View All</span></a>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid w-100 pt-60 pb-60" style="background-image: var(--bgpopularproduct); background-repeat:no-repeat;background-size:cover;">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="section-title text-center">
+                <h2 class="text-default" style="color: black !important;"><span class="font-weight-lighter" style="color:black !important;">Popular</span> Products</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row product-active-lg-4 product-active">
+
+        @foreach (var item in ViewBag.PopularProducts)
+        {
+            <div class="col-lg-3 mx-2 my-2">
+                <div class="single-product-wrap" style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; background-color: white; border-radius: 5px;">
+                    <div class="product-image card hovereffect imgcon">
+                        @if (item.Image == "" || item.Image == null)
+                        {
+
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="~/Content/assets/images/NA.png" alt="@item.Title">
+                            </a>
+                            <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                        }
+                        else
+                        {
+
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title">
+                            </a>
+                            <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.DiscountedPrice, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                        }
+
+                    </div>
+                    <div class="row" style="padding: 0px 10px 10px 10px; ">
+                        <div class="col-8">
+                            <div class="mt-0  product-content" style="text-align:left">
+                                <p style="margin-bottom:0rem;"> <a style="font-size: 18px; font-weight: 700" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"> @item.Title </a></p>
+
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <div class="price-box">
+                                        <span style="font-weight: 600" class="currency-text mx-0 text-default"></span><span style="font-weight: 600" class="new-price mx-0">@item.Price</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="price-box">
+                                        <span class="currency-text mx-0"></span><span class="old-price mx-0">@item.Price</span>
+                                        <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.DiscountedPrice</span>
+                                    </div>
+                                }
+
+                                <div class="pro_rating">
+                                    <ul class="product-rating m-auto d-flex">
+                                        @{
+                                            if (item.Stars != null)
+                                            {
+                                                for (int i = 0; i < item.Stars; i++)
+                                                {
+                                                    <li><span class="ion-android-star"></span></li>
+                                                }
+                                                for (int i = 0; i < (5 - item.Stars); i++)
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" style="text-align:right;">
+                            <div class="mobview">
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;">
+                                        <span class="ion-android-add add-icon"></span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;">
+                                        <span class="ion-android-add add-icon"></span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container-fluid w-100 pt-60 pb-60" style="background-image: var(--bgnewarrivals); background-repeat: no-repeat; background-size: cover;">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="section-title text-center">
+                <h2 class=""><span class="font-weight-lighter" style="color:white;">New</span> Arrivals</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row product-active-lg-4 product-active">
+
+        @foreach (var item in ViewBag.NewArrivals)
+        {
+            <div class="col-lg-3 mx-2 my-2">
+                <div class="single-product-wrap" style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; background-color: white; border-radius: 5px;">
+                    <div class="product-image card hovereffect imgcon">
+                        @if (item.Image == "" || item.Image == null)
+                        {
+
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="~/Content/assets/images/NA.png" alt="@item.Title">
+                            </a>
+                            <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.Price, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                        }
+                        else
+                        {
+                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })">
+                                <img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@item.Image" alt="@item.Title">
+                            </a>
+                            <a class="wl" onclick="addtoWishlist(@item.ItemID, '@item.Title', '@item.Image',@item.DiscountedPrice, '@item.InStock.ToString()',1);toast('Item Added to wishlist', 1); return false; "><i class="ion-android-favorite-outline fill"></i></a>
+
+                        }
+
+                    </div>
+                    <div class="row" style="padding: 0px 10px 5px 10px; ">
+                        <div class="col-8">
+                            <div class="mt-0  product-content" style="text-align:left">
+                                <p style="margin-bottom:0rem;"> <a style="font-size: 18px; font-weight: 700" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ItemID })"> @item.Title </a></p>
+
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <div class="price-box">
+                                        <span style="font-weight: 600" class="currency-text mx-0 text-default"></span><span style="font-weight: 600" class="new-price mx-0">@item.Price</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="price-box">
+                                        <span class="currency-text mx-0"></span><span class="old-price mx-0">@item.Price</span>
+                                        <span class="currency-text mx-0 text-default"></span><span class="new-price mx-0">@item.DiscountedPrice</span>
+                                    </div>
+                                }
+
+                                <div class="pro_rating">
+                                    <ul class="product-rating m-auto d-flex">
+                                        @{
+                                            if (item.Stars != null)
+                                            {
+                                                for (int i = 0; i < item.Stars; i++)
+                                                {
+                                                    <li><span class="ion-android-star"></span></li>
+                                                }
+                                                for (int i = 0; i < (5 - item.Stars); i++)
+                                                {
+                                                    <li><span class="ion-android-star-outline"></span></li>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                                <li><span class="ion-android-star-outline"></span></li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" style="text-align:right;">
+                            <div class="mobview">
+                                @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
+                                {
+                                    <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;">
+                                        <span class="ion-android-add add-icon"></span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="add-Slide-button" onclick="addtocart(@item.ItemID,'@item.Title','@item.Image',@item.DiscountedPrice,1);toast('Item Added to Cart', 1); return false;">
+                                        <span class="ion-android-add add-icon"></span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+    </div>
+
+</div>
+
+@if (ViewBag.Reviews != null)
+{
+    if (ViewBag.Reviews.Count > 0)
+    {
+        <div class="testimonial-area testimonial-bg bg-gray overly-image pt-60 pb-60  mobimg" style="background-image: var(--bgtestimonials); ">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-lg-9 offset-md-3 col-md-8 col-sm-12">
+                        <div class="testimonial-slider">
+                            @foreach (var item in ViewBag.Reviews)
+                            {
+                                <div class="text-center pb-35">
+                                    <div class="test-cont">
+                                        <img src="~/Content/assets/images/icon/quite.png" alt="">
+                                        <p style="font-size:20px;line-height:24px">@item.Description</p>
+                                    </div>
+                                    <br />
+                                    <div class="test-author">
+                                        <h5>@item.Name</h5>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<!-- testimonial-area end -->
+<div class=" bg-newsletter py-5" style="background-image: var(--bgnewsletter)">
+    <div class="container">
+        <div class="row justify-content-center ">
+            <div class="col-lg-4 ">
+                <h4 class="text-newsletter text-center">Subscribe Our <span>Newsletter</span></h4>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control rounded-0 SubscribeEmail" placeholder="Enter your email">
+                    <div class="input-group-append">
+                        <a onclick="getmail(); toast('Thank you: You have been successfully subscribed to karachiflora. we will keep you updated with our latest news and offers', 1); return false" class="btn btn-small rounded-0 btn-newsletter"><i class="ion-paper-airplane newsletter-icon" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="SubscribeEmail-Res"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+
+    <script>
+
+        function CountDownTimer() {
+            var currency = localStorage.getItem("currency");
+            var html = '';
+            var item = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Deal));
+
+           html +='<div class="bg-deal section-ptb d-lg-block d-none">'
+            +'<div class="container w-100">'
+            +'<div class="row align-items-center">'
+            +'<div class="col-lg-12">'
+            +'<div class="section-title text-center">'
+            +'<h2 class="text-default"><span class="font-weight-lighter">Deals of</span> The Month</h2>'
+            +'</div>'
+            +'</div>'
+            +'</div>'
+            +'<div class="row ">'
+
+
+            for (var i = 0; i < item.length; i++) {
+
+
+                html += '<div class="col-md-6">'
+                    + '<div class="card my-3 ">'
+                    + '<div class="card-body row">'
+                    + '<div class="align-self-center col-sm-5 col-4">'
+                    + '<img src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()'+item[i].DealImage+'" style="height: 200px; object-fit: contain;" />'
+                    + '</div>'
+                    + '<div class=" align-self-center col-8 col-sm-7">'
+                    + '<p class="card-text mt-3 mb-0">' + item[i].Title+' </p>'
+                    + '<div class="price-box">'
+                    + '<span class="price-regular font-weight-bolder">'+currency + item[i].DiscountedPrice + '</span>'
+                    + '</div>'
+                    + '<a href="../product/productdetails?ItemID=' + item[i].ItemID +'" class="mt-0 mb-0 btn btn-small card-link btn-deal3">Get Deal</a>'
+                    + '<div class="countdown-titmer ">'
+                    + '<h5 class="offer-text">' + item[i].Description +'</h5>'
+                    + '<div class="product-countdown" data-countdown="2020/04/25">'
+                    + '<div class="single-countdown"><span id="Days-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Days</span></div>'
+                    + '<div class="single-countdown"><span id="Hours-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Hours</span></div>'
+                    + '<div class="single-countdown"><span id="Mins-' + item[i].DealID +'" class="single-countdown__time">00</span><span class="single-countdown__text">Mins</span></div>'
+                    + '<div class="single-countdown"><span id="Secs-' + item[i].DealID+'" class="single-countdown__time">00</span><span class="single-countdown__text">Secs</span></div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>'
+
+                counter(item[i].EndDate, item[i].DealID);
+
+            }
+            html +=  '</div>'
+                    +'</div>'
+                + '</div>'
+            if (item.length > 0) {
+                $(".deal-row").html(html);
+            }
+
+
+
+            function counter(EndDate, id) {
+
+
+                var end = new Date(EndDate);
+
+
+                var _second = 1000;
+                var _minute = _second * 60;
+                var _hour = _minute * 60;
+                var _day = _hour * 24;
+                var timer;
+
+                function showRemaining() {
+                    var now = new Date();
+                    var distance = end - now;
+                    if (distance < 0) {
+
+                        clearInterval(timer);
+
+                        return;
+                    }
+                    var days = Math.floor(distance / _day);
+                    var hours = Math.floor((distance % _day) / _hour);
+                    var minutes = Math.floor((distance % _hour) / _minute);
+                    var seconds = Math.floor((distance % _minute) / _second);
+
+                    document.getElementById("Days-" + id).innerHTML = days;
+                    document.getElementById("Hours-" + id).innerHTML = hours;
+                    document.getElementById("Mins-" + id).innerHTML = minutes;
+                    document.getElementById("Secs-" + id).innerHTML = seconds;
+                }
+                timer = setInterval(showRemaining, 1000);
+            }
+
+        };
+
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var Category = [];
+            var SubCategory = [];
+            var Color = [];
+            $('input[name="Category"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    Category.push($(this).val());
+                    @*window.history.pushState($(this).val(), "Category", "/Filter");*@
+                }
+                else {
+                    Category.splice($(this).val(), 1);
+                }
+            });
+            $('input[name="Color"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    Color.push($(this).val());
+                }
+                else {
+                    Color.splice($(this).val(), 1);
+                }
+            });
+            $('input[name="SubCategory"]').click(function () {
+                if ($(this).prop("checked") == true) {
+                    SubCategory.push($(this).val());
+                }
+                else {
+                    SubCategory.splice($(this).val(), 1);
+                }
+            });
+            $(".filterOn").click(function () {
+
+                var Searchtxt = $(".Seachtxt").val();
+                var MinPrice = $(".min-price").val();
+                var MaxPrice = $(".max-price").val();
+                var SortID = 0;
+
+                var CategoryIDs =  Category.join();
+                var SubCategoryIDs =  SubCategory.join();
+                var ColorIDs =  Color.join();
+                window.location.href = '/shop/shop?Category=""&CategoryIDs=' + CategoryIDs + '&SubCategoryIDs=' + SubCategoryIDs + '&ColorIDs=' + ColorIDs + '&MinPrice=' + MinPrice + '&MaxPrice=' + MaxPrice + '&Searchtext=' + Searchtxt + '&SortID=' + SortID + '';
+
+            });
+        });
+
+
+
+    </script>
+
+
+}}}}

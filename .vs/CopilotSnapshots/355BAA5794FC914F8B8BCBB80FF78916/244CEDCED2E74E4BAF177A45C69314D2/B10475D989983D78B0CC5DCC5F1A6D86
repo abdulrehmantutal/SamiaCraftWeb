@@ -1,0 +1,23 @@
+﻿using samiacraft.Models.BLL;
+using samiacraft.Models.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using Microsoft.AspNetCore.Mvc;
+
+namespace samiacraft.Controllers
+{
+    public class SharedController : Controller
+    {
+        // GET: Shared
+        public ActionResult Header()
+        {
+            return PartialView("Header", new navigationBLL().GetSubCategory());
+        }
+        public ActionResult MobileNavigation()
+        {
+            return PartialView("MobileNavigation", new navigationBLL().GetSubCategoryMobile());
+        }
+    }
+}
