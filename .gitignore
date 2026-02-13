@@ -1,0 +1,27 @@
+﻿# IDE
+.vs/
+.vscode/
+*.user
+*.userprefs
+*.suo
+*.sln.docstates
+
+# Build
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# Dependencies
+packages/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.temp
+*~
