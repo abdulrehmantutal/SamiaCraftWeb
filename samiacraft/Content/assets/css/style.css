@@ -16606,19 +16606,16 @@ justify-content: space-between;*/
 }
 
 .login-bg {
-    background: url('../../assets/images/banner/about.png');
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 .about-bg {
-    background: url('../../assets/images/banner/about.png');
     background-repeat: no-repeat;
     background-size: cover;
 }
 
 .contact-bg {
-    background: url('../../assets/images/banner/about.png');
     background-repeat: no-repeat;
     background-size: cover;
 }

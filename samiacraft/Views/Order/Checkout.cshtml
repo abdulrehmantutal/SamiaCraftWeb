@@ -195,16 +195,20 @@
                             <h5>Please Select Payment Method</h5>
 
                             <div class="btn-group paymenttype w-100" data-toggle="buttons" style="padding: 20px 0;">
-                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
-                                    <img src=https://www.samiacrafts.com/assets/images/benefit.png" style="max-height: 50px;" />
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px; cursor: pointer;">
+                                    <input type="radio" name="payment_type" value="BenefitPay" style="display: none;" />
+                                    <img src="https://www.samiacrafts.com/assets/images/benefit.png" style="max-height: 50px;" />
                                 </label>
-                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px; cursor: pointer;">
+                                    <input type="radio" name="payment_type" value="Mastercard" style="display: none;" />
                                     <img src="https://www.samiacrafts.com/assets/images/Mastercard.svg" style="max-height: 50px;" />
                                 </label>
-                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px; cursor: pointer;">
+                                    <input type="radio" name="payment_type" value="Banktransfer" style="display: none;" />
                                     <img src="https://www.samiacrafts.com/assets/images/bank-transfer.png" style="max-height: 50px; max-width: 120px;" />
                                 </label>
-                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px;">
+                                <label class="btn col-6" style="height: 60px; border: 1px solid #ddd; padding: 10px; cursor: pointer;">
+                                    <input type="radio" name="payment_type" value="COD" style="display: none;" />
                                     <img src="https://www.samiacrafts.com/assets/images/cod.png" style="max-height: 50px;" />
                                 </label>
                             </div>
@@ -426,6 +430,17 @@
 
         // Wire up payment method handlers
         function WireUpPaymentMethodHandlers() {
+            // Handle label click to check the radio button
+            $('div.paymenttype label').on('click', function() {
+                var radio = $(this).find('input[name="payment_type"]');
+                if (radio.length) {
+                    radio.prop('checked', true).trigger('change');
+                    $(this).addClass('active');
+                    $(this).siblings('label').removeClass('active');
+                }
+            });
+            
+            // Handle radio button change
             $('input[name="payment_type"]').on('change', function() {
                 var selectedPayment = $(this).val();
                 if (selectedPayment === 'Banktransfer') {
@@ -433,6 +448,8 @@
                 } else {
                     $('#BankDetails').hide();
                 }
+                // Update the button state
+                $(this).closest('label').addClass('active').siblings('label').removeClass('active');
             });
         }
 

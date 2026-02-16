@@ -23,6 +23,7 @@ namespace samiacraft.Controllers
         public IActionResult ProductDetails(int ItemID)
         {
             int LocationId = Convert.ToInt32(_configuration["LocationId"]);
+            int UserId = Convert.ToInt32(_configuration["UserId"]);
 
             try
             {
@@ -44,7 +45,7 @@ namespace samiacraft.Controllers
                 
                 var productDetails = _service.GetAll(ItemID, LocationId);
                 ViewBag.ProductDetails = productDetails;
-                ViewBag.Gift = new giftService().GetAll();
+                ViewBag.Gift = new giftService().GetAll(UserId);
                 
                 return View(productDetails);
             }

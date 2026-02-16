@@ -22,11 +22,13 @@ namespace samiacraft.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly BenefitGatewayService _benefitGatewayService;
 
-        public OrderController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public OrderController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment, BenefitGatewayService benefitGatewayService)
         {
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
+            _benefitGatewayService = benefitGatewayService;
         }
 
         public IActionResult Cart()
@@ -169,7 +171,8 @@ namespace samiacraft.Controllers
                 {
                     checkoutData.DeliveryStatus = 101;
                 }
-                else if (checkoutData.PaymentMethodID == 2 || checkoutData.PaymentMethodID == 3) {
+                else if (checkoutData.PaymentMethodID == 2 || checkoutData.PaymentMethodID == 3) 
+                {
                     checkoutData.DeliveryStatus = 104;
                 }
 
@@ -202,7 +205,7 @@ namespace samiacraft.Controllers
                         return await HandleCredimaxPayment(OrderID, checkoutData);
 
                     case 3: // BenefitPay
-                        return HandleBenefitPayment(OrderID, checkoutData);
+                        return await HandleBenefitPayment(OrderID, checkoutData);
 
                     case 4: // Mastercard Direct
                         {
@@ -339,31 +342,280 @@ namespace samiacraft.Controllers
             }
         }
 
-        private JsonResult HandleBenefitPayment(int OrderID, checkoutBLL data)
+        // ============================================================================
+        // BENEFITPAY INTEGRATION - NEW CODE
+        // ============================================================================
+        
+        /// <summary>
+        /// Handle BenefitPay payment initialization using BenefitGatewayService
+        /// </summary>
+        private async Task<JsonResult> HandleBenefitPayment(int OrderID, checkoutBLL data)
         {
             try
             {
+                // Send pending payment email to admin
                 var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                 SendPendingPaymentEmails(OrderID, data, giftDataJson);
 
-                // Redirect to old site for Benefit payment processing
-                // Old site has FSS plugin and will handle Benefit Gateway
-                string oldSiteUrl = "https://www.samiacrafts.com/Home/Benefit";
-                string redirectUrl = $"{oldSiteUrl}?OrderNo={data.OrderNo}&OrderID={OrderID}&GrandTotal={(data.GrandTotal ?? 0):0.00}";
-
-                return Json(new
+                // Get base URL
+                string baseUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
+                
+                // Create payment initialization request
+                var paymentRequest = new PaymentInitializationRequest
                 {
-                    Success = true,
-                    orderid = OrderID,
-                    orderno = data.OrderNo,
-                    redirectUrl = redirectUrl
-                });
+                    OrderID = OrderID,
+                    Amount = data.GrandTotal ?? 0,
+                    ResponseUrl = $"{baseUrl}/Order/BenefitPayResponse?OrderID={OrderID}",
+                    ErrorUrl = $"{baseUrl}/Order/BenefitPayResponse?OrderID=0"
+                };
+
+                // Call BenefitGatewayService to initialize payment
+                var result = _benefitGatewayService.InitializePayment(paymentRequest);
+
+                if (result.IsSuccessful)
+                {
+                    // Success - return redirect URL
+                    return Json(new
+                    {
+                        Success = true,
+                        orderid = OrderID,
+                        orderno = OrderID.ToString(),
+                        redirectUrl = result.RedirectUrl,
+                        paymentType = "BenefitPay"
+                    });
+                }
+                else
+                {
+                    // Failed to initialize
+                    return Json(new
+                    {
+                        Success = false,
+                        Message = $"BenefitPay initialization failed: {result.ErrorMessage}"
+                    });
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { Success = false, Message = $"Benefit payment error: {ex.Message}" });
+                return Json(new
+                {
+                    Success = false,
+                    Message = $"BenefitPay error: {ex.Message}"
+                });
             }
         }
+
+        /// <summary>
+        /// BenefitPay Response Handler - Called by BenefitPay gateway after payment
+        /// IMPORTANT: Must return "REDIRECT=" for BenefitPay
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public IActionResult BenefitPayResponse()
+        {
+            try
+            {
+                int orderID = 0;
+
+                // Get OrderID from query string
+                if (Request.Query.ContainsKey("OrderID"))
+                {
+                    int.TryParse(Request.Query["OrderID"], out orderID);
+                }
+
+                // Handle GET request with OrderID=0 (error/cancel)
+                if (Request.Method == "GET" && orderID == 0)
+                {
+                    string baseUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
+                    string cancelUrl = $"{baseUrl}/Order/OrderComplete?OrderNo=Reject";
+                    return Content($"REDIRECT={cancelUrl}");
+                }
+
+                // Handle POST request (response from BenefitPay)
+                if (Request.Method == "POST")
+                {
+                    // Get encrypted response from BenefitPay
+                    string encryptedResponse = "";
+                    if (Request.Form.ContainsKey("trandata"))
+                    {
+                        encryptedResponse = Request.Form["trandata"].ToString();
+                    }
+
+                    // Process payment response using BenefitGatewayService
+                    var paymentRequest = new PaymentResponseRequest
+                    {
+                        OrderID = orderID,
+                        EncryptedResponse = encryptedResponse
+                    };
+
+                    var paymentResult = _benefitGatewayService.ProcessPaymentResponse(paymentRequest);
+
+                    string baseUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
+
+                    // Check payment result
+                    if (paymentResult.IsSuccessful && paymentResult.Result == "CAPTURED")
+                    {
+                        // Payment successful
+                        string successUrl = $"{baseUrl}/Order/BenefitPayApproved?OrderID={paymentResult.OrderID}";
+                        return Content($"REDIRECT={successUrl}");
+                    }
+                    else
+                    {
+                        // Payment failed
+                        string userMessage = paymentResult.ErrorMessage ?? "Payment processing failed";
+                        
+                        // Log error
+                        LogPaymentError(paymentResult.OrderID, paymentResult.Result ?? "UNKNOWN", paymentResult.ErrorMessage ?? "");
+                        
+                        string failUrl = $"{baseUrl}/Order/OrderComplete?OrderNo=Reject&error={Uri.EscapeDataString(userMessage)}";
+                        return Content($"REDIRECT={failUrl}");
+                    }
+                }
+
+                // Fallback
+                string fallbackUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
+                return Content($"REDIRECT={fallbackUrl}/Order/OrderComplete?OrderNo=Reject");
+            }
+            catch (Exception ex)
+            {
+                LogPaymentError(0, "BenefitPay Response Exception", ex.Message);
+                
+                string errorUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
+                return Content($"REDIRECT={errorUrl}/Order/OrderComplete?OrderNo=Reject");
+            }
+        }
+
+        /// <summary>
+        /// BenefitPay Approval Page - Final confirmation after successful payment
+        /// </summary>
+        [HttpGet]
+        public IActionResult BenefitPayApproved(int OrderID)
+        {
+            try
+            {
+                if (OrderID <= 0)
+                {
+                    return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+                }
+
+                // Update order status to approved (101)
+                var checkoutService = new checkoutBLL();
+                checkoutService.OrderUpdate(OrderID, 101);
+
+                // Get order details and send confirmation email
+                try
+                {
+                    var orderDetails = new myorderBLL().GetDetails(OrderID);
+                    if (orderDetails != null)
+                    {
+                        var checkoutData = new checkoutBLL
+                        {
+                            OrderNo = orderDetails.OrderID ?? 0,
+                            Email = orderDetails.Email ?? "",
+                            CustomerName = orderDetails.CustomerName ?? "",
+                            ContactNo = orderDetails.ContactNo ?? "",
+                            GrandTotal = orderDetails.GrandTotal ?? 0,
+                            Tax = orderDetails.Tax ?? 0,
+                            PaymentMethodID = 3 // BenefitPay
+                        };
+
+                        SendCompleteOrderEmails(OrderID, checkoutData, "[]");
+                    }
+                }
+                catch (Exception emailEx)
+                {
+                    // Log but don't fail
+                    LogPaymentError(OrderID, "Email sending failed", emailEx.Message);
+                }
+
+                // Redirect to thank you page
+                return RedirectToAction("OrderComplete", new { OrderID = OrderID });
+            }
+            catch (Exception ex)
+            {
+                LogPaymentError(OrderID, "BenefitPay Approval Failed", ex.Message);
+                return RedirectToAction("OrderComplete", new { OrderNo = "Reject" });
+            }
+        }
+
+        /// <summary>
+        /// Get user-friendly error message for BenefitPay response codes
+        /// </summary>
+        private string GetBenefitPayErrorMessage(string result, string responseCode)
+        {
+            if (result == "NOT CAPTURED")
+            {
+                return responseCode switch
+                {
+                    "05" => "Please contact your card issuer",
+                    "14" => "Invalid card number",
+                    "33" => "Expired card",
+                    "36" => "Restricted card",
+                    "38" => "Allowable PIN tries exceeded",
+                    "51" => "Insufficient funds",
+                    "54" => "Expired card",
+                    "55" => "Incorrect PIN",
+                    "61" => "Exceeds withdrawal amount limit",
+                    "62" => "Restricted card",
+                    "65" => "Exceeds withdrawal frequency limit",
+                    "75" => "Allowable PIN tries exceeded",
+                    "76" => "Ineligible account",
+                    "78" => "Please contact your card issuer",
+                    "91" => "Card issuer is inoperative",
+                    _ => "Unable to process payment. Please try again or use another card."
+                };
+            }
+            else if (result == "CANCELED")
+            {
+                return "Payment was cancelled";
+            }
+            else if (result == "DENIED BY RISK")
+            {
+                return "Maximum transaction limit exceeded";
+            }
+            else if (result == "HOST TIMEOUT")
+            {
+                return "Payment gateway timeout. Please try again";
+            }
+
+            return "Payment could not be processed. Please try again";
+        }
+
+        /// <summary>
+        /// Log payment errors to file
+        /// </summary>
+        private void LogPaymentError(int orderID, string message, string details)
+        {
+            try
+            {
+                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "PaymentErrors");
+
+                if (!Directory.Exists(logPath))
+                {
+                    Directory.CreateDirectory(logPath);
+                }
+
+                string logFile = Path.Combine(logPath, $"payment_error_{DateTime.Now:yyyyMMdd}.txt");
+
+                using (StreamWriter writer = new StreamWriter(logFile, true))
+                {
+                    writer.WriteLine("=============================================================================");
+                    writer.WriteLine($"Date: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                    writer.WriteLine($"OrderID: {orderID}");
+                    writer.WriteLine($"Message: {message}");
+                    writer.WriteLine($"Details: {details}");
+                    writer.WriteLine("=============================================================================");
+                    writer.WriteLine();
+                }
+            }
+            catch
+            {
+                // Silent fail - don't crash on logging errors
+            }
+        }
+
+        // ============================================================================
+        // END OF BENEFITPAY INTEGRATION
+        // ============================================================================
 
         private checkoutBLL ExtractCheckoutData()
         {

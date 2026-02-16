@@ -18,6 +18,7 @@ builder.Services.AddDistributedMemoryCache();
 
 // Add custom services
 builder.Services.AddScoped<BenefitGatewayService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

@@ -581,7 +581,7 @@
                                 </li>
                                 <li>
                                     <label><span>Email</span></label>
-                                    <a href="mailto:krachiflora@gmail.com">krachiflora@gmail.com</a>
+                                    <a href="mailto:Samiacrafts@hotmail.com">Samiacrafts@hotmail.com</a>
                                 </li>
                                 <li>
                                     <label><span>Address</span></label>
@@ -702,43 +702,46 @@
     @RenderSection("scripts", false)
 
     <script>
-
-
         var input = document.getElementById("search");
-        input.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                document.getElementById("search-btn").click();
-            }
-        });
+        if (input) {
+            input.addEventListener("keyup", function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    document.getElementById("search-btn").click();
+                }
+            });
+        }
 
         window.onscroll = function () { myFunction() };
 
         var header = document.getElementById("mainHeader");
-        var headerBottom = document.getElementById("Head");
-        var sticky = headerBottom.offsetTop;
+        if (header) {
+            var headerBottom = document.getElementById("Head");
+            if (headerBottom) {
+                var sticky = headerBottom.offsetTop;
 
-        function myFunction() {
-            if (window.pageYOffset > sticky) {
-                if (!header.classList.contains("sticky-active")) {
-                    header.classList.add("sticky-active");
-                    header.classList.add("nav-fixed-top");
-                    // Add padding to body to prevent content jump
-                    document.body.style.paddingTop = header.offsetHeight + "px";
-                }
-            } else {
-                if (header.classList.contains("sticky-active")) {
-                    header.classList.remove("sticky-active");
-                    header.classList.remove("nav-fixed-top");
-                    // Remove padding when header is not sticky
-                    document.body.style.paddingTop = "0px";
+                function myFunction() {
+                    if (window.pageYOffset > sticky) {
+                        if (!header.classList.contains("sticky-active")) {
+                            header.classList.add("sticky-active");
+                            header.classList.add("nav-fixed-top");
+                            // Add padding to body to prevent content jump
+                            document.body.style.paddingTop = header.offsetHeight + "px";
+                        }
+                    } else {
+                        if (header.classList.contains("sticky-active")) {
+                            header.classList.remove("sticky-active");
+                            header.classList.remove("nav-fixed-top");
+                            // Remove padding when header is not sticky
+                            document.body.style.paddingTop = "0px";
+                        }
+                    }
                 }
             }
         }
+
         function Search() {
             var Searchtxt = $("#search").val();
-
-
             window.location.href = '/shop/shop?Category=""&CategoryIDs=' + '' + '&SubCategoryIDs=' + "" + '&ColorIDs=' + '' + '&MinPrice=' + 'RS0' + '&MaxPrice=' + 'RS50000' + '&Searchtext=' + Searchtxt + '&SortID=' + 0 + '';
         }
 

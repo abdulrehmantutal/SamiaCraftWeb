@@ -15,11 +15,11 @@ namespace samiacraft.Models.Service
             _service = new giftBLL();
         }
 
-        public List<giftBLL> GetAll()
+        public List<giftBLL> GetAll(int userId)
         {
             try
             {
-                return _service.GetAll();
+                return _service.GetAll(userId);
             }
             catch (Exception ex)
             {

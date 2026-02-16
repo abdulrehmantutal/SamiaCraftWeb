@@ -7,7 +7,7 @@
 
 <style>
     .banner-area {
-        display: none
+        display: none;
     }
 
     .modal-body {
@@ -44,156 +44,32 @@
         }
     }
 
-    @@media (max-width: 425px) {
-        .modal .close {
-            margin-right: 0px;
-        }
-
-        .modal-content {
-            position: relative;
-            display: -ms-flexbox;
-            display: block;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0,0,0,.2);
-            border-radius: 0.3rem;
-            outline: 0;
-        }
-
-        .modal-footer {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            /* align-items: center; */
-            -ms-flex-pack: end;
-            justify-content: center;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-        }
-    }
-
-    @@media (max-width: 768px) {
-        .modal .close {
-            margin-right: 0px;
-        }
-
-        .modal-content {
-            position: relative;
-            display: -ms-flexbox;
-            display: block;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0,0,0,.2);
-            border-radius: 0.3rem;
-            outline: 0;
-        }
-
-        .modal-footer {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            /* align-items: center; */
-            -ms-flex-pack: end;
-            justify-content: center;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-        }
-    }
-
-    @@media (max-width: 1024px) {
-        .modal .close {
-            margin-right: 0px;
-        }
-
-        .modal-content {
-            position: relative;
-            display: -ms-flexbox;
-            display: block;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0,0,0,.2);
-            border-radius: 0.3rem;
-            outline: 0;
-        }
-
-        .modal-footer {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            /* align-items: center; */
-            -ms-flex-pack: end;
-            justify-content: center;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-        }
-    }
-
-    @@media (max-width: 1440px) {
-        .modal .close {
-            margin-right: 0px;
-        }
-
-        .modal-content {
-            position: relative;
-            display: -ms-flexbox;
-            display: block;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0,0,0,.2);
-            border-radius: 0.3rem;
-            outline: 0;
-        }
-
-        .modal-footer {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            /* align-items: center; */
-            -ms-flex-pack: end;
-            justify-content: center;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-        }
-    }
-
     .ribbon-top-right {
         top: -1px;
         right: 78px;
     }
 
-        .ribbon-top-right::before,
-        .ribbon-top-right::after {
-            border-top-color: transparent;
-            border-right-color: transparent
-        }
+    .ribbon-top-right::before,
+    .ribbon-top-right::after {
+        border-top-color: transparent;
+        border-right-color: transparent;
+    }
 
-        .ribbon-top-right::before {
-            top: 0;
-            left: 17px
-        }
+    .ribbon-top-right::before {
+        top: 0;
+        left: 17px;
+    }
 
-        .ribbon-top-right::after {
-            bottom: 17px;
-            right: 0
-        }
+    .ribbon-top-right::after {
+        bottom: 17px;
+        right: 0;
+    }
 
-        .ribbon-top-right span {
-            left: 61px;
-            top: 26px;
-            transform: rotate( 45deg);
-        }
+    .ribbon-top-right span {
+        left: 61px;
+        top: 26px;
+        transform: rotate(45deg);
+    }
 
     .ribbon {
         width: 150px;
@@ -203,23 +79,593 @@
         z-index: 1;
     }
 
-        .ribbon span {
-            position: absolute;
-            display: block;
-            width: 100%;
-            font-size: 12px;
-            background-color: #e38600;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-            color: #fff;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            text-transform: uppercase;
-            text-align: center;
-            margin-left: 0;
-            left: 40px;
-            top: 28px;
+    .ribbon span {
+        position: absolute;
+        display: block;
+        width: 100%;
+        font-size: 12px;
+        background-color: #e38600;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        color: #fff;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        text-transform: uppercase;
+        text-align: center;
+        margin-left: 0;
+        left: 40px;
+        top: 28px;
+    }
+
+    /* Product Details Styles */
+    .product-details-area {
+        padding: 60px 0;
+    }
+
+    .product-details-content h2 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .product-rating {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .product-rating i {
+        color: #ffc107;
+        margin-right: 2px;
+    }
+
+    .product-price {
+        margin: 15px 0;
+        font-size: 18px;
+    }
+
+    .product-price del {
+        color: #999;
+        margin-right: 10px;
+        text-decoration: line-through;
+    }
+
+    .product-price span {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .product-overview {
+        margin: 20px 0;
+    }
+
+    .product-overview h5 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #004270;
+        margin-bottom: 15px;
+    }
+
+    .product-overview p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+
+    /* Cart Plus Minus */
+    .quickview-plus-minus {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 25px 0;
+    }
+
+    .cart-plus-minus {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .cart-plus-minus-box {
+        width: 60px;
+        height: 40px;
+        border: none;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .cart-plus-minus-box:focus {
+        outline: none;
+    }
+
+    .quickview-btn-cart {
+        flex: 1;
+    }
+
+    .btn-style {
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-style.cr-btn {
+        background-color: #004270;
+        color: white;
+    }
+
+    .btn-style.cr-btn:hover {
+        background-color: #003050;
+    }
+
+    .btn-style.cr-btn span {
+        display: inline-block;
+    }
+
+    .quickview-btn-wishlist {
+        margin-left: auto;
+    }
+
+    .btn-hover {
+        border: 2px solid #004270;
+        padding: 10px 18px;
+        border-radius: 4px;
+        background-color: transparent;
+        color: #004270;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-hover:hover {
+        background-color: #004270;
+        color: white;
+    }
+
+    /* Reviews Section */
+    .review_address_inner {
+        margin-top: 40px;
+    }
+
+    .review_address_inner > h5 {
+        font-weight: 600;
+        margin-bottom: 30px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .pro_review {
+        display: flex;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .review_thumb {
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+
+    .review_thumb img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .review_details {
+        flex: 1;
+    }
+
+    .review_infowdq h5 {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .review_date span {
+        font-size: 14px;
+        color: #999;
+        margin-right: 15px;
+    }
+
+    .review_details p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        margin-top: 10px;
+    }
+
+    /* Contact Message Wrapper */
+    .contact-message-wrapper {
+        padding: 30px 20px;
+        border: 2px solid #888;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px 0px #f1efef;
+        margin-top: 30px;
+    }
+
+    .contact-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 25px;
+        border-bottom: 3px solid #ffc107;
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+
+    .contact-form-style {
+        margin-bottom: 20px;
+    }
+
+    .contact-form-style input[type="text"],
+    .contact-form-style textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: 'Rubik', sans-serif;
+        resize: vertical;
+        background-color: #f9f9f9;
+    }
+
+    .contact-form-style input[type="text"]::placeholder,
+    .contact-form-style textarea::placeholder {
+        color: #aaa;
+    }
+
+    .contact-form-style input[type="text"]:focus,
+    .contact-form-style textarea:focus {
+        outline: none;
+        border-color: #004270;
+        background-color: #fff;
+    }
+
+    /* Rating Stars */
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-right: 0;
+    }
+
+    .rating > [id^="star"] {
+        display: none;
+    }
+
+    .rating > label {
+        cursor: pointer;
+        font-size: 30px;
+        color: #ddd;
+        transition: all 0.2s ease;
+        line-height: 1;
+    }
+
+    .rating > label:before {
+        content: "★";
+    }
+
+    .rating > [id^="star"]:checked ~ label,
+    .rating:not(:checked) > label:hover,
+    .rating:not(:checked) > label:hover ~ label {
+        color: #ffc107;
+    }
+
+    .rating > [id^="star"]:checked + label:hover,
+    .rating > [id^="star"]:checked ~ label:hover,
+    .rating > label:hover ~ [id^="star"]:checked ~ label,
+    .rating > [id^="star"]:checked ~ label:hover ~ label {
+        color: #ffed85;
+    }
+
+    .submit {
+        background-color: #004270;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .submit:hover {
+        background-color: #003050;
+    }
+
+    .submit span {
+        display: inline-block;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .product-details-content h2 {
+            font-size: 22px;
         }
+
+        .quickview-plus-minus {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .quickview-btn-cart {
+            width: 100%;
+        }
+
+        .contact-message-wrapper {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
+    /* Gift Modal Styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .modal.show {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+        overflow: auto;
+    }
+
+    .modal:not(.show) {
+        display: none !important;
+        pointer-events: none;
+    }
+
+    .modal-dialog {
+        max-width: 700px;
+        margin: auto;
+        position: relative;
+        z-index: 1050;
+        flex-shrink: 0;
+    }
+
+    .modal-content {
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+        border: none;
+        border-radius: 10px;
+    }
+
+    /* Properly handle backdrop */
+    .modal-backdrop {
+        display: none !important;
+        pointer-events: none !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 1049 !important;
+    }
+
+    .modal-backdrop.show {
+        display: block !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        pointer-events: auto !important;
+    }
+
+    /* Prevent body scroll lock after modal closes */
+    body.modal-open {
+        overflow: hidden;
+    }
+
+    body:not(.modal-open) {
+        overflow: auto !important;
+        padding-right: 0 !important;
+    }
+
+    .modal-header {
+        border-bottom: none;
+        padding: 20px 30px;
+        background-color: #fff;
+        text-align: center;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+        padding-bottom: 0;
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+
+    .modal-body .container {
+        padding: 0;
+    }
+
+    .modal-body .container-fluid {
+        padding: 0;
+    }
+
+    .modal-body {
+        padding: 30px;
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-body .container-fluid {
+        padding: 0;
+        max-width: 300px;
+    }
+
+    .modal-body .row {
+        justify-content: center;
+    }
+
+    .modal-body .col-lg-4,
+    .modal-body .col-md-6,
+    .modal-body .col-sm-6,
+    .modal-body .col-md-4,
+    .modal-body .col-sm-8,
+    .modal-body .col-6 {
+        padding: 0;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .modal-body .product-wrapper {
+        text-align: center;
+        background: #fff;
+        border-radius: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+    }
+
+    .modal-body .product-wrapper:hover {
+        box-shadow: none;
+    }
+
+    .modal-body .product-img {
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 220px;
+        margin-bottom: 20px;
+    }
+
+    .modal-body .product-img img {
+        display: block;
+        margin: 0 auto;
+        max-height: 220px;
+        object-fit: contain;
+        width: auto;
+    }
+
+    .modal-body .product-content h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 15px;
+        color: #333;
+    }
+
+    .modal-body .product-content h4 a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .modal-body .product-content h4 a:hover {
+        color: #004270;
+    }
+
+    /* Gift Checkbox Styling */
+    .modal-body .product-rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 15px 0;
+        min-height: 35px;
+    }
+
+    .modal-body .gift-checkbox {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        accent-color: #004270;
+    }
+
+    .modal-body .product-price {
+        margin: 15px 0 0;
+        font-weight: 600;
+        color: #666;
+        font-size: 15px;
+    }
+
+    .modal-footer {
+        background-color: #f9f9f9;
+        border-top: none;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .modal-footer .btn-style {
+        padding: 11px 40px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        min-width: 140px;
+    }
+
+    .modal-footer .btn-style[data-dismiss="modal"] {
+        background-color: #004270;
+        color: white;
+    }
+
+    .modal-footer .btn-style[data-dismiss="modal"]:hover {
+        background-color: #003050;
+    }
+
+    .modal-footer .add-to-gift {
+        background-color: #004270;
+        color: white;
+    }
+
+    .modal-footer .add-to-gift:hover {
+        background-color: #003050;
+        text-decoration: none;
+        color: white;
+    }
+
+    .modal .close {
+        position: absolute;
+        top: 12px;
+        right: 18px;
+        font-size: 32px;
+        color: #666;
+        opacity: 1;
+        z-index: 10;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        line-height: 1;
+    }
+
+    .modal .close:hover {
+        color: #000;
+    }
+
+    .modal .close:focus {
+        outline: none;
+    }
+
 </style>
-<div class="product-details-area hm-3-padding ptb-60">
+<div class="product-details-area ptb-60">
     <div class="container-fluid">
         <div class="row">
             <!-- Left: Product Images -->
@@ -236,14 +682,16 @@
                                 : Url.Content("~/Content/assets/images/NA.png");
 
                                 <div class="tab-pane @(i == 0 ? "active" : "")" id="img_@i">
-                                    <img class="img-fluid" src="@imageUrl" style="max-height: 500px; width:auto;" alt="">
+                                    <a href="#">
+                                        <img class="img-fluid" src="@imageUrl" style="width:auto;max-height: 500px" alt="">
+                                    </a>
                                 </div>
                             }
                         }
                     </div>
 
-                    <!-- Thumbnails -->
-                    <div class="product-details-small nav mt-12 owl-carousel">
+                    <!-- Thumbnails Carousel -->
+                    <div class="product-details-small nav mt-12 product-dec-slider owl-carousel">
                         @if (ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0)
                         {
                             for (int i = 0; i < ViewBag.ProductDetails.ImgList.Count; i++)
@@ -254,7 +702,7 @@
                                 : Url.Content("~/Content/assets/images/NA.png");
 
                                 <a href="#img_@i">
-                                    <img class="img-fluid" src="@thumbUrl" style="max-height: 120px; width:auto; margin:auto;" alt="">
+                                    <img class="img-fluid" src="@thumbUrl" style="width:auto;max-height: 120px;margin:auto;" alt="">
                                 </a>
                             }
                         }
@@ -265,80 +713,481 @@
             <!-- Right: Product Info -->
             <div class="col-lg-6">
                 <div class="product-details-content">
-                    <h3>@ViewBag.ProductDetails?.Name</h3>
-                    <p class="price">BHD @ViewBag.ProductDetails?.Price</p>
+                    <h2>@ViewBag.ProductDetails?.Name</h2>
 
+                    <!-- Product Rating -->
+                    <div class="product-rating">
+                        @{
+                            int rating = 0;
+                            for (int i = 1; i < 6; i++)
+                            {
+                                if (rating >= i)
+                                {
+                                    <i class="ion-ios-star"></i>
+                                }
+                                else
+                                {
+                                    <i class="ion-ios-star-outline"></i>
+                                }
+                            }
+                        }
+                    </div>
+
+                    <!-- Product Price -->
+                    <div class="product-price">
+                        <span>@ViewBag.CurrencySymbol @ViewBag.ProductDetails?.Price</span>
+                    </div>
+
+                    <!-- Product Overview -->
                     <div class="product-overview">
-                        <h5>Product Overview</h5>
+                        <h5 class="pd-sub-title text-theme">Product Overview</h5>
                         <p>Add a touch of charm to your space with our hand-painted wall hanging plates. Each piece is a unique blend of art and tradition.</p>
+                        <p>Size: 16cm top diameter, 22 cm high</p>
+                    </div>
 
-                        <ul>
-                            <li>Type: Wall hanging decorative plate</li>
-                            <li>Size: 33cm – 36cm diameter</li>
-                            <li>Material: High-quality ceramic</li>
-                            <li>Finish: Hand-painted with intricate designs</li>
-                            <li>Usage: Includes wall hook for easy hanging</li>
-                            <li>Care: Indoor décor only, not for food use</li>
-                        </ul>
+                    <!-- Quantity and Button Section -->
+                    <div class="quickview-plus-minus">
+                        <div class="cart-plus-minus">
+                            <input type="text" value="1" id="cart_quantity" class="cart-plus-minus-box">
+                        </div>
 
-                        <div class="buy-section mt-3">
-                            <input type="number" id="cart_quantity" value="1" min="1" style="width:60px;">
-                            <button class="btn btn-primary buy-now add-to-cart" data-id="@ViewBag.ProductDetails?.ID" data-title="@ViewBag.ProductDetails?.Name" data-price="@ViewBag.ProductDetails?.Price" data-image-src="@(ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0 && !string.IsNullOrEmpty(ViewBag.ProductDetails.ImgList[0].Image) ? Configuration["Image"] + ViewBag.ProductDetails.ImgList[0].Image : Url.Content("~/Content/assets/images/NA.png"))">BUY NOW</button>
-                            <button class="btn btn-outline-secondary"><i class="fa fa-heart"></i></button>
+                        <div class="quickview-btn-cart">
+                            <a class="btn-style cr-btn buy-now" title="Add To Cart" 
+                               data-id="@ViewBag.ProductDetails?.ID" 
+                               data-title="@ViewBag.ProductDetails?.Name" 
+                               data-image-src="@(ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0 && !string.IsNullOrEmpty(ViewBag.ProductDetails.ImgList[0].Image) ? Configuration["Image"] + ViewBag.ProductDetails.ImgList[0].Image : Url.Content("~/Content/assets/images/NA.png"))" 
+                               data-price="@ViewBag.ProductDetails?.Price" 
+                               href="#giftModal"
+                               data-toggle="modal">
+                                <span>buy now</span>
+                            </a>
+                        </div>
+
+                        <div class="quickview-btn-wishlist">
+                            <a class="btn-hover cr-btn add-to-wish-list" title="Wishlist" 
+                               data-id="@ViewBag.ProductDetails?.ID" 
+                               data-title="@ViewBag.ProductDetails?.Name" 
+                               data-image-src="@(ViewBag.ProductDetails?.ImgList != null && ViewBag.ProductDetails.ImgList.Count > 0 && !string.IsNullOrEmpty(ViewBag.ProductDetails.ImgList[0].Image) ? Configuration["Image"] + ViewBag.ProductDetails.ImgList[0].Image : Url.Content("~/Content/assets/images/NA.png"))" 
+                               data-price="@ViewBag.ProductDetails?.Price" 
+                               href="#">
+                                <span><i class="ion-ios-heart-outline"></i></span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Gift Modal -->
-        <div class="modal fade" id="giftModal" tabindex="-1" role="dialog" aria-labelledby="giftModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="giftModalLabel">Select Gift Items</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <input id="item_hidden_id" type="hidden" />
-                        <div id="giftItemsList">
-                            @if (ViewBag.Gift != null && ViewBag.Gift.Count > 0)
-                            {
-                                @foreach (var Rec in ViewBag.Gift)
-                                {
-                                    var imgURL = !string.IsNullOrEmpty(Rec?.Image)
-                                        ? Configuration["Image"] + Rec.Image
-                                        : Url.Content("~/Content/assets/images/NA.png");
+        <!-- Customer Reviews Section -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <h3 class="text-center mb-4">Our Customer Reviews</h3>
 
-                                    <div class="gift-item mb-3 p-3" style="border: 1px solid #eee; border-radius: 4px;">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input gift-checkbox" 
-                                                   id="gift_@Rec.ID" 
-                                                   data-id="@Rec.ID" 
-                                                   data-title="@Rec.Name" 
-                                                   data-image-src="@imgURL" 
-                                                   data-price="@Rec.Price">
-                                            <label class="form-check-label" for="gift_@Rec.ID">
-                                                <strong>@Rec.Name</strong> - BHD @Rec.Price
-                                            </label>
+                <div class="col-lg-12 review_address_inner">
+                    @{
+                        var reviews = ViewBag.ProductDetails?.Reviews as List<dynamic> ?? new List<dynamic>();
+                        if (reviews.Count > 0)
+                        {
+                            foreach (var review in reviews)
+                            {
+                                <div class="pro_review">
+                                    <div class="review_thumb">
+                                        <img alt="review images" src="~/Content/assets/images/usericon.jpg" />
+                                    </div>
+                                    <div class="review_details">
+                                        <div class="review_infowdq">
+                                            <h5>@review.Name</h5>
+                                        </div>
+                                        <div class="review_date">
+                                            <span>@review.Email</span>
+                                        </div>
+                                        <div class="product-rating">
+                                            @{
+                                                int reviewRating = 0;
+                                                for (int i = 1; i < 6; i++)
+                                                {
+                                                    if (reviewRating >= i)
+                                                    {
+                                                        <i class="ion-ios-star"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="ion-ios-star-outline"></i>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                        <p>@review.Description</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <h5 class="text-center">No Reviews</h5>
+                        }
+                    }
+                </div>
+
+                <!-- Leave a Reply Form -->
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="contact-message-wrapper">
+                        <h4 class="contact-title">Leave a Reply</h4>
+                        <div class="contact-message">
+                            <form id="FormReview" method="post" action="#">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="contact-form-style mb-20">
+                                            <input type="text" id="ReviewName" name="Name" placeholder="Name *" tabindex="1" required>
                                         </div>
                                     </div>
-                                }
-                            }
-                            else
-                            {
-                                <p class="text-muted">No gifts available</p>
-                            }
+
+                                    <div class="col-lg-12 d-flex" style="align-items: center; margin-bottom: 20px;">
+                                        <h5 class="pr-4" style="margin-bottom: 0;">Rate us now</h5>
+                                        <fieldset class="rating">
+                                            <input type="radio" id="star5" name="rating" class="rating-selection" value="5">
+                                            <label for="star5" title="Awesome - 5 stars"></label>
+                                            <input type="radio" id="star4" name="rating" class="rating-selection" value="4">
+                                            <label for="star4" title="Pretty good - 4 stars"></label>
+                                            <input type="radio" id="star3" name="rating" class="rating-selection" value="3">
+                                            <label for="star3" title="Meh - 3 stars"></label>
+                                            <input type="radio" id="star2" name="rating" class="rating-selection" value="2">
+                                            <label for="star2" title="Kinda bad - 2 stars"></label>
+                                            <input type="radio" id="star1" name="rating" class="rating-selection" value="1">
+                                            <label for="star1" title="Sucks big time - 1 star"></label>
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="contact-form-style">
+                                            <textarea id="ReviewComment" name="Comment" placeholder="Comment *" tabindex="5" rows="5"></textarea>
+                                            <button class="submit cr-btn btn-style" type="submit" id="btn_review_submit">
+                                                <span>Submit</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <p class="msg-area"></p>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary add-to-gift">Add Gifts to Cart</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Gift Modal -->
+<div class="modal fade" id="giftModal" tabindex="-1" role="dialog" aria-labelledby="giftModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            
+            <div class="modal-header">
+                <h2>Add Gift to Item</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <input id="item_hidden_id" type="hidden" />
+                        @if (ViewBag.Gift != null && ViewBag.Gift.Count > 0)
+                        {
+                            foreach (var gift in ViewBag.Gift)
+                            {
+                                var giftImgURL = !string.IsNullOrEmpty(gift?.Image)
+                                    ? Configuration["Image"] + gift.Image
+                                    : Url.Content("~/Content/assets/images/NA.png");
+
+                                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                                    <div class="product-wrapper">
+                                        <div class="product-img">
+                                            <img src="@giftImgURL" alt="@gift.Name">
+                                        </div>
+                                        <div class="product-content">
+                                            <h4><a href="#">@gift.Name</a></h4>
+                                            <div class="product-rating">
+                                                <input type="checkbox" class="gift-checkbox" 
+                                                       data-id="@gift.ID" 
+                                                       data-title="@gift.Name" 
+                                                       data-image-src="@giftImgURL" 
+                                                       data-price="@gift.Price" />
+                                            </div>
+                                            <div class="product-price">
+                                                <span>BHD @gift.Price</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-md-12">
+                                <div class="alert alert-danger">No gifts available</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn-style" data-dismiss="modal">
+                    <span>cancel</span>
+                </a>
+                <a class="btn-style add-to-gift" title="Add To Cart" href="#">
+                    <span>add to cart</span>
+                </a>
+            </div>
+        </div>
+        </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var currentProductQuantity = 1;
+        var currentProductData = null; // Store product data for modal
+
+        // When Buy Now button is clicked - use event delegation for safety
+        $(document).on('click', '.buy-now', function(e) {
+            e.preventDefault();
+            try {
+                var buyNowBtn = $(this);
+                
+                // Store the current quantity from the quantity input
+                var quantityInput = $('#cart_quantity');
+                currentProductQuantity = quantityInput.length ? (parseInt(quantityInput.val()) || 1) : 1;
+                
+                // Store product data for modal use
+                var imageUrl = buyNowBtn.data('image-src');
+                // Fix image URL duplication
+                if (imageUrl && imageUrl.includes('https://retail.premium-pos.com') && imageUrl.indexOf('https://retail.premium-pos.com') !== imageUrl.lastIndexOf('https://retail.premium-pos.com')) {
+                    imageUrl = imageUrl.substring(imageUrl.lastIndexOf('https://retail.premium-pos.com'));
+                }
+                
+                currentProductData = {
+                    id: buyNowBtn.data('id'),
+                    title: buyNowBtn.data('title'),
+                    price: buyNowBtn.data('price'),
+                    image: imageUrl,
+                    quantity: currentProductQuantity
+                };
+                
+                // Add item to cart immediately
+                addToCart(currentProductData);
+                showNotification('Item added to cart!', 'success');
+                
+                // Reset gift checkboxes
+                var checkboxes = $('.gift-checkbox');
+                if (checkboxes.length > 0) {
+                    checkboxes.prop('checked', false);
+                }
+                
+                // Trigger modal show to offer gift options
+                var modal = $('#giftModal');
+                if (modal.length > 0) {
+                    modal.modal('show');
+                }
+            } catch(err) {
+                console.error('Error in buy-now click handler:', err);
+            }
+        });
+
+        // When Add to Gift button is clicked
+        $(document).on('click', '.add-to-gift', function(e) {
+            e.preventDefault();
+            try {
+                if (!currentProductData) {
+                    console.error('Product data not available');
+                    return;
+                }
+
+                // Check if any gift is selected
+                var selectedGifts = $('.gift-checkbox:checked');
+                var hasGifts = selectedGifts.length > 0;
+
+                if (hasGifts) {
+                    // Get the current cart to find the main item
+                    var cartItems = [];
+                    try {
+                        var stored = localStorage.getItem('_cartitems');
+                        if (stored) {
+                            cartItems = JSON.parse(stored);
+                        }
+                    } catch(e) {
+                        console.error('Error reading cart:', e);
+                    }
+
+                    // Find the main item key (last added item should be the main product)
+                    var mainItemKey = null;
+                    if (cartItems.length > 0) {
+                        mainItemKey = cartItems[cartItems.length - 1].Key;
+                    }
+
+                    // Add each selected gift with same quantity and link to main item
+                    selectedGifts.each(function() {
+                        var giftImage = $(this).data('image-src');
+                        // Fix image URL duplication for gifts too
+                        if (giftImage && giftImage.includes('https://retail.premium-pos.com') && giftImage.indexOf('https://retail.premium-pos.com') !== giftImage.lastIndexOf('https://retail.premium-pos.com')) {
+                            giftImage = giftImage.substring(giftImage.lastIndexOf('https://retail.premium-pos.com'));
+                        }
+                        
+                        var giftData = {
+                            id: $(this).data('id'),
+                            title: $(this).data('title'),
+                            price: $(this).data('price'),
+                            image: giftImage,
+                            quantity: currentProductQuantity,
+                            isGift: true,
+                            linkedItemKey: mainItemKey
+                        };
+                        addToCart(giftData);
+                    });
+                    
+                    showNotification('Gift(s) added to cart!', 'success');
+                }
+                
+                // Close modal
+                var modal = $('#giftModal');
+                if (modal.length > 0) {
+                    modal.modal('hide');
+                }
+            } catch(err) {
+                console.error('Error in add-to-gift click handler:', err);
+                showNotification('Error adding gifts to cart', 'error');
+            }
+        });
+
+        // When modal is about to close
+        var modal = $('#giftModal');
+        if (modal.length > 0) {
+            // Hide event - when modal starts closing
+            modal.on('hide.bs.modal', function() {
+                try {
+                    // Immediately remove backdrop to prevent blocking
+                    $('.modal-backdrop').remove();
+                } catch(err) {
+                    console.error('Error removing backdrop on hide:', err);
+                }
+            });
+            
+            // Hidden event - when modal has closed
+            modal.on('hidden.bs.modal', function() {
+                try {
+                    // Reset for next use
+                    var checkboxes = $('.gift-checkbox');
+                    if (checkboxes.length > 0) {
+                        checkboxes.prop('checked', false);
+                    }
+                    
+                    // Remove any remaining backdrop elements
+                    $('.modal-backdrop').remove();
+                    
+                    // Ensure body classes are reset
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', '');
+                    $('body').css('padding-right', '');
+                    
+                    // Reset modal display
+                    modal.css('display', 'none');
+                } catch(err) {
+                    console.error('Error resetting modal:', err);
+                }
+            });
+        }
+
+        // Function to add item to cart (using custom.js cart system)
+        function addToCart(itemData) {
+            try {
+                // Generate unique key for cart item
+                var itemKey = Math.floor((Math.random() * 10000) + 1);
+                
+                // Create cart item object using custom.js format
+                var cartItem = {
+                    ItemID: itemData.id,
+                    Title: itemData.title,
+                    Image: itemData.image,
+                    UPrice: parseFloat(itemData.price),
+                    Price: parseFloat(itemData.price) * itemData.quantity,
+                    Qty: itemData.quantity,
+                    ProNote: itemData.isGift ? 'Gift' : '',
+                    Key: itemKey,
+                    IsGift: itemData.isGift || false,
+                    LinkedItemKey: itemData.linkedItemKey || null
+                };
+
+                // Get existing cart from localStorage using custom.js key
+                var cart = [];
+                try {
+                    var stored = localStorage.getItem('_cartitems');
+                    if (stored) {
+                        cart = JSON.parse(stored);
+                    }
+                } catch(e) {
+                    console.error('Error reading localStorage:', e);
+                    cart = [];
+                }
+
+                // Add new item to cart
+                cart.push(cartItem);
+
+                // Save to localStorage using custom.js key
+                try {
+                    localStorage.setItem('_cartitems', JSON.stringify(cart));
+                } catch(e) {
+                    console.error('Error saving to localStorage:', e);
+                }
+
+                // Update cart display using custom.js function
+                if (typeof topheadcart === 'function') {
+                    topheadcart();
+                } else {
+                    console.error('topheadcart function not found');
+                }
+
+                console.log('Item added to cart:', cartItem);
+                console.log('Current cart:', cart);
+            } catch(err) {
+                console.error('Error in addToCart function:', err);
+            }
+        }
+
+        // Function to show notifications
+        function showNotification(message, type) {
+            try {
+                var alertClass = type === 'success' ? 'alert-success' : 'alert-' + type;
+                
+                var notification = $('<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">' +
+                    message +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                    '</button>' +
+                    '</div>');
+
+                $('body').append(notification);
+
+                // Auto-close after 3 seconds
+                setTimeout(function() {
+                    notification.fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 3000);
+            } catch(err) {
+                console.error('Error showing notification:', err);
+            }
+        }
+
+        // Initialize cart count on page load
+        $(window).on('load', function() {
+            try {
+                if (typeof topheadcart === 'function') {
+                    topheadcart();
+                }
+            } catch(err) {
+                console.error('Error initializing cart:', err);
+            }
+        });
+    });
+</script>

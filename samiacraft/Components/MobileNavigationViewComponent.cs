@@ -17,7 +17,6 @@ namespace samiacraft.Components
         {
             try
             {
-                // Get categories with subcategories for mobile
                 var navigationBLL = new navigationBLL();
 
                 int LocationId = Convert.ToInt32(_configuration["LocationId"]);
@@ -32,7 +31,6 @@ namespace samiacraft.Components
             }
             catch (Exception ex)
             {
-                // Return empty list on error
                 return View(new List<navigationBLL>());
             }
         }
