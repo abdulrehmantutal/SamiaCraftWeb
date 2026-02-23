@@ -10,13 +10,7 @@
         "dependencies": {
           "Newtonsoft.Json": "13.0.4",
           "System.Configuration.ConfigurationManager": "8.0.0",
-          "System.Data.SqlClient": "4.9.0",
-          "IKVM.OpenJDK.Core": "7.2.4630.5",
-          "IKVM.OpenJDK.Security": "7.2.4630.5",
-          "IKVM.OpenJDK.Text": "7.2.4630.5",
-          "IKVM.OpenJDK.Util": "7.2.4630.5",
-          "IKVM.Runtime": "7.2.4630.5",
-          "iPayBenefitPipe": "0.0.0.0"
+          "System.Data.SqlClient": "4.9.0"
         },
         "runtime": {
           "samiacraft.dll": {}
@@ -109,54 +103,6 @@
             "fileVersion": "8.0.23.53103"
           }
         }
-      },
-      "IKVM.OpenJDK.Core/7.2.4630.5": {
-        "runtime": {
-          "IKVM.OpenJDK.Core.dll": {
-            "assemblyVersion": "7.2.4630.5",
-            "fileVersion": "7.2.4630.5"
-          }
-        }
-      },
-      "IKVM.OpenJDK.Security/7.2.4630.5": {
-        "runtime": {
-          "IKVM.OpenJDK.Security.dll": {
-            "assemblyVersion": "7.2.4630.5",
-            "fileVersion": "7.2.4630.5"
-          }
-        }
-      },
-      "IKVM.OpenJDK.Text/7.2.4630.5": {
-        "runtime": {
-          "IKVM.OpenJDK.Text.dll": {
-            "assemblyVersion": "7.2.4630.5",
-            "fileVersion": "7.2.4630.5"
-          }
-        }
-      },
-      "IKVM.OpenJDK.Util/7.2.4630.5": {
-        "runtime": {
-          "IKVM.OpenJDK.Util.dll": {
-            "assemblyVersion": "7.2.4630.5",
-            "fileVersion": "7.2.4630.5"
-          }
-        }
-      },
-      "IKVM.Runtime/7.2.4630.5": {
-        "runtime": {
-          "IKVM.Runtime.dll": {
-            "assemblyVersion": "7.2.4630.5",
-            "fileVersion": "7.2.4630.5"
-          }
-        }
-      },
-      "iPayBenefitPipe/0.0.0.0": {
-        "runtime": {
-          "iPayBenefitPipe.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
       }
     }
   },
@@ -228,36 +174,6 @@
       "sha512": "sha512-+TUFINV2q2ifyXauQXRwy4CiBhqvDEDZeVJU7qfxya4aRYOKzVBpN+4acx25VcPB9ywUN6C0n8drWl110PhZEg==",
       "path": "system.security.cryptography.protecteddata/8.0.0",
       "hashPath": "system.security.cryptography.protecteddata.8.0.0.nupkg.sha512"
-    },
-    "IKVM.OpenJDK.Core/7.2.4630.5": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IKVM.OpenJDK.Security/7.2.4630.5": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IKVM.OpenJDK.Text/7.2.4630.5": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IKVM.OpenJDK.Util/7.2.4630.5": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IKVM.Runtime/7.2.4630.5": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "iPayBenefitPipe/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

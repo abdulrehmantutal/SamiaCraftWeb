@@ -9752,7 +9752,7 @@ img.mfp-img {
 }
 
 .breadcrumb-area {
-    background: url("../images/bg/breadcrumb-bg.jpg") repeat scroll 0 0;
+    background: #ebebeb;
     text-align: center
 }
 
@@ -10501,7 +10501,6 @@ img.mfp-img {
 
                     .shopping-cart-wrap ul.mini-cart .cart-item .cart-title .price-box .old-price {
                         color: #666;
-                        text-decoration: line-through
                     }
 
                 .shopping-cart-wrap ul.mini-cart .cart-item .cart-title .remove_from_cart {
@@ -13109,7 +13108,6 @@ ul.minicart-pricing-box {
         }
 
         .product-content .price-box .old-price {
-            text-decoration: line-through
         }
 
 .product-active-lg-4 {

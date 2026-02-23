@@ -31,7 +31,7 @@ namespace samiacraft.Controllers
                 
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
                 
-                var settng = new settingBLL().GetSettings();
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
@@ -39,9 +39,7 @@ namespace samiacraft.Controllers
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
                 
-                var cityData = new cityService().GetAll();
-                ViewBag.City = cityData ?? new List<cityBLL>();
-                ViewBag.Banner = new bannerBLL().GetBanner("Other");
+                //ViewBag.Banner = new bannerBLL().GetBanner("Other");
                 
                 var productDetails = _service.GetAll(ItemID, LocationId);
                 ViewBag.ProductDetails = productDetails;
@@ -60,8 +58,9 @@ namespace samiacraft.Controllers
             try
             {
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-                
-                var settng = new settingBLL().GetSettings();
+
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
@@ -69,9 +68,7 @@ namespace samiacraft.Controllers
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
                 
-                var cityData = new cityService().GetAll();
-                ViewBag.City = cityData ?? new List<cityBLL>();
-                ViewBag.Banner = new bannerBLL().GetBanner("Other");
+                //ViewBag.Banner = new bannerBLL().GetBanner("Other");
                 
                 return View();
             }

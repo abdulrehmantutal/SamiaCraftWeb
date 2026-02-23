@@ -9,6 +9,7 @@
 # Build
 bin/
 obj/
+Properties/
 *.dll
 *.exe
 *.pdb

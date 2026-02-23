@@ -1,1 +1,55 @@
-[]
+[
+  {
+    "ContainingType": "samiacraft.Controllers.BenefitPayController",
+    "Method": "HandlePaymentError",
+    "RelativePath": "api/BenefitPay/error",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "errorText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trackid",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "samiacraft.Controllers.BenefitPayController",
+    "Method": "InitiatePayment",
+    "RelativePath": "api/BenefitPay/initiate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "samiacraft.Controllers.PaymentInitiationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "samiacraft.Controllers.BenefitPayController",
+    "Method": "ProcessPaymentResponse",
+    "RelativePath": "api/BenefitPay/response",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "trandata",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

@@ -537,7 +537,6 @@ function GetWishListItems() {
             + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + data[i].Price.toFixed(2) + '</span></td>'
             + '<td class="plantmore-product-stock-status"><span class="stockcheck">' + data[i].Instock + '</span></td>'
             + '<td class="plantmore-product-add-cart"><a class="btn btn-default btn-small" href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">Add to Cart</a></td>'
-            //+ "<td class='plantmore-product-add-cart'><a href='#' class='addItemLS ' onclick='addtocart("+data[i].ItemID+","+data[i].Title+"','"+ data[i].Image +"',"+ data[i].Price +",1);toast('Item Added to Cart', 1); return false;'>add to cart</a></td>"
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeWishlistitem(' + data[i].Key + '); return false;"><i class="h5 ion-trash-a mb-0"></i></a></td>'
             + '</tr>'
 
@@ -569,28 +568,23 @@ function StockActiveColor() {
     });
 };
 
-//Currency
-var currency = "Rs.";
+var currency = "BHD.";
 var currencyLS = localStorage.getItem("currency");
 if (currencyLS == null) {
     localStorage.setItem("currency", currency);
 }
 else {
-    localStorage.setItem("currency", "RS.");
+    localStorage.setItem("currency", "BHD.");
 }
 function ShowText() {
     var currency = localStorage.getItem("currency");
     $(".currency-text").text(currency);
 };
 
-
-//form validation
 (function () {
     'use strict';
     window.addEventListener('load', function () {
-        // Get the forms we want to add validation styles to
         var forms = document.getElementsByClassName('needs-validation');
-        // Loop over them and prevent submission
         var validation = Array.prototype.filter.call(forms, function (form) {
 
             form.addEventListener('submit', function (event) {
@@ -605,9 +599,7 @@ function ShowText() {
 })();
 
 
-// Gift Functions - Add Cart Item with Gifts
 function AddCartWithGifts(itemId, itemTitle, qty) {
-    // Get selected gifts from modal
     var selectedGifts = [];
     
     $('#giftModal .gift-checkbox:checked').each(function() {
@@ -620,17 +612,13 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
         selectedGifts.push(giftData);
     });
     
-    // Get current cart item data from ProductDetails page
     var productImage = $('img[src*="product"]').attr('src') || '/Content/assets/images/NA.png';
     
-    // Extract image from button data attributes or page
     var itemImage = $('.buy-now.add-to-cart').data('image-src') || productImage;
     var itemPrice = parseFloat($('.buy-now.add-to-cart').data('price')) || 0;
     
-    // Generate unique key for this cart item
     var itemKey = Math.floor((Math.random() * 10000) + 1);
     
-    // Add item to cart
     var cartItems = getCartLS();
     cartItems.push({
         ItemID: itemId,
@@ -644,7 +632,6 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
     });
     setCartLS(cartItems);
     
-    // Add gifts to gift items list
     if (selectedGifts.length > 0) {
         var giftItems = getgiftLS();
         
@@ -656,26 +643,22 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
                 Image: gift.image,
                 DisplayPrice: gift.price,
                 DiscountedPrice: 0,
-                Qty: qty,  // Gift quantity matches main item quantity
-                OriginalQty: qty,  // Store original qty for proportional scaling
+                Qty: qty,
+                OriginalQty: qty, 
                 Key: Math.floor((Math.random() * 10000) + 1),
-                ItemKey: itemKey  // Link gift to main cart item
+                ItemKey: itemKey 
             });
         });
         
         setgiftLS(giftItems);
     }
     
-    // Close modal and update cart display
     $('#giftModal').modal('hide');
     topheadcart();
     cartitem();
     
-    // Show success message
     toast('Item added to cart with gifts!', 1);
 }
-
-//Index - Home
 
 function getmail() {
     var email = $(".SubscribeEmail").val();
@@ -687,11 +670,8 @@ function getmail() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (res) {
-
-
         },
         error: function (xhr, textStatus, errorThrown) {
-            //
         }
     });
 };

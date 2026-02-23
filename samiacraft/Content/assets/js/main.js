@@ -38,42 +38,75 @@ function sidebarSearch() {
     sidebarSearch();
 
     /*-------- Off Canvas Feature Open close start--------*/
-    $(".off-canvas-btn-Feature").on('click', function () {
+    $(".off-canvas-btn-Feature").on('click touchend', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         $("body").addClass('fix');
         $(".off-canvas-wrapper-feature").addClass('open');
+        return false;
     });
 
-    $(".btn-close-off-canvas,.off-canvas-overlay").on('click', function () {
+    $(document).on('click touchend', '.btn-close-off-canvas-feature,.off-canvas-overlay-feature', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         $("body").removeClass('fix');
         $(".off-canvas-wrapper-feature").removeClass('open');
+        return false;
     });
 
 
-    
 /*-------- Off Canvas Open close start--------*/
-$(".off-canvas-btn").on('click', function () {
+$(".off-canvas-btn").on('click touchend', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     $("body").addClass('fix');
     $(".off-canvas-wrapper").addClass('open');
+    return false;
 });
 
-$(".btn-close-off-canvas,.off-canvas-overlay").on('click', function () {
+$(".btn-close-off-canvas").on('click touchend', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     $("body").removeClass('fix');
     $(".off-canvas-wrapper").removeClass('open');
-});
-    
-    
-
-/*-------- Off Canvas Open close start--------*/
-$(".off-canvas-btn").on('click', function () {
-    $("body").addClass('fix');
-    $(".off-canvas-wrapper").addClass('open');
+    return false;
 });
 
-$(".btn-close-off-canvas,.off-canvas-overlay").on('click', function () {
+$(".off-canvas-overlay").on('click touchend', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     $("body").removeClass('fix');
     $(".off-canvas-wrapper").removeClass('open');
+    return false;
 });
-/*-------- Off Canvas Open close end--------*/
+
+// Close menu when a regular link is clicked (but not category toggle links)
+$(".off-canvas-wrapper .mobile-menu a").on('click', function() {
+    var $this = $(this);
+    // Only close if it's not a category toggle link (href != '#')
+    if ($this.attr('href') !== '#') {
+        $("body").removeClass('fix');
+        $(".off-canvas-wrapper").removeClass('open');
+    }
+});
+
+// Handle window resize - close menu and reset state when switching to desktop
+$(window).on('resize', function() {
+    var windowWidth = $(window).width();
+    // Close menu if window is resized to desktop size (larger than 991px)
+    if (windowWidth > 991) {
+        $("body").removeClass('fix');
+        $(".off-canvas-wrapper").removeClass('open');
+    }
+});
+
+// Close menu when Escape key is pressed
+$(document).on('keydown', function(e) {
+    if (e.key === 'Escape' && $(".off-canvas-wrapper").hasClass('open')) {
+        $("body").removeClass('fix');
+        $(".off-canvas-wrapper").removeClass('open');
+    }
+});
 
 
 /*------- product view mode change js start -------*/

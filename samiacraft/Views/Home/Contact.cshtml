@@ -23,13 +23,13 @@
    
 </style>
 
-@if (ViewBag.Banner.Count > 0)
+@if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
 {
-<div class="breadcrumb-area section-ptb" style="background: url(@imageUrl@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+    <div class="breadcrumb-area section-ptb" style="background: #ebebeb;background-size: cover;">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2 class="breadcrumb-title">Contact Us</h2>
+                <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading</h2>
                 <!-- breadcrumb-list start -->
                 <ul class="breadcrumb-list">
                     <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
@@ -49,7 +49,7 @@ else
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
+                    <h2 class="breadcrumb-title">Contact Us</h2>
                     <!-- breadcrumb-list start -->
                     <ul class="breadcrumb-list">
                         <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
@@ -111,22 +111,20 @@ else
                         <ul>
                             <li>
                                 <strong>Address :</strong> <span>
-    Al Hilal, street 32nd building 12 c 3rd floor
-    Phase V Saba Commercial Area Defence V
-    Defence Housing Authority, Karachi,75500 Sindh, Pakistan
+    --
 </span>
                             </li>
                             <li><strong>Email : </strong>Samiacrafts@hotmail.com</li>
                             <li>
-                                <strong>Mobile :</strong> 03002920640
+                                <strong>Mobile :</strong> +97338499313
                             </li>
                         </ul>
                     </div>
-                    <div class="work-hours">
+                    @* <div class="work-hours">
                         <h5>Working hours</h5>
                         <p class="mb-1"><span><strong>Monday &ndash; Saturday</strong> 11:00 AM &ndash; 11:00 PM  </span> </p>
                         <p class="text-danger"><span><strong>Sunday </strong>: Closed</span> </p>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </div>

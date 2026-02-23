@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("samiacraft")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2c082287304858d9f796ea252c0251acdeffd98")]
 [assembly: System.Reflection.AssemblyProductAttribute("samiacraft")]
 [assembly: System.Reflection.AssemblyTitleAttribute("samiacraft")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

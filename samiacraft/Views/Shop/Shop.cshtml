@@ -173,7 +173,7 @@ else if ((ViewBag.Banner == null || ViewBag.Banner.Count == 0) &&
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h2 class="breadcrumb-title">Online Flower Shop</h2>
+                    <h2 class="breadcrumb-title">Online Shop</h2>
                     <ul class="breadcrumb-list">
                         <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
                         <li class="breadcrumb-item active">Shop</li>
@@ -451,15 +451,7 @@ else if ((ViewBag.Banner == null || ViewBag.Banner.Count == 0) &&
                                         </div>
 
                                         <div class="price-box">
-                                                <span class="new-price">@item.Price</span>
-                                            @* @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
-                                            {
-                                            }
-                                            else
-                                            {
-                                                <span class="old-price">@item.Price</span>
-                                                <span class="new-price">@item.DiscountedPrice</span>
-                                            } *@
+                                            <span class="new-price">BHD @item.Price.ToString("0.000")</span>
                                         </div>
                                     </div>
                                 </div>
@@ -510,12 +502,42 @@ else if ((ViewBag.Banner == null || ViewBag.Banner.Count == 0) &&
 
         $(document).ready(function () {
 
-            $("#LoadProduct").load('@Url.Action("Products", "Shop")');
-            $("#divLoader").hide();
-
             var Category = [];
             var SubCategory = [];
             var Color = [];
+            
+            // Get search text from query parameters
+            var searchText = getUrlParameter('Searchtext');
+            
+            // If search text exists, populate the search boxes and perform search
+            if (searchText && searchText.trim() !== '') {
+                $("#txt-desktop").val(decodeURIComponent(searchText));
+                $("#txt-mobile").val(decodeURIComponent(searchText));
+                
+                // Perform the search
+                PerformSearchFilter(decodeURIComponent(searchText));
+            } else {
+                // Normal initialization without search
+                $("#LoadProduct").load('@Url.Action("Products", "Shop")');
+            }
+            
+            // Initialize selected categories from query parameters
+            var selectedCategoryIds = '@ViewBag.SelectedCategoryIds';
+            if (selectedCategoryIds) {
+                var categoryArray = selectedCategoryIds.split(',');
+                categoryArray.forEach(function(catId) {
+                    if (catId.trim()) {
+                        Category.push(catId.trim());
+                        $('input[name="Category"][value="' + catId.trim() + '"]').prop('checked', true);
+                    }
+                });
+                
+                // Trigger filter if categories are selected
+                if (Category.length > 0) {
+                    var SortID = $(".SelectSort").val();
+                    ProductFilter(Category.join(), "", "", "RS0", "RS50000", SortID);
+                }
+            }
 
             $('input[name="Category"]').click(function () {
 
@@ -622,6 +644,60 @@ else if ((ViewBag.Banner == null || ViewBag.Banner.Count == 0) &&
             //===============================================
 
         });
+        
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : results[1];
+        }
+        
+        function PerformSearchFilter(searchText) {
+            $("#divLoader").show();
+            $("#LoadProduct").hide();
+            
+            var filter = new Object();
+            filter.Category = "";
+            filter.SubCategory = "";
+            filter.Color = "";
+            filter.Searchtxt = searchText;
+            filter.MinPrice = "RS0";
+            filter.MaxPrice = "RS50000";
+            filter.SortID = 0;
+            
+            var FilterData = JSON.stringify(filter);
+            
+            $.ajax({
+                type: "POST",
+                url: '../Shop/Filter',
+                data: FilterData,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (obj) {
+                    $.ajax({
+                        type: "POST",
+                        url: '../Shop/Products',
+                        data: JSON.stringify(obj.data),
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'html',
+                        success: function (data) {
+                            $("#divLoader").hide();
+                            $("#LoadProduct").show();
+                            $("#LoadProduct").html(data);
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            $("#divLoader").hide();
+                            $("#LoadProduct").show();
+                        }
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    $("#divLoader").hide();
+                    $("#LoadProduct").show();
+                }
+            });
+        }
+        
         function ProductFilter(Category, SubCategory, Color, MinPrice, MaxPrice, SortID) {
 
             $("#divLoader").show();

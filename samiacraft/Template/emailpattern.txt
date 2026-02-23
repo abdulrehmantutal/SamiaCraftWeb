@@ -148,7 +148,7 @@
                                                                                                             </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="1995753e-0c64-4075-b4ad-321980b82dfe">
                                                                                                                 <tbody>
                                                                                                                     <tr>
-                                                                                                                        <td style="padding:25px 0px 18px 0px; line-height:36px; text-align:inherit; color: #006782" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit;padding-top: 15px;"><span style="color: #103803; font-size: 40px; font-family: inherit">Thank you for your order!</span></div><div></div></div></td>
+                                                                                                                        <td style="padding:25px 0px 18px 0px; line-height:36px; text-align:inherit; color: #006782" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit;padding-top: 15px;"><span style="color: #006782; font-size: 40px; font-family: inherit">Thank you for your order!</span></div><div></div></div></td>
                                                                                                                     </tr>
                                                                                                                 </tbody>
                                                                                                             </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="2ffRS984-f644-4c25-9a1e-ef76ac62a549">
@@ -174,7 +174,7 @@
                                                                             </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="8b5181ed-0827-471c-972b-74c77e326e3d">
                                                                                 <tbody>
                                                                                     <tr>
-                                                                                        <td style="padding:20px 20px 18px 30px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="color: #103803; font-size: 24px">Order Summary</span></div><div></div></div></td>
+                                                                                        <td style="padding:20px 20px 18px 30px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="color: #006782; font-size: 24px">Order Summary</span></div><div></div></div></td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table><table class="module" role="module" data-type="divider" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="f7373f10-9ba4-4ca7-9a2e-1a2ba700deb9">
@@ -245,15 +245,15 @@
                                                                                             <div>
 
                                                                                                 <div style="font-family: inherit; text-align: inherit">Total Items - #TotalItems#</div>
-                                                                                                <div style="font-family: inherit; text-align: inherit">Subtotal - RS #SubTotal#</div>
-                                                                                                <div style="font-family: inherit; text-align: inherit">Taxes - RS #Tax#</div>
-                                                                                                <div style="font-family: inherit; text-align: inherit">Delivery Charges - RS #DeliveryAmount#</div>
+                                                                                                <div style="font-family: inherit; text-align: inherit">Subtotal - BHD #SubTotal#</div>
+                                                                                                <div style="font-family: inherit; text-align: inherit">Taxes - BHD #Tax#</div>
+                                                                                                <div style="font-family: inherit; text-align: inherit">Delivery Charges - BHD #DeliveryAmount#</div>
                                                                                                 <div style="font-family: inherit; text-align: inherit">
                                                                                                     <br>
                                                                                                     Grand Total&nbsp;
                                                                                                 </div>
                                                                                                 <div style="font-family: inherit; text-align: inherit"><br></div>
-                                                                                                <div style="font-family: inherit; text-align: inherit"><span style="color: #103803; font-size: 32px; font-family: inherit">RS #GrandTotal#</span></div><div></div>
+                                                                                                <div style="font-family: inherit; text-align: inherit"><span style="color: #006782; font-size: 32px; font-family: inherit">BHD #GrandTotal#</span></div><div></div>
                                                                                             </div>
                                                                                         </td>
                                                                                     </tr>
@@ -264,12 +264,12 @@
                                                                             <table class="bg_white" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
 
 
-                                                                                <p style="background-color: #fff; padding:0 30px;margin: 0;text-align: left;color: #6d6d6d;">For any queries, please reach us on <a href="mailto:Samiacrafts@hotmail.com">Samiacrafts@hotmail.com</a> or call/message us on <a href="tel:03002920640">03002920640</a></p>
+                                                                                <p style="background-color: #fff; padding:0 30px;margin: 0;text-align: left;color: #6d6d6d;">For any queries, please reach us on <a href="mailto:Samiacrafts@hotmail.com">Samiacrafts@hotmail.com</a> or call/message us on <a href="tel:+97338499313">+97338499313</a></p>
 
                                                                                 <p style="background-color: #fff; padding:16px 30px 0px;margin: 0;text-align: left; color: #6d6d6d;">
                                                                                     Regards,
                                                                                     <br>
-                                                                                    <span style="color: #103803;">Team Al Hilal</span>
+                                                                                    <span style="color: #006782;">Team Samia Crafts</span>
                                                                                 </p>
 
                                                                             </table>
@@ -284,7 +284,7 @@
                                                                                                 <tbody>
                                                                                                     <tr>
                                                                                                         <td align="center" bgcolor="#000000" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;">
-                                                                                                            <a href="https://www.karachiflora.com/" style="background-color:#103803; border:1px solid #000000; border-color:#000000; border-radius:10px; border-width:1px; color:#ffffff; display:inline-block; font-size:18px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Continue Shopping</a>
+                                                                                                            <a href="https://www.karachiflora.com/" style="background-color:#006782; border:1px solid #000000; border-color:#000000; border-radius:10px; border-width:1px; color:#ffffff; display:inline-block; font-size:18px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Continue Shopping</a>
                                                                                                         </td>
                                                                                                     </tr>
                                                                                                 </tbody>
@@ -337,12 +337,10 @@
                                                                                                                 <ul>
                                                                                                                     <li>
                                                                                                                         <span class="text">
-                                                                                                                            Al Hilal, street 32nd building 12 c 3rd floor
-                                                                                                                            Phase V Saba Commercial Area Defence V
-                                                                                                                            Defence Housing Authority, Karachi,75500 Sindh, Pakistan
+                                                                                                                            --
                                                                                                                         </span>
                                                                                                                     </li>
-                                                                                                                    <li><span class="text">03002920640</span></a></li>
+                                                                                                                    <li><span class="text">+97338499313</span></a></li>
                                                                                                                 </ul>
                                                                                                             </td>
                                                                                                         </tr>
@@ -361,7 +359,7 @@
                                                                                             <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
                                                                                                 <tbody>
                                                                                                     <tr>
-                                                                                                        <td align="center" class="inner-td" style="" target="_blank"><a style="color:#103803;" href="https://www.karachiflora.com/">Al Hilal</a></td>
+                                                                                                        <td align="center" class="inner-td" style="" target="_blank"><a style="color:#103803;" href="https://www.karachiflora.com/">Samia Crafts</a></td>
                                                                                                     </tr>
                                                                                                 </tbody>
                                                                                             </table>

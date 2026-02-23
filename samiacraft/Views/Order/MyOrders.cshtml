@@ -4,9 +4,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";    var imageUrl = ViewBag.ImageUrl ?? "https://retail.premium-pos.com";}
 
 
-@if (ViewBag.Banner.Count > 0)
+@if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
 {
-<div class="breadcrumb-area section-ptb" style="background: url(@imageUrl@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+    <div class="breadcrumb-area section-ptb" style="background: #ebebeb; background-size: cover;">
     <div class="container">
         <div class="row">
             <div class="col-12">

@@ -23,12 +23,30 @@ namespace samiacraft.Controllers
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly BenefitGatewayService _benefitGatewayService;
+        private readonly BenefitPayGatewayService _benefitPayGatewayService;
 
         public OrderController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment, BenefitGatewayService benefitGatewayService)
         {
             _configuration = configuration;
             _webHostEnvironment = webHostEnvironment;
             _benefitGatewayService = benefitGatewayService;
+            
+            // Initialize BenefitPayGatewayService with configuration
+            string tranportalId = _configuration["BenefitPay:TranportalId"] ?? "";
+            string tranportalPassword = _configuration["BenefitPay:TranportalPassword"] ?? "";
+            string resourceKey = _configuration["BenefitPay:ResourceKey"] ?? "";
+            string responseUrl = _configuration["BenefitPay:ResponseUrl"] ?? "";
+            string errorUrl = _configuration["BenefitPay:ErrorUrl"] ?? "";
+            bool isTestMode = bool.Parse(_configuration["BenefitPay:IsTestMode"] ?? "true");
+            
+            _benefitPayGatewayService = new BenefitPayGatewayService(
+                tranportalId,
+                tranportalPassword,
+                resourceKey,
+                responseUrl,
+                errorUrl,
+                isTestMode
+            );
         }
 
         public IActionResult Cart()
@@ -36,14 +54,16 @@ namespace samiacraft.Controllers
             try
             {
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-                var settng = new settingBLL().GetSettings();
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
+
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
                     ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
-                ViewBag.Banner = new bannerBLL().GetBanner("Cart");
+                //ViewBag.Banner = new bannerBLL().GetBanner("Cart");
                 return View();
             }
             catch (Exception ex)
@@ -57,8 +77,9 @@ namespace samiacraft.Controllers
             try
             {
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
 
-                var settng = new settingBLL().GetSettings();
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
@@ -66,7 +87,7 @@ namespace samiacraft.Controllers
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
 
-                ViewBag.Banner = new bannerBLL().GetBanner("Checkout");
+                //ViewBag.Banner = new bannerBLL().GetBanner("Checkout");
 
                 int CustomerID = id;
                 if (CustomerID == 0)
@@ -357,24 +378,23 @@ namespace samiacraft.Controllers
                 var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                 SendPendingPaymentEmails(OrderID, data, giftDataJson);
 
-                // Get base URL
-                string baseUrl = _configuration["AppSettings:WebsiteURL"] ?? $"{Request.Scheme}://{Request.Host}";
-                
-                // Create payment initialization request
-                var paymentRequest = new PaymentInitializationRequest
-                {
-                    OrderID = OrderID,
-                    Amount = data.GrandTotal ?? 0,
-                    ResponseUrl = $"{baseUrl}/Order/BenefitPayResponse?OrderID={OrderID}",
-                    ErrorUrl = $"{baseUrl}/Order/BenefitPayResponse?OrderID=0"
-                };
-
-                // Call BenefitGatewayService to initialize payment
-                var result = _benefitGatewayService.InitializePayment(paymentRequest);
+                // Initiate BenefitPay payment using the new BenefitPayGatewayService
+                // Parameters: trackId (OrderID), amount, currency (048=BHD), cardType (D=Default), udf fields
+                var result = _benefitPayGatewayService.InitiatePayment(
+                    trackId: OrderID.ToString(),
+                    amount: (decimal)(data.GrandTotal ?? 0),
+                    currency: "048",  // BHD (Bahraini Dinar)
+                    cardType: "D",     // Default card type
+                    udf1: OrderID.ToString(),           // Order ID in UDF1
+                    udf2: (data.CustomerID?.ToString() ?? ""),  // Customer ID in UDF2
+                    udf3: (data.CustomerName ?? ""),    // Customer name in UDF3
+                    udf4: (data.Email ?? ""),   // Customer email in UDF4
+                    udf5: (data.GrandTotal?.ToString("F2") ?? "")  // Amount in UDF5
+                );
 
                 if (result.IsSuccessful)
                 {
-                    // Success - return redirect URL
+                    // Success - return redirect URL to payment gateway
                     return Json(new
                     {
                         Success = true,
@@ -386,7 +406,7 @@ namespace samiacraft.Controllers
                 }
                 else
                 {
-                    // Failed to initialize
+                    // Failed to initialize payment
                     return Json(new
                     {
                         Success = false,
@@ -818,50 +838,67 @@ namespace samiacraft.Controllers
                 // Log silently
             }
         }
+        public class EmailOrderItem
+        {
+            public int id { get; set; }
+            public string title { get; set; }
+            public string image { get; set; }
+            public int Qty { get; set; }
+            public double? Price { get; set; }
+            public double? NewPrice { get; set; }
+            public string gifts { get; set; }
+        }
 
         private string BuildItemsHtml(int OrderID, checkoutBLL data)
         {
             StringBuilder items = new StringBuilder();
 
-            if (data?.OrderDetail == null || data.OrderDetail.Count == 0)
+            if (string.IsNullOrEmpty(data?.OrderDetailString))
                 return "";
 
-            foreach (var item in data.OrderDetail)
+            var orderItems = Newtonsoft.Json.JsonConvert
+                .DeserializeObject<List<EmailOrderItem>>(data.OrderDetailString);
+
+            if (orderItems == null || orderItems.Count == 0)
+                return "";
+
+            string baseUrl = _configuration["WebsiteImageURL"] ?? "";
+
+            foreach (var item in orderItems)
             {
-                double itemTotal = item.Qty * (item.Price ?? 0);
-                items.Append("<table border='0' cellpadding='0' cellspacing='0' align='center' width='100%' role='module' data-type='columns' style='padding:20px 20px 20px 30px;' bgcolor='#FFFFFF'>");
-                items.Append("<tbody>");
-                items.Append("<tr role='module-content'>");
-                items.Append("<td height='100%' valign='top'>");
-                items.Append("<table class='column' style='border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;' cellpadding='0' cellspacing='0' align='left' border='0' bgcolor=''>");
-                items.Append("<tbody>");
+                string imageUrl = "";
+                if (!string.IsNullOrEmpty(item.image))
+                {
+                    imageUrl = item.image.StartsWith("http")
+                        ? item.image
+                        : baseUrl.TrimEnd('/') + "/" + item.image.TrimStart('/');
+                }
+
+                items.Append("<table width='100%' style='padding:20px;'>");
                 items.Append("<tr>");
-                items.Append("<td style='padding:0px;margin:0px;border-spacing:0;'>");
-                items.Append("<table class='module' role='module' data-type='text' border='0' cellpadding='0' cellspacing='0' width='100%' style='table-layout: fixed;'>");
-                items.Append("<tbody>");
-                items.Append("<tr>");
-                items.Append("<td style='padding:18px 0px 18px 0px; line-height:22px; text-align:inherit;' height='100%' valign='top' bgcolor='' role='module-content'>");
-                items.Append("<div>");
-                items.Append($"<div style='font-family: inherit; text-align: inherit'><strong>{item.Name}</strong></div>");
-                items.Append($"<div style='font-family: inherit; text-align: inherit'>Qty: {item.Qty}</div>");
-                items.Append($"<div style='font-family: inherit; text-align: inherit'><strong>BHD {item.Price:0.00}</strong></div>");
-                items.Append("</div>");
+
+                // IMAGE
+                items.Append("<td width='120' valign='top'>");
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    items.Append($"<img src='{imageUrl}' width='100' style='border-radius:6px;' />");
+                }
                 items.Append("</td>");
-                items.Append("</tr>");
-                items.Append("</tbody>");
-                items.Append("</table>");
+
+                // DETAILS
+                items.Append("<td valign='top'>");
+                items.Append($"<div><strong>{item.title}</strong></div>");
+                items.Append($"<div>Qty: {item.Qty}</div>");
+                items.Append($"<div><strong>BHD {item.Price:0.000}</strong></div>");
                 items.Append("</td>");
+
                 items.Append("</tr>");
-                items.Append("</tbody>");
-                items.Append("</table>");
-                items.Append("</td>");
-                items.Append("</tr>");
-                items.Append("</tbody>");
                 items.Append("</table>");
             }
 
             return items.ToString();
         }
+
 
         private string BuildAdminEmail(int OrderID, checkoutBLL data)
         {
@@ -877,20 +914,38 @@ namespace samiacraft.Controllers
             items.Append("<th style='border:1px solid #ddd;padding:8px;text-align:right;'>Total</th>");
             items.Append("</tr>");
 
+            string baseUrl = _configuration["WebsiteImageURL"] ?? "";
+
             foreach (var item in data.OrderDetail)
             {
-                double itemTotal = (item.Qty) * (item.Price ?? 0);
+                double itemTotal = item.Qty * (item.Price ?? 0);
+                string imageUrl = "";
+                if (!string.IsNullOrEmpty(item.Image))
+                {
+                    imageUrl = item.Image.StartsWith("http")
+                        ? item.Image
+                        : baseUrl.TrimEnd('/') + "/" + item.Image.TrimStart('/');
+                }
+
                 items.Append("<tr>");
-                items.Append($"<td style='border:1px solid #ddd;padding:8px;'>{item.Name}</td>");
+                items.Append("<td style='border:1px solid #ddd;padding:8px;'>");
+
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    items.Append($"<img src='{imageUrl}' width='50' style='vertical-align:middle; margin-right:5px;' />");
+                }
+
+                items.Append($"{item.Name}</td>");
                 items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:center;'>{item.Qty}</td>");
-                items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {item.Price:0.00}</td>");
-                items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {itemTotal:0.00}</td>");
+                items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {item.Price:0.000}</td>");
+                items.Append($"<td style='border:1px solid #ddd;padding:8px;text-align:right;'>BHD {itemTotal:0.000}</td>");
                 items.Append("</tr>");
             }
 
             items.Append("</table>");
             return items.ToString();
         }
+
 
         private string BuildGiftsHtml(string giftDataJson, checkoutBLL data)
         {
@@ -903,36 +958,60 @@ namespace samiacraft.Controllers
                 if (gifts == null || gifts.Count == 0)
                     return "";
 
+                string baseUrl = _configuration["WebsiteImageURL"] ?? "";
                 StringBuilder giftsHtml = new StringBuilder();
-                giftsHtml.Append("<div style='margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px;'>");
-                giftsHtml.Append("<h3 style='margin-top: 0; color: #333;'>Addon Products / Gifts</h3>");
-                giftsHtml.Append("<table style='width:100%; border-collapse:collapse;'>");
+
+                giftsHtml.Append("<div style='margin-top:20px; padding:15px; background:#f9f9f9; border-radius:4px;'>");
+                giftsHtml.Append("<h3 style='margin-top:0; color:#333;'>Addon Products / Gifts</h3>");
 
                 foreach (var gift in gifts)
                 {
                     string title = gift["Title"] ?? "";
                     double price = gift["DisplayPrice"] ?? 0;
                     int qty = gift["Qty"] ?? 1;
+                    string image = gift["Image"] ?? "";
                     double total = qty * price;
 
+                    string imageUrl = "";
+                    if (!string.IsNullOrEmpty(image))
+                    {
+                        imageUrl = image.StartsWith("http")
+                            ? image
+                            : baseUrl.TrimEnd('/') + "/" + image.TrimStart('/');
+                    }
+
+                    giftsHtml.Append("<table width='100%' style='border-collapse:collapse; margin-bottom:15px;'>");
                     giftsHtml.Append("<tr>");
-                    giftsHtml.Append($"<td style='padding:8px;'>{title}</td>");
-                    giftsHtml.Append($"<td style='padding:8px;text-align:center;'>× {qty}</td>");
-                    giftsHtml.Append($"<td style='padding:8px;text-align:right;'>BHD {total:0.00}</td>");
+
+                    // IMAGE
+                    giftsHtml.Append("<td width='100' valign='top' style='padding-right:10px;'>");
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        giftsHtml.Append($"<img src='{imageUrl}' width='80' style='border-radius:6px;' />");
+                    }
+                    giftsHtml.Append("</td>");
+
+                    // DETAILS
+                    giftsHtml.Append("<td valign='top'>");
+                    giftsHtml.Append($"<div style='font-weight:bold;'>{title}</div>");
+                    giftsHtml.Append($"<div>Qty: {qty}</div>");
+                    giftsHtml.Append($"<div><strong>BHD {total:0.000}</strong></div>");
+                    giftsHtml.Append("</td>");
+
                     giftsHtml.Append("</tr>");
+                    giftsHtml.Append("</table>");
                 }
 
-                giftsHtml.Append("</table>");
                 giftsHtml.Append("</div>");
-
                 return giftsHtml.ToString();
             }
-            catch (Exception ex)
+            catch
             {
-                // Return empty if parsing fails
                 return "";
             }
         }
+
+
 
         private void SendPendingPaymentEmails(int OrderID, checkoutBLL data, string giftDataJson = "[]")
         {
@@ -1069,7 +1148,8 @@ namespace samiacraft.Controllers
         {
             try
             {
-                var settng = new settingBLL().GetSettings();
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
@@ -1119,8 +1199,7 @@ namespace samiacraft.Controllers
         {
             try
             {
-                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-                ViewBag.Banner = new bannerBLL().GetBanner("Other");
+                ViewBag.ImageUrl = _configuration["Image"];
 
                 var sessionCustomerId = HttpContext.Session.GetInt32("CustomerID");
                 if (sessionCustomerId != null && sessionCustomerId != 0)
@@ -1142,16 +1221,16 @@ namespace samiacraft.Controllers
         {
             try
             {
-                ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
+                ViewBag.ImageUrl = _configuration["Image"];
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
 
-                var settng = new settingBLL().GetSettings();
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
                     ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
-                ViewBag.Banner = new bannerBLL().GetBanner("Other");
                 return View(new myorderBLL().GetDetails(OrderID));
             }
             catch (Exception ex)

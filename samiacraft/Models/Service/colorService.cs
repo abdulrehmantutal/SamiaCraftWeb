@@ -15,18 +15,5 @@ namespace samiacraft.Models.Service
         {
             _service = new colorBLL();
         }
-
-        public List<colorBLL> GetAll()
-        {
-            try
-            {
-                return _service.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return new List<colorBLL>();
-            }
-        }
-
     }
 }

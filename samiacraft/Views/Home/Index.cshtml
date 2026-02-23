@@ -1333,8 +1333,14 @@
     .citycol {
         padding: 5px; /* Small spacing between buttons */
     }
-
-
+    .product-card-description {
+    word-wrap: break-word; /* Long words will wrap */
+    overflow: hidden;      /* Prevent overflowing outside card */
+    max-height: 100px;     /* Optional: limit height */
+    display: -webkit-box;  /* For truncating with ellipsis */
+    -webkit-line-clamp: 4; /* Number of lines to show */
+    -webkit-box-orient: vertical;
+}
 
 
 </style>
@@ -1528,10 +1534,14 @@
             <div class="col-md-7">
                 <p class=" mb-2">About Us</p>
                 <h2 class="about-title mb-3">
-                    Launch Kiosk in Mall, By Samia Samiullah.
+                    Samiacrafts was launched as a small upstart kiosk in Enma Mall, Bahrain by Samia Samiullah.
                 </h2>
                 <p class="text-muted mb-4" style="color: #000 !important;">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.
+                    Being a graduate of Interior Design and having an art background I always had a passion for product design and home decor. Samiacrafts aims to be a voice of the unheard hardworking craftsmen and to provide a platform to display their ravishing talent by adding elements of design and a flair of innovativeness.
+                    </<br>
+                    We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.
+
+We’d like to welcome you on this journey with us to allow us to revamp your spaces with our pieces. We hope you enjoy SamiaCrafts.
                 </p>
 
                 <div class="about-box row text-center">
@@ -1681,20 +1691,12 @@
                         </div>
 
                         <div class="mt-2 d-flex justify-content-between align-items-center">
-                            <small class="text-card fw-semibold">@(item.Name ?? "Product")</small>
-                            <div class="d-flex align-items-center gap-1">
-                                @if (item.Stars != null)
-                                {
-                                    <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
-                                    <span class="fw-semibold rating-number">@item.Stars</span>
-                                }
-                                else
-                                {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e0e0e0" class="bi bi-star" viewBox="0 0 16 16">
-                                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.725 3.522-3.361c.33-.32.159-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.38 5.218l-4.898.696c-.441.062-.612.63-.282.95l3.522 3.36-.83 4.726z" />
-                                    </svg>
-                                    <span class="fw-semibold">0</span>
-                                }
+                            <div class="d-flex align-items-center gap-1" style="gap: 10px;">
+                                <i class="ion-ios-star-outline"></i>
+                                <i class="ion-ios-star-outline"></i>
+                                <i class="ion-ios-star-outline"></i>
+                                <i class="ion-ios-star-outline"></i>
+                                <i class="ion-ios-star-outline"></i>
                             </div>
                         </div>
 
@@ -1703,12 +1705,12 @@
                         <div class="d-flex justify-content-between">
                             @if (item.NewPrice == null || item.NewPrice == 0)
                             {
-                                <span class="text-price fw-bold">Rs. @item.Price.ToString("0.00")</span>
+                                <span class="text-price fw-bold">BHD. @item.Price.ToString("0.00")</span>
                             }
                             else
                             {
-                                <span class="text-price fw-bold">Rs. @item.NewPrice?.ToString("0.00")</span>
-                                <del class="text-del ms-2">Rs. @item.Price.ToString("0.00")</del>
+                                <span class="text-price fw-bold">BHD. @item.NewPrice?.ToString("0.00")</span>
+                                <del class="text-del ms-2">BHD. @item.Price.ToString("0.00")</del>
                             }
 
                         </div>
@@ -1822,22 +1824,32 @@
                                     <div class="mb-2">
                                         @if (item.NewPrice != null && item.NewPrice > 0)
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.NewPrice</span>
-                                            <span class="text-del text-decoration-line-through ms-2">Rs. @item.Price</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.NewPrice</span>
+                                            <span class="text-del text-decoration-line-through ms-2">BHD. @item.Price</span>
                                         }
                                         else
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">Rs. @item.Price</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.Price</span>
                                         }
                                     </div>
+                    
+@{
+    var plainDescription = string.IsNullOrEmpty(item.Description) 
+        ? "No description available." 
+        : System.Text.RegularExpressions.Regex.Replace(item.Description, "<.*?>", ""); // HTML tags remove
 
-                                    <p class="text-muted small mb-3">
-                                        @(string.IsNullOrEmpty(item.Description)
-                                    ? "No description available."
-                                    : item.Description.Length > 60
-                                        ? item.Description.Substring(0, 60) + "..."
-                                        : item.Description)
-                                    </p>
+    if (plainDescription.Length > 60)
+    {
+        plainDescription = plainDescription.Substring(0, 60) + "...";
+    }
+}
+
+<p class="text-muted small mb-3 product-card-description">
+    @plainDescription
+</p>
+
+
+
 
                                     <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })"
                                        class="text-shopnow fw-semibold text-decoration-none d-inline-flex align-items-center">
@@ -1925,149 +1937,46 @@
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Arabian Dates
+            Vasses
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            AAb-eZamzam
+            Jars
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Honey & Organic Food
-        </div>
-
-        <!-- Replacing spans with PNG circle icons -->
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Seeds & Herbs
+            Table Ware
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Signature Gift Boxes
-        </div>
-
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Ceremony
+            Lamps
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Get Well Soon
+            Himalyan
         </div>
-
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Love & Romance
+            Wall Hangings
         </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Congratulations
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Mother's Day
-        </div>-->
-
-        <!-- Duplicate set for seamless loop -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Birthday" class="circle-img">
-            </div>
-            Birthday
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Wedding
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Anniversary
-        </div>-->
-
-        <!-- Repeat a few from above -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Thank You
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Graduation
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Ceremony
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Get Well Soon
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Love & Romance
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Congratulations
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Mother's Day
-        </div>-->
     </div>
 </div>
 
 
-<!-- Instagram Section -->
 <!-- Instagram Section -->
 <section class="instagram-section">
     <div class="container">
@@ -2139,181 +2048,36 @@
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Arabian Dates
+            Gardenware
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            AAb-eZamzam
+            Luxury Basin
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Honey & Organic Food
-        </div>
-
-        <!-- Replacing spans with PNG circle icons -->
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Seeds & Herbs
+            Bukhoor Burners
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
                 <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Signature Gift Boxes
-        </div>
-
-        <!-- Reusable circular icon item -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Love
+            Clearance
         </div>
 
         <div class="category-item d-flex align-items-center justify-content-center">
             <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
+                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
             </div>
-            Love
+            Vases
         </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Love
-        </div>-->
-
-        <!-- Replacing spans with PNG circle icons -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Thank You
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Graduation
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Ceremony
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Get Well Soon
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Love & Romance
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Congratulations
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Mother's Day
-        </div>-->
-
-        <!-- Duplicate set for seamless loop -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Birthday" class="circle-img">
-            </div>
-            Birthday
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Wedding
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Anniversary
-        </div>-->
-
-        <!-- Repeat a few from above -->
-        <!--<div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Thank You
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Graduation
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Ceremony
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Get Well Soon
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Love & Romance
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Congratulations
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="~/Content/assets/images/logo/fly.png" alt="Fly" class="circle-img">
-            </div>
-            Mother's Day
-        </div>-->
     </div>
 </div>
 
@@ -2332,13 +2096,13 @@
                     <div class="accordion-item mb-3 faq-card">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false">
-                                <span>What Products And Services Does Al Hilal Offer?</span>
+                                <span>What products and services does Samia Craft offer?</span>
                                 <img src="~/Content/assets/images/plus.png" class="faq-icon">
                             </button>
                         </h2>
                         <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body teal-bg text-white">
-                                Al Hilal is a full-service florist based in Karachi, offering a wide range of fresh floral arrangements, bouquets, and gift combos. They import fragrant flowers from global suppliers and also handle flower arrangements for events, including bridal bouquets and floral decor.
+                                Samia Craft is a full-service florist based in Bahrain, offering a wide range of ceramic vases etc for arrangements, bouquets, and gift combos. They import Ceramic vases etc from global suppliers and also handle home, office, etc arrangements for events, including bridal bouquets and floral decor
                             </div>
                         </div>
                     </div>
@@ -2346,7 +2110,7 @@
                     <div class="accordion-item mb-3 faq-card">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
-                                <span>Do They Provide Delivery Within Karachi?</span>
+                                <span>Do they provide delivery within Bahrain?</span>
                                 <img src="~/Content/assets/images/plus.png" class="faq-icon">
                             </button>
                         </h2>
@@ -2360,7 +2124,7 @@
                     <div class="accordion-item mb-3 faq-card">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
-                                <span>How Do I Place An Order?</span>
+                                <span>How do I place an order?</span>
                                 <img src="~/Content/assets/images/plus.png" class="faq-icon">
                             </button>
                         </h2>
@@ -2374,7 +2138,7 @@
                     <div class="accordion-item mb-3 faq-card">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
-                                <span>What Are The Payment Methods?</span>
+                                <span>What are the payment methods?</span>
                                 <img src="~/Content/assets/images/plus.png" class="faq-icon">
                             </button>
                         </h2>
@@ -2388,7 +2152,7 @@
                     <div class="accordion-item mb-3 faq-card">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-semibold collapsed d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false">
-                                <span>Do You Ship Outside Karachi?</span>
+                                <span>Do You Ship Outside Bahrain?</span>
                                 <img src="~/Content/assets/images/plus.png" class="faq-icon">
                             </button>
                         </h2>
@@ -2424,7 +2188,7 @@
                     <img src="/Content/assets/images/Faq/free-shiping.png" class="feature-icon mb-2 mb-md-0" alt="Free Shipping">
                     <div class="text-md-start text-center px-md-3">
                         <h5 class="teal-text fw-bold mb-1">Free Shipping</h5>
-                        <p class="text-muted mb-0 small">For Order Above Rs. 5000</p>
+                        <p class="text-muted mb-0 small">For Order Above BHD. 5000</p>
                     </div>
                 </div>
             </div>
@@ -2467,7 +2231,7 @@
 
                 <div class="input-group">
                     <input type="email" class="form-control email-input" placeholder="Your Email Address" aria-label="Email address">
-                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Al Hilal. we will keep you updated with our latest news and offers', 1); return false; this.value = '';" class="btn subscribe-btn"><span>Subscribe</span></button>
+                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Samia Crafts. we will keep you updated with our latest news and offers', 1); return false; this.value = '';" class="btn subscribe-btn"><span>Subscribe</span></button>
                 </div>
             </div>
         </div>

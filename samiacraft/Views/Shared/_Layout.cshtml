@@ -14,7 +14,7 @@
     }
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="~/Content/assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://samiacrafts.com/assets/images/logo.svg">
     <link href="~/Content/assets/sweetalert/sweetalert.css" rel="stylesheet" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/Content/assets/css/vendor/bootstrap.min.css">
@@ -515,6 +515,31 @@
             </div>
         </div>
         <!-- haeader bottom End -->
+
+        <!-- Inline Search Bar -->
+        <div id="searchBar" class="search-bar-container" style="display: none; background: rgba(28, 61, 90, 0.8); padding: 30px 0; position: relative; z-index: 999;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <form id="searchForm" style="width: 100%; margin: 0;">
+                                <div style="display: flex; align-items: center; position: relative;">
+                                    <input type="text" id="search" class="form-control" placeholder="Search Entire Store" style="border: none; background: transparent; color: #999; font-size: 18px; padding: 15px 0;">
+                                    <button class="close-search-bar" type="button" style="background: none; border: none; font-size: 32px; cursor: pointer; color: white; margin-left: auto; padding: 0 15px;">×</button>
+                                </div>
+                            </form>
+                            <button class="btn-search-icon" type="button" id="search-btn" style="background: none; border: none; cursor: pointer; color: #999; font-size: 24px; margin-left: 15px;">
+                                <i class="ion-ios-search-strong"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-block d-lg-none">
+            @await Component.InvokeAsync("MobileNavigation")
+        </div>
     </header>
 
     <div class="main-wrapper">
@@ -532,7 +557,7 @@
                                     <img src="https://samiacrafts.com/assets/images/logo.svg" style=" width: 130px;" alt="">
                                 </a>
                             </div>
-                            <p>We are the distributors of world best and beautiful fragrance flowers, deals in variety of different flowers. We import fresh flowers from world best supplier. Good service with quality gifts attract more customers.</p>
+                            <p>We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.</p>
                             <div class="newsletter-footer">
 
                                 <div>
@@ -577,7 +602,7 @@
                             <ul class="footer-contact">
                                 <li>
                                     <label><span>Phone</span></label>
-                                    <a href="tel:03002920640"><span>03002920640 </span></a>
+                                    <a href="tel:+97338499313"><span>+97338499313</span></a>
                                 </li>
                                 <li>
                                     <label><span>Email</span></label>
@@ -586,9 +611,7 @@
                                 <li>
                                     <label><span>Address</span></label>
                                     <span>
-                                        Al Hilal, street 32nd building 12 c 3rd floor
-                                        Phase V Saba Commercial Area Defence V
-                                        Defence Housing Authority, Karachi,75500 Sindh, Pakistan
+                                        --
                                     </span>
                                 </li>
                             </ul>
@@ -605,7 +628,7 @@
                 <div class="row align-items-center">
                     <!-- Left Side -->
                     <div class="col-md-6 text-start">
-                        <p class="mb-0">© Al Hilal. All rights reserved. Powered by Airtech Solutions.</p>
+                        <p class="mb-0">© Samia Crafts. All rights reserved. Powered by Airtech Solutions.</p>
                     </div>
 
                     <!-- Right Side -->
@@ -613,33 +636,18 @@
 
                         <div class="social-top">
                             <ul>
-
                                 <li id="" class="">
-
                                     <img src="/Content/assets/images/icon/cod.png">
                                 </li>
                                 <li id="" class="">
-
                                     <img src="/Content/assets/images/icon/bank-transfer.png">
                                 </li>
-
                                 <li id="" class="">
-
-                                    <img src="/Content/assets/images/icon/easypaisa.png">
-                                </li>
-                                <li id="" class="">
-
-                                    <img src="/Content/assets/images/icon/jazz cash.png">
-                                </li>
-                                <li id="" class="">
-
                                     <img src="/Content/assets/images/icon/visa.png">
                                 </li>
                                 <li id="" class="">
-
                                     <img src="/Content/assets/images/icon/master.png">
                                 </li>
-
                             </ul>
                         </div>
 
@@ -660,9 +668,100 @@
     </footer>
 
     <script type="text/javascript">
+        // Inline Search Bar Functionality
+        $(document).ready(function () {
+            var searchBar = document.getElementById("searchBar");
+            var triggerSearch = document.querySelector(".trigger-search");
+            var closeSearchBar = document.querySelector(".close-search-bar");
+            var searchBtn = document.getElementById("search-btn");
+            var searchInput = document.getElementById("search");
+            var searchForm = document.getElementById("searchForm");
+
+            // Open search bar when trigger-search is clicked
+            if (triggerSearch) {
+                triggerSearch.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    searchBar.style.display = "block";
+                    searchInput.focus();
+                });
+            }
+
+            // Close search bar when close button is clicked
+            if (closeSearchBar) {
+                closeSearchBar.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    searchBar.style.display = "none";
+                    searchInput.value = "";
+                });
+            }
+
+            // Search when button is clicked
+            if (searchBtn) {
+                searchBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    Search();
+                });
+            }
+
+            // Search when Enter key is pressed
+            if (searchInput) {
+                searchInput.addEventListener("keyup", function (event) {
+                    if (event.keyCode === 13) {
+                        event.preventDefault();
+                        Search();
+                    }
+                });
+            }
+
+            // Also prevent form submission
+            if (searchForm) {
+                searchForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    Search();
+                });
+            }
+        });
+
+        function Search() {
+            var Searchtxt = $("#search").val();
+            if (Searchtxt.trim() !== "") {
+                window.location.href = '/shop/shop?Category=""&CategoryIDs=' + '' + '&SubCategoryIDs=' + "" + '&ColorIDs=' + '' + '&MinPrice=' + 'RS0' + '&MaxPrice=' + 'RS50000' + '&Searchtext=' + encodeURIComponent(Searchtxt) + '&SortID=' + 0 + '';
+            }
+        }
+
+        window.onscroll = function () { myFunction() };
+
+        var header = document.getElementById("mainHeader");
+        if (header) {
+            var headerBottom = document.getElementById("Head");
+            if (headerBottom) {
+                var sticky = headerBottom.offsetTop;
+
+                function myFunction() {
+                    if (window.pageYOffset > sticky) {
+                        if (!header.classList.contains("sticky-active")) {
+                            header.classList.add("sticky-active");
+                            header.classList.add("nav-fixed-top");
+                            // Add padding to body to prevent content jump
+                            document.body.style.paddingTop = header.offsetHeight + "px";
+                        }
+                    } else {
+                        if (header.classList.contains("sticky-active")) {
+                            header.classList.remove("sticky-active");
+                            header.classList.remove("nav-fixed-top");
+                            // Remove padding when header is not sticky
+                            document.body.style.paddingTop = "0px";
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
         (function () {
             var options = {
-                whatsapp: "+923002920640", // WhatsApp number
+                whatsapp: "+97338499313", // WhatsApp number
                 call_to_action: "Message us", // Call to action
                 position: "right", // Position may be 'right' or 'left'
                 pre_filled_message: "How can i help you", // WhatsApp pre-filled message
@@ -701,51 +800,6 @@
     <script src="~/Content/assets/js/main.js"></script>
     @RenderSection("scripts", false)
 
-    <script>
-        var input = document.getElementById("search");
-        if (input) {
-            input.addEventListener("keyup", function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    document.getElementById("search-btn").click();
-                }
-            });
-        }
-
-        window.onscroll = function () { myFunction() };
-
-        var header = document.getElementById("mainHeader");
-        if (header) {
-            var headerBottom = document.getElementById("Head");
-            if (headerBottom) {
-                var sticky = headerBottom.offsetTop;
-
-                function myFunction() {
-                    if (window.pageYOffset > sticky) {
-                        if (!header.classList.contains("sticky-active")) {
-                            header.classList.add("sticky-active");
-                            header.classList.add("nav-fixed-top");
-                            // Add padding to body to prevent content jump
-                            document.body.style.paddingTop = header.offsetHeight + "px";
-                        }
-                    } else {
-                        if (header.classList.contains("sticky-active")) {
-                            header.classList.remove("sticky-active");
-                            header.classList.remove("nav-fixed-top");
-                            // Remove padding when header is not sticky
-                            document.body.style.paddingTop = "0px";
-                        }
-                    }
-                }
-            }
-        }
-
-        function Search() {
-            var Searchtxt = $("#search").val();
-            window.location.href = '/shop/shop?Category=""&CategoryIDs=' + '' + '&SubCategoryIDs=' + "" + '&ColorIDs=' + '' + '&MinPrice=' + 'RS0' + '&MaxPrice=' + 'RS50000' + '&Searchtext=' + Searchtxt + '&SortID=' + 0 + '';
-        }
-
-    </script>
     <script>
         $(document).ready(function () {
             debugger

@@ -41,7 +41,7 @@ using System.Linq;
             public string City { get; set; } // Added City property
             public Nullable<int> DeliveryStatus { get; set; }
 
-        public List<OrderDetails> OrderDetail { get; set; } = new List<OrderDetails>();
+            public List<OrderDetails> OrderDetail { get; set; } = new List<OrderDetails>();
             public string OrderDetailString { get; set; }
 
             /*Order Details*/

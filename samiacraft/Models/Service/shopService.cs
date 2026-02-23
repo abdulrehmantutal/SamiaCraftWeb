@@ -14,28 +14,5 @@ namespace samiacraft.Models.Service
         {
             _service = new shopBLL();
         }
-
-        public List<shopBLL> GetAll(string Category)
-        {
-            try
-            {
-                return _service.GetAll(Category);
-            }
-            catch (Exception ex)
-            {
-                return new List<shopBLL>();
-            }
-        }
-        public List<shopBLL> BestProducts(int? cityID)
-        {
-            try
-            {
-                return _service.BestProducts(cityID);
-            }
-            catch (Exception ex)
-            {
-                return new List<shopBLL>();
-            }
-        }
     }
 }

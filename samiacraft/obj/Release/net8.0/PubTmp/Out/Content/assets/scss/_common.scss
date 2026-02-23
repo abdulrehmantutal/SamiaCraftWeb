@@ -1208,16 +1208,19 @@ img.mfp-img {
 ------------------------------------------*/
 
 .breadcrumb-area {
-    background: url("../images/bg/breadcrumb-bg.jpg") repeat scroll 0 0;
+    background: #ebebeb;
     text-align: center;
+
     & h2 {
         font-size: 30px;
         font-weight: 600;
         margin-top: -5px;
-        @media #{$tablet-device}{
+
+        @media #{$tablet-device} {
             font-size: 24px;
         }
-        @media #{$large-mobile}{
+
+        @media #{$large-mobile} {
             font-size: 24px;
         }
     }

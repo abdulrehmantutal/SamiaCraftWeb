@@ -18,32 +18,6 @@
         cartitem();
         topheadcart();
     });
-
-    // Gift modal handling
-    $('.buy-now.add-to-cart').on('click', function() {
-        var itemId = $(this).data('id');
-        var itemTitle = $(this).data('title');
-        var qty = parseInt($('#cart_quantity').val()) || 1;
-        
-        // Store current item ID in hidden field
-        $('#item_hidden_id').val(itemId);
-        
-        // Clear previous selections
-        $('.gift-checkbox').prop('checked', false);
-        
-        // Show the gift modal
-        $('#giftModal').modal('show');
-        
-        // Set up add gift button handler
-        $('#giftModal .add-to-gift').off('click').on('click', function() {
-            AddCartWithGifts(itemId, itemTitle, qty);
-        });
-    });
-
-    // If close modal without adding gifts, still add the item
-    $('#giftModal .close, #giftModal [data-dismiss="modal"]').on('click', function() {
-        // This will let the modal close naturally
-    });
 });
 
 //setting
@@ -83,21 +57,21 @@ function headertext() {
             }
             
             var lstNotification = data.NotificationsList;
-            var index = Math.floor(Math.random() * lstNotification.length);
-            var _notificationls = sessionStorage.getItem("_notification");
-            _notificationls = _notificationls == null ? '' : _notificationls;
-            if (_notificationls == '' && lstNotification.length > 0) {
-                $('#staticBackdrop').modal('show');
-                sessionStorage.setItem("_notification", "true");
-
-
-                $('#modalTitle').html(lstNotification[index].Title);
-                $('#modalDescription').html(lstNotification[index].Description);
-                $('#modalButton').attr('href',lstNotification[index].ButtonURL);
-                if (lstNotification[index].Image == '' || lstNotification[index].Image == null) {
-                    $('#modalImg').addClass("hide");
+            if (lstNotification && Array.isArray(lstNotification) && lstNotification.length > 0) {
+                var index = Math.floor(Math.random() * lstNotification.length);
+                var _notificationls = sessionStorage.getItem("_notification");
+                _notificationls = _notificationls == null ? '' : _notificationls;
+                if (_notificationls == '') {
+                    $('#staticBackdrop').modal('show');
+                    sessionStorage.setItem("_notification", "true");
+                    $('#modalTitle').html(lstNotification[index].Title);
+                    $('#modalDescription').html(lstNotification[index].Description);
+                    $('#modalButton').attr('href',lstNotification[index].ButtonURL);
+                    if (lstNotification[index].Image == '' || lstNotification[index].Image == null) {
+                        $('#modalImg').addClass("hide");
+                    }
+                    $('#modalImg').attr('src',"https://retail.premium-pos.com"+ lstNotification[index].Image)
                 }
-                $('#modalImg').attr('src',"https://retail.premium-pos.com"+ lstNotification[index].Image)
             }
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -202,13 +176,18 @@ function topheadcart() {
     var data = getCartLS();
     var html = '';
     var totalPrice = 0;
-    var totalQty = data.length;
+    var totalQty = 0;
 
 
     html += '<div class="cart-height scrollbar" id="style2">'
     for (var i = 0; i < data.length; i++) {
+        // Skip gift items in main loop - they will be displayed under their linked item
+        if (data[i].IsGift === true) {
+            continue;
+        }
+        
         var giftPrice = 0;
-        /* totalQty += Number(data[i].Qty);*/
+        totalQty += Number(data[i].Qty);
         totalPrice += data[i].Qty * data[i].UPrice;
         html += '<li class="cart-item" >'
             + '<div class="cart-image">'
@@ -216,14 +195,36 @@ function topheadcart() {
             html += '<a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img alt="" src="/Content/assets/images/NA.png"></a>'
         }
         else {
-            html += '<a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img alt="" src="https://retail.premium-pos.com' + data[i].Image + '"></a>'
+            var imgSrc = data[i].Image;
+            // Handle image URL - don't duplicate the domain
+            if (!imgSrc.startsWith('http')) {
+                imgSrc = 'https://retail.premium-pos.com' + imgSrc;
+            }
+            html += '<a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img alt="" src="' + imgSrc + '"></a>'
         }
         html += '</div>'
             + '<div class="cart-title">'
             + '<a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">'
             + '<h4 class="mb-0 lh-16">' + data[i].Qty + ' x ' + data[i].Title + '</h4>'
             + '</a>'
-        //+ '<button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + data[i].Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
+        
+        // Check for gifts linked to this item (new system)
+        var linkedGifts = data.filter(function(item) {
+            return item.LinkedItemKey === data[i].Key && item.IsGift === true;
+        });
+        
+        // Display new-system gifts
+        if (linkedGifts.length > 0) {
+            html += '<p class="mb-0 text-default small lh-16" style="color: #666; font-size: 12px;">--- Gift Wrapping</p>';
+            for (var k = 0; k < linkedGifts.length; k++) {
+                var giftItem = linkedGifts[k];
+                totalPrice += giftItem.Qty * giftItem.UPrice;
+                giftPrice += giftItem.Qty * giftItem.UPrice;
+                html += '<p class="mb-0 text-default small lh-16">' + giftItem.Qty + ' x ' + giftItem.Title + '</p>';
+            }
+        }
+        
+        // Check for old-system gifts
         if (gifts.length > 0) {
             var _dataGiftFilter = gifts.filter(function (obj) {
                 return (obj.ItemKey === data[i].Key);
@@ -280,6 +281,11 @@ function cartitem() {
 
 
     for (var i = 0; i < data.length; i++) {
+        // Skip gift items in main loop - they will be displayed under their linked item
+        if (data[i].IsGift === true) {
+            continue;
+        }
+        
         var giftPrice = 0;
         totalQty += Number(data[i].Qty);
         totalPrice += data[i].Qty * data[i].UPrice;
@@ -289,21 +295,52 @@ function cartitem() {
             html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="cart-img" src="/Content/assets/images/NA.png" alt=""></a></td>'
         }
         else {
-            html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="cart-img" src="https://retail.premium-pos.com/' + data[i].Image + '" alt=""></a></td>'
+            var imgSrc = data[i].Image;
+            // Handle image URL - don't duplicate the domain
+            if (!imgSrc.startsWith('http')) {
+                imgSrc = 'https://retail.premium-pos.com/' + imgSrc;
+            }
+            html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="cart-img" src="' + imgSrc + '" alt=""></a></td>'
         }
 
         html += '<td class="plantmore-product-name">'
             + '<p><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">' + data[i].Title + '</a></p>'
+        
+        // Check for gifts linked to this item (new system)
+        var linkedGifts = data.filter(function(item) {
+            return item.LinkedItemKey === data[i].Key && item.IsGift === true;
+        });
+        
+        // Display new-system gifts
+        if (linkedGifts.length > 0) {
+            html += '<p class="addon">--- Gift Wrapping</p>';
+            for (var k = 0; k < linkedGifts.length; k++) {
+                var giftItem = linkedGifts[k];
+                var giftImg = giftItem.Image;
+                if (!giftImg.startsWith('http')) {
+                    giftImg = 'https://retail.premium-pos.com/' + giftImg;
+                }
+                totalPrice += giftItem.Qty * giftItem.UPrice;
+                giftPrice += giftItem.Qty * giftItem.UPrice;
+                
+                html += '<div style="display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 8px; background-color: #f9f9f9;">'
+                    + '<div style="flex-shrink: 0;"><img src="' + giftImg + '" alt="' + giftItem.Title + '" style="width: 50px; height: 50px; object-fit: cover;"></div>'
+                    + '<div style="flex: 1;">'
+                    + '<p style="margin: 0 0 4px 0; font-size: 14px;">' + giftItem.Title + '</p>'
+                    + '<p style="margin: 0; font-size: 12px; color: #666;">' + giftItem.Qty + ' x ' + currency + ' ' + giftItem.UPrice.toFixed(2) + '</p>'
+                    + '</div>'
+                    + '<div style="flex-shrink: 0;"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + giftItem.Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
+                    + '</div>';
+            }
+        }
+        
+        // Check for old-system gifts
         if (gifts.length > 0) {
-
-
             var _dataGiftFilter = gifts.filter(function (obj) {
                 return (obj.ItemKey === data[i].Key);
             });
 
             for (var j = 0; j < _dataGiftFilter.length; j++) {
-                //if (gifts[j].ItemKey = data[i].Key) {
-                //gift
                 html += '<p class="addon"> Addon Products</p>'
                 html += '<div class="d-flex flex-wrap justify-content-center mb-3 gift-in-cart border">'
                     + '<div class="p-2 img"><img src="https://retail.premium-pos.com' + _dataGiftFilter[j].Image + '" alt=""></div>'
@@ -311,12 +348,11 @@ function cartitem() {
                     + '<div class="p-2 align-self-center "><p class="badge badge-dark"><span class="currency-text mx-0 text-white"></span>' + currency + ' ' + _dataGiftFilter[j].DisplayPrice + '</p></div>'
                     + '<div class="p-2 align-self-center"><button class="bg-transparent border-0 text-danger" onclick="removeCartGift(' + _dataGiftFilter[j].Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
                     + '</div>'
-                //gift end
-                //}
                 totalPrice += _dataGiftFilter[j].DisplayPrice;
                 giftPrice += _dataGiftFilter[j].DisplayPrice;
             }
         }
+        
         html += '</td>'
             + '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + data[i].UPrice.toFixed(2) + '</span></td>'
             + '<td class="plantmore-product-quantity">'
@@ -501,7 +537,6 @@ function GetWishListItems() {
             + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + data[i].Price.toFixed(2) + '</span></td>'
             + '<td class="plantmore-product-stock-status"><span class="stockcheck">' + data[i].Instock + '</span></td>'
             + '<td class="plantmore-product-add-cart"><a class="btn btn-default btn-small" href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">Add to Cart</a></td>'
-            //+ "<td class='plantmore-product-add-cart'><a href='#' class='addItemLS ' onclick='addtocart("+data[i].ItemID+","+data[i].Title+"','"+ data[i].Image +"',"+ data[i].Price +",1);toast('Item Added to Cart', 1); return false;'>add to cart</a></td>"
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeWishlistitem(' + data[i].Key + '); return false;"><i class="h5 ion-trash-a mb-0"></i></a></td>'
             + '</tr>'
 
@@ -533,28 +568,23 @@ function StockActiveColor() {
     });
 };
 
-//Currency
-var currency = "Rs.";
+var currency = "BHD.";
 var currencyLS = localStorage.getItem("currency");
 if (currencyLS == null) {
     localStorage.setItem("currency", currency);
 }
 else {
-    localStorage.setItem("currency", "RS.");
+    localStorage.setItem("currency", "BHD.");
 }
 function ShowText() {
     var currency = localStorage.getItem("currency");
     $(".currency-text").text(currency);
 };
 
-
-//form validation
 (function () {
     'use strict';
     window.addEventListener('load', function () {
-        // Get the forms we want to add validation styles to
         var forms = document.getElementsByClassName('needs-validation');
-        // Loop over them and prevent submission
         var validation = Array.prototype.filter.call(forms, function (form) {
 
             form.addEventListener('submit', function (event) {
@@ -569,9 +599,7 @@ function ShowText() {
 })();
 
 
-// Gift Functions - Add Cart Item with Gifts
 function AddCartWithGifts(itemId, itemTitle, qty) {
-    // Get selected gifts from modal
     var selectedGifts = [];
     
     $('#giftModal .gift-checkbox:checked').each(function() {
@@ -584,17 +612,13 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
         selectedGifts.push(giftData);
     });
     
-    // Get current cart item data from ProductDetails page
     var productImage = $('img[src*="product"]').attr('src') || '/Content/assets/images/NA.png';
     
-    // Extract image from button data attributes or page
     var itemImage = $('.buy-now.add-to-cart').data('image-src') || productImage;
     var itemPrice = parseFloat($('.buy-now.add-to-cart').data('price')) || 0;
     
-    // Generate unique key for this cart item
     var itemKey = Math.floor((Math.random() * 10000) + 1);
     
-    // Add item to cart
     var cartItems = getCartLS();
     cartItems.push({
         ItemID: itemId,
@@ -608,7 +632,6 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
     });
     setCartLS(cartItems);
     
-    // Add gifts to gift items list
     if (selectedGifts.length > 0) {
         var giftItems = getgiftLS();
         
@@ -620,26 +643,22 @@ function AddCartWithGifts(itemId, itemTitle, qty) {
                 Image: gift.image,
                 DisplayPrice: gift.price,
                 DiscountedPrice: 0,
-                Qty: qty,  // Gift quantity matches main item quantity
-                OriginalQty: qty,  // Store original qty for proportional scaling
+                Qty: qty,
+                OriginalQty: qty, 
                 Key: Math.floor((Math.random() * 10000) + 1),
-                ItemKey: itemKey  // Link gift to main cart item
+                ItemKey: itemKey 
             });
         });
         
         setgiftLS(giftItems);
     }
     
-    // Close modal and update cart display
     $('#giftModal').modal('hide');
     topheadcart();
     cartitem();
     
-    // Show success message
     toast('Item added to cart with gifts!', 1);
 }
-
-//Index - Home
 
 function getmail() {
     var email = $(".SubscribeEmail").val();
@@ -651,11 +670,8 @@ function getmail() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function (res) {
-
-
         },
         error: function (xhr, textStatus, errorThrown) {
-            //
         }
     });
 };

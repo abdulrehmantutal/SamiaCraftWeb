@@ -1,12 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "E:\\Abdul_Rehman\\Samia-Crafts\\samiacraft\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{BE883289-A094-4CE6-B604-99555EEFB420}|samiacraft\\samiacraft.csproj|e:\\abdul_rehman\\samia-crafts\\samiacraft\\samiacraft\\views\\order\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BE883289-A094-4CE6-B604-99555EEFB420}|samiacraft\\samiacraft.csproj|solutionrelative:samiacraft\\views\\order\\checkout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -14,21 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Checkout.cshtml",
-              "DocumentMoniker": "E:\\Abdul_Rehman\\Samia-Crafts\\samiacraft\\samiacraft\\Views\\Order\\Checkout.cshtml",
-              "RelativeDocumentMoniker": "samiacraft\\Views\\Order\\Checkout.cshtml",
-              "ToolTip": "E:\\Abdul_Rehman\\Samia-Crafts\\samiacraft\\samiacraft\\Views\\Order\\Checkout.cshtml",
-              "RelativeToolTip": "samiacraft\\Views\\Order\\Checkout.cshtml",
-              "ViewState": "AgIAAK0AAAAAAAAAAAAQwLoAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-13T16:22:04.894Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"

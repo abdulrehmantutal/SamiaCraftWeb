@@ -26,17 +26,16 @@ namespace samiacraft.Controllers
             try
             {
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-                
-                var settng = new settingBLL().GetSettings();
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
+
+
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;
                     ViewBag.TopheaderArea = settng.DynamicList[0].HeaderToparea;
                     ViewBag.AddButton = settng.DynamicList[0].AddButton;
                 }
-                var cityData = new cityService().GetAll();
-                ViewBag.City = cityData ?? new List<cityBLL>();
-                ViewBag.Banner = new bannerBLL().GetBanner("Shop");
                 HttpContext.Session.SetInt32("LoginRoute", id);
                 return View();
             }
@@ -52,8 +51,9 @@ namespace samiacraft.Controllers
             try
             {
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-                
-                var settng = new settingBLL().GetSettings();
+                int UserId = Convert.ToInt32(_configuration["UserId"]);
+
+                var settng = new settingBLL().GetSettings(UserId);
                 if (settng?.DynamicList?.Count > 0)
                 {
                     ViewBag.Logo = settng.DynamicList[0].Logo;

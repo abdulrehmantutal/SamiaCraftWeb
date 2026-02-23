@@ -35,28 +35,29 @@ namespace samiacraft.Models.BLL
 
         public static DataTable _dt;
         public static DataSet _ds;
-        public List<bannerBLL> GetBanner(string FormName)
+        public List<bannerBLL> GetBannerHeader(int LocationId)
         {
             try
             {
-                // Using mock data for development
-                var mockService = new MockDataService();
-                var banners = mockService.GetAllBanners();
-                
-                // Filter by form name if needed
-                if (!string.IsNullOrEmpty(FormName))
+                var lst = new List<bannerBLL>();
+                SqlParameter[] p = new SqlParameter[1];
+                p[0] = new SqlParameter("@LocationId", LocationId);
+
+                _dt = (new DBHelper().GetTableFromSP)("sp_Website_GetHeaderBanner", p);
+                if (_dt != null)
                 {
-                    banners = banners.Where(b => b.FormName == FormName).ToList();
+                    if (_dt.Rows.Count > 0)
+                    {
+                        lst = _dt.DataTableToList<bannerBLL>();
+                    }
                 }
-                
-                return banners ?? new List<bannerBLL>();
+                return lst;
             }
             catch (Exception ex)
             {
-                return new List<bannerBLL>();
+                return null;
             }
         }
-        
         public List<reviewBLL> GetReviews()
         {
             try

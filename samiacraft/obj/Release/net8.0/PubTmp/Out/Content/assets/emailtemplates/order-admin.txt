@@ -4,7 +4,7 @@
     <h2>New Order Received</h2>
     <p>Customer: #Customer#</p>
     <p>Order #: #OrderNo#</p>
-    <p>Amount: RS #GrandTotal#</p>
+    <p>Amount: BHD #GrandTotal#</p>
     <p>Address: #Address#</p>
     <p>Contact: #Contact#</p>
 </body>

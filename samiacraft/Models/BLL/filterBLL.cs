@@ -53,18 +53,16 @@ namespace samiacraft.Models.BLL
             {
                 var lst = new List<filterBLL>();
 
-                // NULL CHECK - Yeh bohot zaroori hai
+
                 if (data == null)
                 {
-                    return lst; // Khali list return karo
+                    return lst;
                 }
 
-                // Properties ko safe initialize karo agar null hain
                 string category = data.Category ?? "";
                 string subCategory = data.SubCategory ?? "";
                 string searchTxt = data.Searchtxt ?? "";
-                //string maxPrice = data.MaxPrice ?? "";
-                string maxPrice = "";
+                string maxPrice = data.MaxPrice ?? "";
                 string minPrice = data.MinPrice ?? "";
                 int sortID = data.SortID;
                 int LocationId = data.LocationId;
@@ -80,22 +78,24 @@ namespace samiacraft.Models.BLL
 
                 string spName = "";
 
-                // Konsa SP call karna hai yeh decide karo
                 if (!string.IsNullOrWhiteSpace(maxPrice))
                 {
-                    spName = "sp_PricefilterProduct_Vitamito";
+                    spName = "sp_Website_PricefilterProduct";
                 }
+
+
+
                 else if (!string.IsNullOrWhiteSpace(category) || !string.IsNullOrWhiteSpace(subCategory))
                 {
-                    spName = "sp_CategoryfilterProduct_SamiCraft";
+                    spName = "sp_Website_CategoryfilterProduct";
                 }
                 else if (sortID >= 1 && sortID <= 4)
                 {
-                    spName = "sp_SortfilterProduct_Vitamito";
+                    spName = "sp_Website_SortfilterProduct";
                 }
                 else
                 {
-                    spName = "sp_filterProduct_Vitamito";
+                    spName = "sp_Website_filterProduct";
                 }
 
                 _ds = (new DBHelper().GetDatasetFromSP)(spName, p);
@@ -110,9 +110,7 @@ namespace samiacraft.Models.BLL
             }
             catch (Exception ex)
             {
-                // Error ko log karo - production mein zaroori hai
-                // LogError(ex); // Implement karlena
-                return new List<filterBLL>(); // null ki jagah empty list return karo
+                return new List<filterBLL>();
             }
         }
 
@@ -122,7 +120,6 @@ namespace samiacraft.Models.BLL
             {
                 var lst = new List<filterBLL>();
 
-                // NULL CHECK
                 if (data == null)
                 {
                     return lst;
@@ -145,7 +142,6 @@ namespace samiacraft.Models.BLL
             }
             catch (Exception ex)
             {
-                // LogError(ex);
                 return new List<filterBLL>();
             }
         }
@@ -167,7 +163,6 @@ namespace samiacraft.Models.BLL
             }
             catch (Exception ex)
             {
-                // LogError(ex);
                 return new List<filterBLL>();
             }
         }

@@ -22,7 +22,9 @@ namespace samiacraft.Controllers
         public ActionResult Index()
         {
             int LocationId = Convert.ToInt32(_configuration["LocationId"]);
-            var settng = new settingBLL().GetSettings();
+            int UserId = Convert.ToInt32(_configuration["UserId"]);
+
+            var settng = new settingBLL().GetSettings(UserId);
             var dyn = settng?.DynamicList?.FirstOrDefault();
 
 
@@ -38,8 +40,6 @@ namespace samiacraft.Controllers
             ViewBag.BgTestimonials = dyn?.BgTestimonials ?? string.Empty;
             ViewBag.shopButtonURL = settng?.ShopUrl ?? "#";
             ViewBag.Logo = dyn?.Logo ?? string.Empty;
-            var cityData = new cityService().GetAll();
-            ViewBag.City = cityData ?? new List<cityBLL>();
             
             ViewBag.categoryList = new List<categoryBLL>();
             ViewBag.Category = new List<categoryBLL>();
@@ -75,7 +75,7 @@ namespace samiacraft.Controllers
                 var catlist = new categoryBLL().GetAll(LocationId);
                 if (catlist != null && catlist.Count > 0)
                 {
-                    ViewBag.categoryList = catlist.Take(6).ToList();
+                    ViewBag.categoryList = catlist.ToList();
                     ViewBag.Category = catlist.ToList();
                 }
                 else
@@ -83,8 +83,8 @@ namespace samiacraft.Controllers
                     ViewBag.Category = new List<categoryBLL>();
                 }
 
-                ViewBag.Deal = new dealBLL().GetAll();
-                ViewBag.Banner = new bannerBLL().GetBanner("Home");
+                //ViewBag.Deal = new dealBLL().GetAll();
+                ViewBag.Banner = new bannerBLL().GetBannerHeader(LocationId);
                 ViewBag.Reviews = new bannerBLL().GetReviews();
             }
             return View();
@@ -92,15 +92,13 @@ namespace samiacraft.Controllers
 
         public ActionResult Maintenance()
         {
-            var cityData = new cityService().GetAll();
-            ViewBag.City = cityData;
             return View();
         }
 
         public ActionResult About()
         {
             ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-            ViewBag.Banner = new bannerBLL().GetBanner("About");
+            //ViewBag.Banner = new bannerBLL().GetBanner("About");
             return View();
         }
 
@@ -108,7 +106,7 @@ namespace samiacraft.Controllers
         public ActionResult Contact()
         {
             ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
-            ViewBag.Banner = new bannerBLL().GetBanner("Contact");
+            //ViewBag.Banner = new bannerBLL().GetBanner("Contact");
             return View();
         }
 
@@ -210,7 +208,8 @@ namespace samiacraft.Controllers
 
         public ActionResult GetSetting()
         {
-            return Json(new settingBLL().GetSettings());
+            int UserId = Convert.ToInt32(_configuration["UserId"]);
+            return Json(new settingBLL().GetSettings(UserId));
         }
 
         public ActionResult Policy()

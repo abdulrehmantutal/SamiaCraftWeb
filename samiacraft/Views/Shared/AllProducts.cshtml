@@ -417,12 +417,12 @@
                                     <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })" class="icon-btn" title="Preview">
                                         <img src="~/Content/assets/images/preview.png" alt="Preview">
                                     </a>
-                                    <a onclick="addtoWishlist(@item.ID, '@item.Name?.Replace("'", "\\'"))', '@item.Image', @item.Price, '@item.InStock.ToString()', 1); toast('Item Added to wishlist', 1); return false;" class="icon-btn" title="Wishlist">
+                                    <a onclick="addtoWishlist(@item.ID, '@item.Name?.Replace("'", "\\'"))', '@item.Image', @item.Price.ToString("0.000"), '@item.InStock.ToString()', 1); toast('Item Added to wishlist', 1); return false;" class="icon-btn" title="Wishlist">
                                         <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
                                     </a>
                 
                                     @{
-                                        var cartPrice = item.Price;
+                                        var cartPrice = @item.Price.ToString("N2");
                                     }
                                     <a onclick="addtocart(@item.ID, '@item.Name?.Replace("'", "\\'"))', '@item.Image', @cartPrice, 1); toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
                                         <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
@@ -454,12 +454,11 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
                                 {
-                                    <span class="text-price fw-bold">Rs. @item.Price.ToString("N2")</span>
+                                    <span class="text-price fw-bold">BHD. @item.Price.ToString("0.000")</span>
                                 }
                                 else
                                 {
-                                    @* <span class="text-price fw-bold">Rs. @item.DiscountedPrice.Value.ToString("N2")</span> *@
-                                    <del class="text-del ms-2">Rs. @item.Price.ToString("N2")</del>
+                                    <del class="text-del ms-2">BHD. @item.Price.ToString("0.000")</del>
                                 }
                             </div>
                         </div>
@@ -550,11 +549,25 @@
                             else
                             { *@
                                 <div class="price-box">
-                                    <span class="old-price ">RS @item.Price</span>
+                                    <span class="old-price ">BHD @item.Price.ToString("0.000")</span>
                                     @* <span class="new-price ">RS @item.DiscountedPrice</span> *@
                                 </div>
                             @* } *@
-                            <p>@item.Description</p>
+                            @{
+    var plainDescription = string.IsNullOrEmpty(item.Description) 
+        ? "No description available." 
+        : System.Text.RegularExpressions.Regex.Replace(item.Description, "<.*?>", ""); // HTML tags remove
+
+    if (plainDescription.Length > 60)
+    {
+        plainDescription = plainDescription.Substring(0, 60) + "...";
+    }
+}
+
+<p class="text-muted small mb-3 product-card-description">
+    @plainDescription
+</p>
+
                         </div>
                     </div>
                 </div>

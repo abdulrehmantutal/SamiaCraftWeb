@@ -95,6 +95,10 @@ namespace samiacraft.Controllers
                 ViewBag.TodaysSpecial = filterItems?.Take(4).ToList() ?? new List<filterBLL>();
 
                 StoreTempData(category, categoryIds, subCategoryIds, searchText, minPrice, maxPrice, sortId);
+                
+                // Pass selected category IDs to the view for pre-selection
+                ViewBag.SelectedCategoryIds = categoryIds;
+
                 return View();
             }
             catch (Exception ex)
@@ -238,7 +242,8 @@ namespace samiacraft.Controllers
 
         private filterBLL BuildFilterFromTempData()
         {
-            int locationId = (int)Location.LocationID;
+            var locationId = _configuration["LocationId"];
+
             var categoryIds = TempData["CategoryIDs"]?.ToString() ?? string.Empty;
             var subCategoryIds = TempData["SubCategoryIDs"]?.ToString() ?? string.Empty;
             var searchText = TempData["Searchtext"]?.ToString() ?? string.Empty;
@@ -254,7 +259,7 @@ namespace samiacraft.Controllers
                 MaxPrice = maxPrice,
                 MinPrice = minPrice,
                 SortID = sortId,
-                LocationId = locationId
+                LocationId = locationId.Length > 0 ? int.Parse(locationId) : 0
             };
         }
 

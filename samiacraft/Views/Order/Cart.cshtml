@@ -33,9 +33,9 @@
             border: 1px solid #33b6ae;
         }
 </style>
-@if (ViewBag.Banner.Count > 0)
+@if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
 {
-    <div class="breadcrumb-area section-ptb" style="background: url(@imageUrl@ViewBag.Banner[0].Image) repeat scroll 0 0;background-size: cover;">
+    <div class="breadcrumb-area section-ptb" style="background: #ebebeb; background-size: cover;">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -109,8 +109,8 @@ else
                             <div class="cart-page-total">
                                 <h2>Cart totals</h2>
                                 <ul>
-                                    <li><strong class="">Sub-Total</strong> <span class="subtotal">RS00.00</span></li>
-                                    <li><strong class="">Total</strong> <span class="totalamount">RS00.00</span></li>
+                                    <li><strong class="">Sub-Total</strong> <span class="subtotal">BHD00.00</span></li>
+                                    <li><strong class="">Total</strong> <span class="totalamount">BHD00.00</span></li>
                                 </ul>
                                 <a href="~/order/checkout" id="check-btn" class="proceed-checkout-btn">Proceed to checkout</a>
                             </div>

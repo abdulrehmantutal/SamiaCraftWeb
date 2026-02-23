@@ -15,18 +15,5 @@ namespace samiacraft.Models.Service
         {
             _service = new cityBLL();
         }
-
-        public List<cityBLL> GetAll()
-        {
-            try
-            {
-                return _service.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return new List<cityBLL>();
-            }
-        }
-
     }
 }

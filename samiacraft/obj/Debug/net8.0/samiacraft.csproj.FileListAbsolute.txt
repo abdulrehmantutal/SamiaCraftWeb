@@ -7,7 +7,6 @@ E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\samiacraft.e
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\samiacraft.deps.json
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\samiacraft.runtimeconfig.json
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\samiacraft.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\samiacraft.pdb
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\Newtonsoft.Json.dll
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\bin\Debug\net8.0\System.Data.SqlClient.dll
@@ -26,6 +25,7 @@ E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.c
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.MvcApplicationPartsAssemblyInfo.cache
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.RazorAssemblyInfo.cache
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.RazorAssemblyInfo.cs
+E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.sourcelink.json
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\rjimswa.dswa.cache.json
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -39,6 +39,5 @@ E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\staticwebass
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.csproj.Up2Date
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.dll
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\refint\samiacraft.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.pdb
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\samiacraft.genruntimeconfig.cache
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Debug\net8.0\ref\samiacraft.dll

@@ -106,23 +106,23 @@ namespace samiacraft.Services
                     result.TransactionID = formData["tranid"].ToString();
                     result.Amount = formData["amt"].ToString();
                     result.ErrorText = formData["error_text"].ToString();
-                    result.Success = result.Result == "CAPTURED";
+                    result.IsSuccessful = result.Result == "CAPTURED";
                 }
                 else if (formData.ContainsKey("ErrorText"))
                 {
                     result.ErrorText = formData["ErrorText"].ToString();
                     result.TrackID = formData["Trackid"].ToString();
-                    result.Success = false;
+                    result.IsSuccessful = false;
                 }
                 else
                 {
-                    result.Success = false;
+                    result.IsSuccessful = false;
                     result.ErrorText = "Unknown response format";
                 }
             }
             catch (Exception ex)
             {
-                result.Success = false;
+                result.IsSuccessful = false;
                 result.ErrorText = ex.Message;
             }
 
@@ -142,7 +142,10 @@ namespace samiacraft.Services
 
     public class BenefitPayResponseResult
     {
-        public bool Success { get; set; }
+        public bool IsSuccessful { get; set; }
+        //public bool Success { get; set; }
+        public string ErrorMessage { get; set; }
+        public string Exception { get; set; }
         public string PaymentID { get; set; }
         public string Result { get; set; }
         public string ResponseCode { get; set; }

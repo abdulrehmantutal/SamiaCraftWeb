@@ -69,13 +69,27 @@ namespace samiacraft.Models.BLL
         public List<DynamicCssBLL> DynamicList { get; set; }
         public static DataTable _dt;
         public static DataSet _ds;
-        public settingBLL GetSettings()
+        public settingBLL GetSettings(int userId)
         {
             try
             {
-                // Using mock data for development
-                var mockService = new MockDataService();
-                return mockService.GetSettings();
+                var obj = new settingBLL();
+                SqlParameter[] p = new SqlParameter[1];
+                p[0] = new SqlParameter("@UserID", userId);
+
+                _ds = (new DBHelper().GetDatasetFromSP)("sp_GetSettings_Vitamito", p);
+                if (_ds != null)
+                {
+                    if (_ds.Tables.Count > 0)
+                    {
+                        if (_ds.Tables[0] != null)
+                        {
+                            obj = JArray.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(_ds.Tables[0])).ToObject<List<settingBLL>>().FirstOrDefault();
+                        }
+                    }
+                }
+                return obj;
+
             }
             catch (Exception ex)
             {

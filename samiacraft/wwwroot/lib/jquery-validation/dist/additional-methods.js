@@ -804,7 +804,7 @@ $.validator.addMethod( "iban", function( value, element ) {
 		"RO": "[A-Z]{4}[\\dA-Z]{16}",
 		"SM": "[A-Z]\\d{10}[\\dA-Z]{12}",
 		"SA": "\\d{2}[\\dA-Z]{18}",
-		"RS": "\\d{18}",
+		"BHD": "\\d{18}",
 		"SK": "\\d{20}",
 		"SI": "\\d{15}",
 		"ES": "\\d{20}",

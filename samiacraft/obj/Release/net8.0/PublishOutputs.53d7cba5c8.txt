@@ -14,9 +14,3 @@ E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\runtimes\win-x86\native\sni.dll
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
 E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\IKVM.OpenJDK.Core.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\IKVM.OpenJDK.Security.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\IKVM.OpenJDK.Text.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\IKVM.OpenJDK.Util.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\IKVM.Runtime.dll
-E:\Abdul_Rehman\Samia-Crafts\samiacraft\samiacraft\obj\Release\net8.0\PubTmp\Out\iPayBenefitPipe.dll
