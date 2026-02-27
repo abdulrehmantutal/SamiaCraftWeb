@@ -19,7 +19,7 @@ namespace samiacraft.Controllers
 
             // Add Home page
             sb.AppendLine("<url>");
-            sb.AppendLine("<loc>https://www.karachiflora.com/</loc>");
+            sb.AppendLine("<loc>http://samiacrafts-001-site5.site4future.com/</loc>");
             sb.AppendLine($"<lastmod>{DateTime.Now:yyyy-MM-dd}</lastmod>");
             sb.AppendLine("<changefreq>weekly</changefreq>");
             sb.AppendLine("<priority>1.0</priority>");
@@ -27,7 +27,7 @@ namespace samiacraft.Controllers
 
             // Add Shop page
             sb.AppendLine("<url>");
-            sb.AppendLine("<loc>https://www.karachiflora.com/Shop/Shop</loc>");
+            sb.AppendLine("<loc>http://samiacrafts-001-site5.site4future.com/Shop/Shop</loc>");
             sb.AppendLine($"<lastmod>{DateTime.Now:yyyy-MM-dd}</lastmod>");
             sb.AppendLine("<changefreq>daily</changefreq>");
             sb.AppendLine("<priority>0.9</priority>");
@@ -42,7 +42,7 @@ namespace samiacraft.Controllers
                 foreach (var item in allItems)
                 {
                     sb.AppendLine("<url>");
-                    //sb.AppendLine($"<loc>https://www.karachiflora.com/Product/ProductDetails?ItemID={item.ItemID}</loc>");
+                    //sb.AppendLine($"<loc>http://samiacrafts-001-site5.site4future.com/Product/ProductDetails?ItemID={item.ItemID}</loc>");
                     sb.AppendLine($"<lastmod>{item.LastUpdatedDate:yyyy-MM-dd}</lastmod>");
                     sb.AppendLine("<changefreq>weekly</changefreq>");
                     sb.AppendLine("<priority>0.8</priority>");
