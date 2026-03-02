@@ -170,7 +170,7 @@ namespace samiacraft.Controllers
             try
             {
                 string ToEmail = _configuration["AppSettings:From"] ?? "";
-                string SubJect = "New Subscription at Al Hilal";
+                string SubJect = "New Subscription at Samia Crafts";
                 string templatePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Template", "newsletter.txt");
                 
                 if (!System.IO.File.Exists(templatePath))

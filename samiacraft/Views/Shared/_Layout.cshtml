@@ -401,7 +401,10 @@
         body {
             transition: padding-top 0.3s ease-out;
         }
-    
+
+        .footer-list:hover li a {
+            color: #fff !important;
+        }
     
     </style>
 
@@ -417,8 +420,8 @@
                     <div class="col-lg-1 d-none d-lg-block">
                         <div class="social-top">
                             <ul>
-                                <li id="facebook" class=""><a href="https://www.facebook.com/khansflowers/" target="_blank"><img src="~/Content/assets/images/icon/fb.png" /></a></li>
-                                <li id="instagram" class=""><a href="https://www.instagram.com/karachiflora/?hl=en" target="_blank"><img src="~/Content/assets/images/icon/ins.png" /></a></li>
+                                <li id="facebook" class=""><a><img src="~/Content/assets/images/icon/fb.png" /></a></li>
+                                <li id="instagram" class=""><a><img src="~/Content/assets/images/icon/ins.png" /></a></li>
                             </ul>
                         </div>
                     </div>
@@ -561,10 +564,10 @@
                             <div class="newsletter-footer">
 
                                 <div>
-                                    <a href="https://www.facebook.com/annuflowerz?mibextid=ZbWKwL" target="_blank">
+                                    <a>
                                         <img src="/Content/assets/images/socialmedia/facebook.png" alt="Facebook" class="px-1">
                                     </a>
-                                    <a href="https://www.instagram.com/karachiflora?igsh=Zm0xMXZ3czFmb2Y2" target="_blank">
+                                    <a>
                                         <img src="/Content/assets/images/socialmedia/instagram.png" alt="Instagram" class="px-1">
                                     </a>
                                 </div>
@@ -579,10 +582,10 @@
                         <div class="widget-footer mt-30">
                             <h6 class="title-widget">QUICK LINK</h6>
                             <ul class="footer-list">
-                                <li><a href="~/home/index">Home</a></li>
-                                <li><a href="~/home/contact">Contact</a></li>
-                                <li><a href="~/home/about">About Us</a></li>
-                                <li><a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "", ColorIDs = "", MinPrice = "RS0", MaxPrice = "RS50000", Searchtext = "", SortID = 0 })">Shop</a></li>
+                                <li><a class="menu" href="~/home/index">Home</a></li>
+                                <li><a class="menu" href="~/home/contact">Contact</a></li>
+                                <li><a class="menu" href="~/home/about">About Us</a></li>
+                                <li><a class="menu" href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "", ColorIDs = "", MinPrice = "RS0", MaxPrice = "RS50000", Searchtext = "", SortID = 0 })">Shop</a></li>
                                 @* @if (Session["CustomerName"] != null)
                                 {
                                     <li><a href="~/account/logout">Logout</a></li>

@@ -567,7 +567,7 @@ function GetWishListItems() {
             html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="wishlist-img" src="/Content/assets/images/NA.png" alt=""></a></td>'
         }
         else {
-            html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="wishlist-img" src="http://admin.karachiflora.com/' + data[i].Image + '" alt=""></a></td>'
+            html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="wishlist-img" src="https://retail.premium-pos.com/' + data[i].Image + '" alt=""></a></td>'
         }
 
         html += '<td class="plantmore-product-name"><a href="#">' + data[i].Title + '</a></td>'

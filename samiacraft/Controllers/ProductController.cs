@@ -27,7 +27,7 @@ namespace samiacraft.Controllers
 
             try
             {
-                ViewBag.CanonicalUrl = $"https://www.karachiflora.com/Product/ProductDetails?ItemID={ItemID}";
+                ViewBag.CanonicalUrl = $"http://samiacrafts-001-site5.site4future.com/Product/ProductDetails?ItemID={ItemID}";
                 
                 ViewBag.ImageUrl = _configuration["Image"] ?? "https://retail.premium-pos.com";
                 
