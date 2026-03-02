@@ -165,6 +165,42 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 2px;
+    }
+
+    .qty-btn-small {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #333;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .qty-btn-small:hover {
+        background-color: #33b6ae;
+        color: #fff;
+        border-color: #33b6ae;
+    }
+
+    .qty-btn-small:active {
+        transform: scale(0.95);
+    }
+
+    .qty-btn-small i {
+        margin: 0;
+        line-height: 1;
     }
 
     .cart-plus-minus-box {
@@ -749,7 +785,9 @@
                     <!-- Quantity and Button Section -->
                     <div class="quickview-plus-minus">
                         <div class="cart-plus-minus">
+                            <button type="button" class="qty-btn-small qty-minus-small" id="qty_minus_btn" title="Decrease Quantity"><i class="ion-minus-round"></i></button>
                             <input type="text" value="1" id="cart_quantity" class="cart-plus-minus-box">
+                            <button type="button" class="qty-btn-small qty-plus-small" id="qty_plus_btn" title="Increase Quantity"><i class="ion-plus-round"></i></button>
                         </div>
 
                         <div class="quickview-btn-cart">
@@ -1113,6 +1151,7 @@
                     UPrice: parseFloat(itemData.price),
                     Price: parseFloat(itemData.price) * itemData.quantity,
                     Qty: itemData.quantity,
+                    OriginalQty: itemData.quantity,
                     ProNote: itemData.isGift ? 'Gift' : '',
                     Key: itemKey,
                     IsGift: itemData.isGift || false,
@@ -1188,6 +1227,34 @@
                 }
             } catch(err) {
                 console.error('Error initializing cart:', err);
+            }
+        });
+
+        // Quantity Plus Button Handler
+        $(document).on('click', '#qty_plus_btn', function(e) {
+            e.preventDefault();
+            var quantityInput = $('#cart_quantity');
+            var currentQty = parseInt(quantityInput.val()) || 1;
+            quantityInput.val(currentQty + 1);
+        });
+
+        // Quantity Minus Button Handler
+        $(document).on('click', '#qty_minus_btn', function(e) {
+            e.preventDefault();
+            var quantityInput = $('#cart_quantity');
+            var currentQty = parseInt(quantityInput.val()) || 1;
+            if (currentQty > 1) {
+                quantityInput.val(currentQty - 1);
+            }
+        });
+
+        // Ensure quantity input only accepts numbers
+        $(document).on('change, keyup', '#cart_quantity', function() {
+            var val = $(this).val();
+            if (val === '' || isNaN(val) || val < 1) {
+                $(this).val(1);
+            } else {
+                $(this).val(Math.floor(val));
             }
         });
     });

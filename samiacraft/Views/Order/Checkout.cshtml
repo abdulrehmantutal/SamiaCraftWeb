@@ -326,6 +326,11 @@
             var subTotal = 0;
 
             cartItems.forEach(function(item, index) {
+                // Skip gift items - they'll be displayed under their parent item
+                if (item.IsGift === true) {
+                    return;
+                }
+
                 var qty = parseInt(item.Qty) || 1;
                 var price = parseFloat(item.UPrice) || 0;
                 var itemTotal = qty * price;
@@ -336,7 +341,22 @@
                     '<td class="product-total text-right">BHD ' + itemTotal.toFixed(2) + '</td>' +
                     '</tr>';
 
-                // Add gifts if any
+                // Add new-system linked gifts (items with IsGift === true and LinkedItemKey === item.Key)
+                var linkedGifts = cartItems.filter(function(g) { return g.LinkedItemKey === item.Key && g.IsGift === true; });
+                if (linkedGifts.length > 0) {
+                    linkedGifts.forEach(function(gift) {
+                        var giftQty = parseInt(gift.Qty) || 1;
+                        var giftPrice = parseFloat(gift.UPrice) || 0;
+                        var giftTotal = giftQty * giftPrice;
+                        tableHtml += '<tr style="background: #f9f9f9;">' +
+                            '<td class="product-name" style="padding-left: 40px;">--- ' + gift.Title + ' × ' + giftQty + '</td>' +
+                            '<td class="product-total text-right">BHD ' + giftTotal.toFixed(2) + '</td>' +
+                            '</tr>';
+                        subTotal += giftTotal;
+                    });
+                }
+
+                // Add old-system gifts if any
                 var itemGifts = giftItems.filter(function(g) { return g.ItemKey === item.Key; });
                 if (itemGifts.length > 0) {
                     tableHtml += '<tr style="background: #f9f9f9;">';
@@ -378,11 +398,13 @@
             UpdateSessionData(cartItems, giftItems);
         }
 
-        // Update SessionData hidden field
         function UpdateSessionData(cartItems, giftItems) {
             var sessionData = [];
+            var mainItems = cartItems.filter(function(item) {
+                return item.IsGift !== true;
+            });
 
-            cartItems.forEach(function(item, index) {
+            mainItems.forEach(function(item, index) {
                 var qty = parseInt(item.Qty) || 1;
 
                 // Build gifts array for this item
@@ -393,15 +415,27 @@
                             id: g.GiftID || 0,
                             title: g.Title,
                             price: g.DisplayPrice,
-                            image: g.Image
+                            image: g.Image,
+                            qty: g.Qty || 1
                         };
                     });
 
-                // Create cart record
+                cartItems
+                    .filter(function(g) { return g.LinkedItemKey === item.Key && g.IsGift === true; })
+                    .forEach(function(g) {
+                        gifts.push({
+                            id: g.ItemID || 0,
+                            title: g.Title,
+                            price: g.UPrice,
+                            image: g.Image,
+                            qty: parseInt(g.Qty) || 1
+                        });
+                    });
+
                 var record = {
-                    id: item.ItemID,
-                    title: item.Title,
-                    image: item.Image,
+                    id: item.ItemID || 0,
+                    title: item.Title || '',
+                    image: item.Image || '',
                     qty: qty,
                     price: parseFloat(item.UPrice) || 0,
                     newprice: parseFloat(item.NewPrice) || 0,
@@ -411,7 +445,17 @@
                 sessionData.push(record);
             });
 
-            $('#SessionData').val(JSON.stringify(sessionData));
+            // Ensure SessionData is always set - even if empty array
+            var sessionDataJSON = JSON.stringify(sessionData);
+            
+            console.log('Final sessionData JSON:', sessionDataJSON);
+            console.log('Setting #SessionData to:', sessionDataJSON);
+            
+            $('#SessionData').val(sessionDataJSON);
+            
+            // Verify it was set
+            var confirmValue = $('#SessionData').val();
+            console.log('Confirmed #SessionData value:', confirmValue);
         }
 
         // Update display totals
@@ -530,16 +574,51 @@
             // Get selected payment type
             var selectedPaymentType = $('input[name="payment_type"]:checked').val();
 
-            // Populate GiftData from localStorage
+            // CRITICAL: Refresh SessionData before submission (ensure it's current)
+            console.log('=== Starting order submission ===');
+            var cartItems = JSON.parse(localStorage.getItem("_cartitems") || "[]");
             var giftItems = JSON.parse(localStorage.getItem("_giftitems") || "[]");
+            
+            console.log('Cart items from localStorage:', cartItems.length, 'items');
+            console.log('Gift items from localStorage:', giftItems.length, 'items');
+            
+            if (cartItems.length === 0) {
+                alert('Your cart is empty!');
+                $(this).prop('disabled', false).text('Place Order');
+                return;
+            }
+            
+            UpdateSessionData(cartItems, giftItems);
+
+            // Verify SessionData was set
+            var sessionDataValue = $('#SessionData').val();
+            console.log('SessionData value before submit:', sessionDataValue);
+            console.log('SessionData length:', sessionDataValue ? sessionDataValue.length : 0);
+            
+            if (!sessionDataValue || sessionDataValue === 'null' || sessionDataValue === '' || sessionDataValue === '[]') {
+                console.error('SessionData is invalid!', sessionDataValue);
+                alert('Error: Unable to prepare order data. Please refresh the page and try again.');
+                $(this).prop('disabled', false).text('Place Order');
+                return;
+            }
+
+            // Populate GiftData from localStorage
             $('#GiftData').val(JSON.stringify(giftItems));
 
             // Submit form via AJAX
             var formData = new FormData($('#FormCheckOut')[0]);
 
+            // Explicitly set SessionData in formData to ensure it's included
+            formData.delete('SessionData');
+            formData.append('SessionData', sessionDataValue);
+
             // Explicitly set payment type (remove and re-add to ensure it's set correctly)
             formData.delete('payment_type');
             formData.append('payment_type', selectedPaymentType);
+
+            console.log('FormData being sent:');
+            console.log('  - SessionData:', sessionDataValue.substring(0, 100) + '...');
+            console.log('  - payment_type:', selectedPaymentType);
 
             // Submit to order placement endpoint
             $.ajax({
@@ -549,6 +628,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    console.log('PlaceOrder response:', response);
                     if (response.success) {
                         // Clear localStorage
                         localStorage.removeItem('_cartitems');
