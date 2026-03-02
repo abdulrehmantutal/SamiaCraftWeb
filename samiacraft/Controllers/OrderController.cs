@@ -281,6 +281,7 @@ namespace samiacraft.Controllers
                 {
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Add("Authorization", $"Basic {credentials}");
+                    
                     var payload = new
                     {
                         apiOperation = "CREATE_CHECKOUT_SESSION",
@@ -288,7 +289,9 @@ namespace samiacraft.Controllers
                         {
                             amount = (data.GrandTotal ?? 0).ToString("0.00"),
                             currency = "BHD",
-                            id = OrderID.ToString()
+                            id = OrderID.ToString(),
+                            description = "Unique, handmade décor and gifts to bring warmth and personality into your home.",
+                            reference = $"Order#{OrderID}"
                         },
                         interaction = new
                         {
@@ -297,12 +300,14 @@ namespace samiacraft.Controllers
                             cancelUrl = $"{baseUrl}/Order/PaymentCallback?OrderID={OrderID}&status=cancel",
                             merchant = new
                             {
-                                name = "SHAZI TRADING COMPANY WLL",
-                                logo = $"{baseUrl}/Content/assets/images/logo.svg"
+                                name = "HANDCRAFTED HEAVEN TRADING BY SAMIA WLL",
                             }
                         }
                     };
-                    var json = JsonConvert.SerializeObject(payload);
+                    
+                    var json = JsonConvert.SerializeObject(payload, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    System.Diagnostics.Debug.WriteLine($"Credimax Payload: {json}");
+                    
                     var content = new StringContent(json, Encoding.UTF8, "text/plain");
 
                     var response = await client.PostAsync(sessionUrl, content);
@@ -324,6 +329,7 @@ namespace samiacraft.Controllers
                     else
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
+                        System.Diagnostics.Debug.WriteLine($"Credimax Error: {responseContent}");
                         return Json(new
                         {
                             Success = false,
@@ -334,6 +340,7 @@ namespace samiacraft.Controllers
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"HandleCredimaxPayment Exception: {ex.Message}");
                 return Json(new { Success = false, Message = $"Payment error: {ex.Message}" });
             }
         }
@@ -670,8 +677,8 @@ namespace samiacraft.Controllers
                     // Payment Information - Explicitly map the payment type
                     PaymentMethodID = MapPaymentType(paymentType),
                     
-                    // Order Items (as JSON string)
-                    OrderDetailString = Request.Form["SessionData"].ToString(),
+                    // Order Items (as JSON string) - handle null/empty cases
+                    OrderDetailString = GetSessionDataString(Request.Form["SessionData"].ToString()),
 
                     // Customer ID from session
                     CustomerID = HttpContext.Session.GetInt32("CustomerID") ?? 0
@@ -688,9 +695,26 @@ namespace samiacraft.Controllers
             }
         }
 
+        private string GetSessionDataString(string sessionData)
+        {
+            // Log what we received
+            System.Diagnostics.Debug.WriteLine($"GetSessionDataString received: '{sessionData}'");
+            
+            // Handle null, empty, or "null" string cases
+            if (string.IsNullOrEmpty(sessionData) || sessionData.Trim() == "null" || sessionData.Trim() == "")
+            {
+                System.Diagnostics.Debug.WriteLine("Returning empty array for SessionData");
+                return "[]"; // Return empty JSON array as default
+            }
+            
+            var trimmed = sessionData.Trim();
+            System.Diagnostics.Debug.WriteLine($"Returning SessionData: {trimmed}");
+            return trimmed;
+        }
+
         private void ParseOrderItems(checkoutBLL data)
         {
-            if (string.IsNullOrEmpty(data.OrderDetailString))
+            if (string.IsNullOrEmpty(data.OrderDetailString) || data.OrderDetailString == "null" || data.OrderDetailString == "[]")
                 return;
 
             try
@@ -701,6 +725,7 @@ namespace samiacraft.Controllers
             catch (Exception ex)
             {
                 // Parsing failed, leave OrderDetail empty
+                System.Diagnostics.Debug.WriteLine($"ParseOrderItems Error: {ex.Message}");
             }
         }
 

@@ -14,10 +14,7 @@ namespace samiacraft.Services
     /// </summary>
     public class BenefitPayGatewayService
     {
-        // Benefit Pay Production Endpoint
-        private const string PRODUCTION_ENDPOINT = "https://live.benefit-gateway.bh/payment/API/hosted.htm";
-        
-        // Benefit Pay Test Endpoint
+        private const string PRODUCTION_ENDPOINT = "https://www.benefit-gateway.bh/payment/API/hosted.htm";
         private const string TEST_ENDPOINT = "https://test.benefit-gateway.bh/payment/API/hosted.htm";
 
         private readonly string _tranportalId;

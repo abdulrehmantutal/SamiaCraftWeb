@@ -356,7 +356,11 @@ function cartitem() {
         html += '</td>'
             + '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + data[i].UPrice.toFixed(2) + '</span></td>'
             + '<td class="plantmore-product-quantity">'
-            + '<input id="qty' + data[i].Key + '"  name="qty' + data[i].Key + '" onchange="changeQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" class="Quantity" value="' + data[i].Qty + '" type="number">'
+            + '<div class="qty-control-wrapper">'
+            + '<button class="qty-btn qty-minus" onclick="decreaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Decrease Quantity"><i class="ion-minus-round"></i></button>'
+            + '<input id="qty' + data[i].Key + '"  name="qty' + data[i].Key + '" onchange="changeQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" class="Quantity" value="' + data[i].Qty + '" type="text">'
+            + '<button class="qty-btn qty-plus" onclick="increaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Increase Quantity"><i class="ion-plus-round"></i></button>'
+            + '</div>'
             + '</td>'
             + '<td class="product-subtotal">' + currency + ' ' + '<span class="amount totalprice"  id="tprice' + data[i].Key + '">' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span></td>'
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + data[i].Key + '); return false;"><i class="h3 ion-trash-a mb-0"></i></button></td>'
@@ -383,25 +387,41 @@ function changeQty(key, price) {
     if ($('#qty' + key).val() > 0) {
 
         var cartItems = getCartLS();
-        var oldQty = 0;
         var newQty = parseInt($('#qty' + key).val());
+        var originalMainQty = 0;
         
         for (var i = 0; i < cartItems.length; i++) {
             if (cartItems[i].Key == key) {
-                oldQty = parseInt(cartItems[i].Qty);
+                // Store original main quantity for scaling reference
+                originalMainQty = parseInt(cartItems[i].OriginalQty) || parseInt(cartItems[i].Qty) || 1;
+                
+                // Update the main item quantity and price
                 cartItems[i].Qty = newQty;
                 cartItems[i].Price = cartItems[i].Qty * price;
                 $('#tprice' + key).html(cartItems[i].Price.toFixed(2));
                 
-                // Scale gifts proportionally
-                if (oldQty > 0 && newQty > 0) {
-                    var qtyRatio = newQty / oldQty;
-                    var giftItems = getgiftLS();
+                // Scale gifts proportionally based on ORIGINAL quantities (fixes race condition)
+                if (originalMainQty > 0 && newQty > 0) {
+                    var qtyMultiplier = newQty / originalMainQty;
                     
+                    // Scale new-system linked gifts (items with IsGift === true and LinkedItemKey === key)
+                    for (var j = 0; j < cartItems.length; j++) {
+                        if (cartItems[j].LinkedItemKey === key && cartItems[j].IsGift === true) {
+                            var originalGiftQty = parseInt(cartItems[j].OriginalQty) || 1;
+                            // Always calculate from original, not from current state
+                            cartItems[j].Qty = Math.round(originalGiftQty * qtyMultiplier);
+                            // Update gift price calculation
+                            cartItems[j].Price = cartItems[j].Qty * cartItems[j].UPrice;
+                        }
+                    }
+                    
+                    // Scale old-system gifts
+                    var giftItems = getgiftLS();
                     giftItems.forEach(function(gift) {
                         if (gift.ItemKey === key) {
-                            var originalQty = parseInt(gift.OriginalQty) || 1;
-                            gift.Qty = Math.round(originalQty * qtyRatio);
+                            var originalGiftQty = parseInt(gift.OriginalQty) || 1;
+                            // Always calculate from original, not from current state
+                            gift.Qty = Math.round(originalGiftQty * qtyMultiplier);
                         }
                     });
                     
@@ -420,6 +440,23 @@ function changeQty(key, price) {
 
 
 }
+
+function increaseQty(key, price) {
+    var currentQty = parseInt($('#qty' + key).val()) || 1;
+    var newQty = currentQty + 1;
+    $('#qty' + key).val(newQty);
+    changeQty(key, price);
+}
+
+function decreaseQty(key, price) {
+    var currentQty = parseInt($('#qty' + key).val()) || 1;
+    if (currentQty > 1) {
+        var newQty = currentQty - 1;
+        $('#qty' + key).val(newQty);
+        changeQty(key, price);
+    }
+}
+
 function removeCartItem(ele) {
 
     var chkLScart = getCartLS();
@@ -462,7 +499,7 @@ function addtocart(ItemID, Title, Image, Price, Qty, ProNote) {
 
     var arrTemp = [];
     arrTemp = getCartLS();
-    arrTemp.push({ ItemID: ItemID, Title: Title, Image: Image, UPrice: Price, Price: Price, Qty: Qty, ProNote: ProNote, Key: _Key });
+    arrTemp.push({ ItemID: ItemID, Title: Title, Image: Image, UPrice: Price, Price: Price, Qty: Qty, OriginalQty: Qty, ProNote: ProNote, Key: _Key });
     setCartLS(arrTemp);
     topheadcart();
 }
