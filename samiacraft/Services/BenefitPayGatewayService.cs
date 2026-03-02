@@ -20,6 +20,7 @@ namespace samiacraft.Services
         private readonly string _cancelUrl;
         private readonly bool _isTestMode;
 
+        // Constructor 1: IConfiguration (DI / Program.cs AddScoped)
         public BenefitPayGatewayService(IConfiguration config)
         {
             var s = config.GetSection("BenefitPay");
@@ -28,17 +29,16 @@ namespace samiacraft.Services
             _resourceKey = s["ResourceKey"] ?? "";
             _responseUrl = s["ResponseUrl"] ?? "";
             _errorUrl = s["ErrorUrl"] ?? "";
-            _cancelUrl = s["CancelUrl"] ?? "";
             _isTestMode = s.GetValue<bool>("IsTestMode");
         }
 
+        // Constructor 2: 6 arguments (OrderController manually new karta hai)
         public BenefitPayGatewayService(
             string tranportalId,
             string tranportalPassword,
             string resourceKey,
             string responseUrl,
             string errorUrl,
-            string cancelUrl,
             bool isTestMode)
         {
             _tranportalId = tranportalId;
@@ -46,9 +46,9 @@ namespace samiacraft.Services
             _resourceKey = resourceKey;
             _responseUrl = responseUrl;
             _errorUrl = errorUrl;
-            _cancelUrl = cancelUrl;
             _isTestMode = isTestMode;
         }
+
 
         // ════════════════════════════════════════════════════════════════
         // INITIATE PAYMENT

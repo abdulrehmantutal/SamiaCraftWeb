@@ -21,12 +21,11 @@ namespace samiacraft.Controllers
             var resourceKey = _configuration["BenefitPay:ResourceKey"] ?? "";
             var responseUrl = _configuration["BenefitPay:ResponseUrl"] ?? "";
             var errorUrl = _configuration["BenefitPay:ErrorUrl"] ?? "";
-            var cancelUrl = _configuration["BenefitPay:CancelUrl"] ?? "";
             var isTestMode = _configuration.GetValue<bool>("BenefitPay:IsTestMode", false);
 
             _benefitPayService = new BenefitPayGatewayService(
                 tranportalId, tranportalPassword, resourceKey,
-                responseUrl, errorUrl, cancelUrl, isTestMode);
+                responseUrl, errorUrl, isTestMode);
         }
 
         [HttpPost("response")]

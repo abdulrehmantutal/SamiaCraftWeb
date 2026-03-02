@@ -37,8 +37,7 @@ namespace samiacraft.Controllers
             string resourceKey = _configuration["BenefitPay:ResourceKey"] ?? "";
             string responseUrl = _configuration["BenefitPay:ResponseUrl"] ?? "";
             string errorUrl = _configuration["BenefitPay:ErrorUrl"] ?? "";
-            string cancelUrl = _configuration["BenefitPay:CancelUrl"] ?? "";
-            bool isTestMode = bool.Parse(_configuration["BenefitPay:IsTestMode"] ?? "true");
+            bool isTestMode = bool.Parse(_configuration["BenefitPay:IsTestMode"] ?? "false");
             
             _benefitPayGatewayService = new BenefitPayGatewayService(
                 tranportalId,
@@ -46,7 +45,6 @@ namespace samiacraft.Controllers
                 resourceKey,
                 responseUrl,
                 errorUrl,
-                cancelUrl,
                 isTestMode
             );
         }
