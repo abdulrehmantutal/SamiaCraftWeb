@@ -8,17 +8,19 @@
       "symbol": "BHD",
       "exchangeRate": 1.0,
       "language": "en",
-      "flag": "🇧🇭"
+      "flag": "🇧🇭",
+      "icon": "/Content/assets/sm-images/bahrain-icon-7521226-512.png"
     },
     {
-      "id": "PK",
-      "name": "Pakistan",
-      "currency": "PKR",
-      "currencyName": "Pakistani Rupee",
-      "symbol": "Rs",
-      "exchangeRate": 740.5677272727273,
+      "id": "SA",
+      "name": "Saudi Arabia",
+      "currency": "SAR",
+      "currencyName": "Saudi Riyal",
+      "symbol": "SAR",
+      "exchangeRate": 9.945454545454545,
       "language": "en",
-      "flag": "🇵🇰"
+      "flag": "🇸🇦",
+      "icon": "/Content/assets/sm-images/saudi-arabia-icon-607637-512.png"
     },
     {
       "id": "AE",
@@ -28,7 +30,8 @@
       "symbol": "AED",
       "exchangeRate": 9.729545454545455,
       "language": "en",
-      "flag": "🇦🇪"
+      "flag": "🇦🇪",
+      "icon": "/Content/assets/sm-images/united-arab-emirates-icon-5147236-512.png"
     }
   ]
 }

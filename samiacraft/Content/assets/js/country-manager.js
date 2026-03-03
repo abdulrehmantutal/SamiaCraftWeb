@@ -31,6 +31,7 @@ class CountryManager {
             
             #countrySelectionModal .modal-dialog {
                 animation: slideInDown 0.4s ease-out;
+                max-width: 1000px;
             }
             
             @keyframes slideInDown {
@@ -44,7 +45,7 @@ class CountryManager {
                 }
             }
             
-            /* Enhanced backrop styling when modal is open */
+            /* Enhanced backdrop styling when modal is open */
             .modal-open .modal-backdrop {
                 background: rgba(28, 61, 90, 0.6);
                 backdrop-filter: blur(4px);
@@ -53,102 +54,192 @@ class CountryManager {
             
             #countrySelectionModal .modal-content {
                 border: none;
-                border-radius: 10px;
+                border-radius: 20px;
                 box-shadow: 0 8px 32px rgba(28, 61, 90, 0.25);
                 overflow: hidden;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
             }
             
             #countrySelectionModal .modal-header {
                 background: linear-gradient(135deg, #1C3D5A 0%, #0f2a3f 100%);
                 border-bottom: none !important;
-                padding: 24px 24px 20px 24px;
+                padding: 28px 32px;
             }
             
             #countrySelectionModal .modal-title {
                 color: white !important;
-                font-size: 18px !important;
+                font-size: 24px !important;
                 font-weight: 700 !important;
                 letter-spacing: 0.5px;
             }
             
             #countrySelectionModal .modal-body {
-                padding: 28px 24px !important;
+                padding: 40px 32px !important;
                 background: #fff;
             }
             
             #countrySelectionModal .modal-body p {
                 color: #666;
-                font-size: 14px;
+                font-size: 16px;
                 line-height: 1.6;
+                margin-bottom: 32px;
+                text-align: center;
+            }
+            
+            /* Country Cards Grid */
+            .countries-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                margin-bottom: 24px;
+            }
+            
+            .country-card-wrapper {
+                display: flex;
+                justify-content: center;
+            }
+            
+            .country-radio {
+                display: none;
+            }
+            
+            .country-card-label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                padding: 20px 15px;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                background: white;
+                transition: all 0.3s ease;
+                width: 100%;
+                height: 160px;
+                text-align: center;
+                position: relative;
+            }
+            
+            .country-radio:checked + .country-card-label {
+                background: linear-gradient(135deg, #1C3D5A 0%, #0f2a3f 100%);
+                border-color: #1C3D5A;
+                color: white;
+                box-shadow: 0 8px 20px rgba(28, 61, 90, 0.3);
+                transform: scale(1.05);
+            }
+            
+            .country-card-label:hover {
+                border-color: #1C3D5A;
+                box-shadow: 0 4px 12px rgba(28, 61, 90, 0.15);
+                background-color: #f8f9fa;
+            }
+            
+            .country-row-title {
+                font-size: 14px;
+                font-weight: 700;
+                color: #333;
+                margin-top: 8px;
+                display: block;
+            }
+            
+            .country-radio:checked + .country-card-label .country-row-title {
+                color: white;
+            }
+            
+            .country-flag {
+                font-size: 32px;
+                line-height: 1;
+                display: block;
+                margin-bottom: 8px;
+            }
+            
+            .country-icon-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 50px;
+                margin-bottom: 8px;
+                background: linear-gradient(135deg, rgba(28, 61, 90, 0.08) 0%, rgba(28, 61, 90, 0.05) 100%);
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+            
+            .country-icon {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) brightness(0.9) saturate(1.1);
+                transition: filter 0.3s ease, transform 0.3s ease;
+                color: #1C3D5A;
+            }
+            
+            .country-radio:checked + .country-card-label .country-icon-container {
+                background: linear-gradient(135deg, rgba(28, 61, 90, 0.15) 0%, rgba(28, 61, 90, 0.1) 100%);
+            }
+            
+            .country-radio:checked + .country-card-label .country-icon {
+                filter: drop-shadow(0 2px 8px rgba(28, 61, 90, 0.4)) brightness(1) saturate(1.3);
+                transform: scale(1.15);
             }
             
             #countrySelectionModal .modal-footer {
                 background: #f8f9fa;
                 border-top: 1px solid #e0e0e0;
-                padding: 16px 24px;
-            }
-            
-            #countrySelect {
-                appearance: none;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                background: white url("data:image/svg+xml;utf8,<svg fill='%231C3D5A' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
-                background-size: 20px;
-                padding: 12px 45px 12px 12px;
-                border: 2px solid #e0e0e0 !important;
-                border-radius: 6px;
-                font-size: 15px !important;
-                font-weight: 500;
-                color: #333;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-                width: 100%;
-            }
-            
-            #countrySelect:hover {
-                border-color: #1C3D5A !important;
-                box-shadow: 0 4px 10px rgba(28, 61, 90, 0.15);
-                background-color: #f8f9fa;
-            }
-            
-            #countrySelect:focus {
-                outline: none !important;
-                border-color: #1C3D5A !important;
-                box-shadow: 0 0 0 4px rgba(28, 61, 90, 0.1) !important;
-            }
-            
-            #countrySelect option {
-                padding: 12px 10px;
-                background: white;
-                color: #333;
-            }
-            
-            #countrySelect option:checked {
-                background: linear-gradient(135deg, #1C3D5A 0%, #0f2a3f 100%);
-                color: white;
-                font-weight: 600;
+                padding: 20px 32px;
+                display: flex;
+                justify-content: center;
             }
             
             #confirmCountryBtn {
                 background: linear-gradient(135deg, #1C3D5A 0%, #0f2a3f 100%) !important;
                 border: none !important;
-                padding: 10px 24px !important;
+                padding: 12px 40px !important;
                 font-weight: 600 !important;
-                border-radius: 6px !important;
+                border-radius: 8px !important;
                 transition: all 0.3s ease !important;
                 text-transform: uppercase;
-                font-size: 13px;
+                font-size: 14px;
                 letter-spacing: 0.5px;
+                color: white;
             }
             
             #confirmCountryBtn:hover {
-                box-shadow: 0 6px 16px rgba(28, 61, 90, 0.3) !important;
+                box-shadow: 0 8px 24px rgba(28, 61, 90, 0.35) !important;
                 transform: translateY(-2px);
             }
             
             #confirmCountryBtn:active {
                 transform: translateY(0);
+            }
+            
+            #confirmCountryBtn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            
+            @media (max-width: 768px) {
+                .countries-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
+                }
+                
+                .country-card-label {
+                    padding: 15px 10px;
+                    height: 140px;
+                    font-size: 12px;
+                }
+                
+                .country-flag {
+                    font-size: 28px;
+                }
+                
+                #countrySelectionModal .modal-body {
+                    padding: 24px 20px !important;
+                }
             }
         `;
         
@@ -168,6 +259,7 @@ class CountryManager {
             
             // Check if user has selected a country
             const savedCountry = localStorage.getItem('selectedCountry');
+            const countrySelectionInitiated = localStorage.getItem('countrySelectionInitiated');
             
             if (savedCountry) {
                 // Use saved country
@@ -180,8 +272,8 @@ class CountryManager {
                         updateCurrencyDisplay();
                     }, 100);
                 }
-            } else {
-                // Show country selection modal
+            } else if (!countrySelectionInitiated) {
+                // Show country selection modal only if user has never selected a country before
                 this.showCountrySelectionModal();
             }
         } catch (error) {
@@ -235,10 +327,25 @@ class CountryManager {
      * Generate HTML for country selection modal
      */
     generateCountryModalHTML() {
-        const countriesOptions = this.countriesData.countries
-            .map(country => `
-                <option value="${country.id}">${country.flag} ${country.name} (${country.currency})</option>
-            `)
+        const countriesGrid = this.countriesData.countries
+            .map(country => {
+                // Use icon if available, otherwise fall back to flag emoji
+                const iconHtml = country.icon 
+                    ? `<img src="${country.icon}" alt="${country.name}" class="country-icon" loading="lazy">` 
+                    : `<span class="country-flag">${country.flag}</span>`;
+                
+                return `
+                    <div class="country-card-wrapper">
+                        <input type="radio" name="countrySelection" id="country-${country.id}" class="country-radio" value="${country.id}">
+                        <label for="country-${country.id}" class="country-card-label">
+                            <div class="country-icon-container">
+                                ${iconHtml}
+                            </div>
+                            <span class="country-row-title">${country.name}</span>
+                        </label>
+                    </div>
+                `;
+            })
             .join('');
 
         return `
@@ -246,29 +353,19 @@ class CountryManager {
                  aria-labelledby="countrySelectionLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header" style="border-bottom: 2px solid #1C3D5A;">
-                            <h5 class="modal-title" id="countrySelectionLabel" 
-                                style="color: #1C3D5A; font-weight: 700;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="countrySelectionLabel">
                                 <i class="ion-location"></i> Select Your Country
                             </h5>
                         </div>
-                        <div class="modal-body p-4">
-                            <p class="text-muted mb-4">
-                                Please select your country to see prices in your local currency.
-                            </p>
-                            <div class="form-group">
-                                <label for="countrySelect" class="form-label" style="font-weight: 600; margin-bottom: 10px;">
-                                    Choose your country:
-                                </label>
-                                <select id="countrySelect" class="form-control" 
-                                        style="padding: 6px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px;">
-                                    <option value="">-- Select a Country --</option>
-                                    ${countriesOptions}
-                                </select>
+                        <div class="modal-body">
+                            <p>Please select your country to see prices in your local currency.</p>
+                            <div class="countries-grid">
+                                ${countriesGrid}
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="confirmCountryBtn" style="background-color: #1C3D5A; border-color: #1C3D5A;">
+                            <button type="button" class="btn btn-primary" id="confirmCountryBtn">
                                 Confirm Selection
                             </button>
                         </div>
@@ -282,25 +379,38 @@ class CountryManager {
      * Attach event listeners for country selection
      */
     attachCountrySelectionListeners() {
-        const countrySelect = document.getElementById('countrySelect');
+        const countryRadios = document.querySelectorAll('.country-radio');
         const confirmBtn = document.getElementById('confirmCountryBtn');
         
+        // Enable/disable confirm button based on selection
+        countryRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                confirmBtn.disabled = false;
+            });
+        });
+        
+        // Handle confirm button click
         confirmBtn.addEventListener('click', () => {
-            const selectedCountryId = countrySelect.value;
+            const selectedRadio = document.querySelector('.country-radio:checked');
             
-            if (!selectedCountryId) {
+            if (!selectedRadio) {
                 alert('Please select a country');
                 return;
             }
             
+            const selectedCountryId = selectedRadio.value;
             this.selectCountry(selectedCountryId);
         });
-
-        // Allow Enter key to confirm selection
-        countrySelect.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                confirmBtn.click();
-            }
+        
+        // Allow Enter key to confirm selection when a card is focused
+        countryRadios.forEach(radio => {
+            radio.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    radio.checked = true;
+                    confirmBtn.disabled = false;
+                    confirmBtn.click();
+                }
+            });
         });
     }
 
@@ -342,6 +452,7 @@ class CountryManager {
             this.selectedCountry = country;
             localStorage.setItem('selectedCountry', countryId);
             localStorage.setItem('selectedCountryData', JSON.stringify(country));
+            localStorage.setItem('countrySelectionInitiated', 'true');
             
             console.log('==== COUNTRY & CURRENCY SELECTED ====');
             console.log('Country: ' + country.name);

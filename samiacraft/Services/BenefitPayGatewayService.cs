@@ -114,7 +114,7 @@ namespace samiacraft.Services
                 });
 
                 // ── Step 5: POST as JSON (application/json) ───────────────
-                var endpoint = _isTestMode ? TEST_ENDPOINT : PROD_ENDPOINT;
+                var endpoint = _isTestMode ? TEST_ENDPOINT : PRODUCTION_ENDPOINT;
                 var apiResp = SendRequest(outerJson, endpoint);
 
                 if (apiResp.status == "1" && !string.IsNullOrEmpty(apiResp.result))
