@@ -454,11 +454,11 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
                                 {
-                                    <span class="text-price fw-bold">BHD. @item.Price.ToString("0.000")</span>
+                                    <span class="currency-text"></span> <span class="text-price fw-bold" data-original-price="@item.Price">@item.Price.ToString("0.000")</span>
                                 }
                                 else
                                 {
-                                    <del class="text-del ms-2">BHD. @item.Price.ToString("0.000")</del>
+                                    <del class="text-del ms-2"><span class="currency-text"></span> <span data-original-price="@item.Price">@item.Price.ToString("0.000")</span></del>
                                 }
                             </div>
                         </div>
@@ -549,7 +549,7 @@
                             else
                             { *@
                                 <div class="price-box">
-                                    <span class="old-price ">BHD @item.Price.ToString("0.000")</span>
+                                    <span class="currency-text"></span> <span class="old-price" data-original-price="@item.Price">@item.Price.ToString("0.000")</span>
                                     @* <span class="new-price ">RS @item.DiscountedPrice</span> *@
                                 </div>
                             @* } *@

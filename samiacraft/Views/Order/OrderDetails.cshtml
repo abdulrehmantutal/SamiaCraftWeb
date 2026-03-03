@@ -38,10 +38,6 @@
                                 Order Date
                                 <span class="font-weight-bold">@Html.DisplayFor(modelItem => Model.LastUpdatedDate)</span>
                             </li>
-                            @*<li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    Total Items
-                                    <span class="font-weight-bold">@Model.TotalItems</span>
-                                </li>*@
                             <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item _arabic" data-translate="00mo7">
                                 Status
 
@@ -87,18 +83,6 @@
                     <div class="card-header font-weight-bold _arabic" data-translate="000ca94">Delivery Information</div>
                     <div class="card-body">
                         <ul class="list-group scroll-order">
-                            @*<li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    Sender Name
-                                    <span class="font-weight-bold">@Model.SenderName</span>
-                                </li>
-                                <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    Sender Email
-                                    <span class="font-weight-bold">@Model.SenderEmail</span>
-                                </li>
-                                <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    Sender Contact
-                                    <span class="font-weight-bold">@Model.SenderContact</span>
-                                </li>*@
                             <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item _arabic" data-translate="000ca95">
                                 Recipient Name
                                 <span class="font-weight-bold">@Model.CustomerName</span>
@@ -119,10 +103,6 @@
                                 Country
                                 <span class="font-weight-bold">@Model.Country</span>
                             </li>
-                            @*<li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    City
-                                    <span class="font-weight-bold">@Model.City</span>
-                                </li>*@
                         </ul>
                     </div>
                 </div>
@@ -155,37 +135,7 @@
                                     <span class=" font-weight-bold mobile-text px-2  text-center">@item.Name x @item.Quantity</span>
                                     <span class=" font-weight-bold mobile-text px-2 ">BHD. @item.Price</span>
                                 </li>
-                                @*if (Model.GiftDetail.Count > 0)
-                                    {
-
-                                        foreach (var gifts in Model.GiftDetail.Where(x => x.OrderDetailID == item.OrderDetailID))
-                                        {
-                                            <li class="list-group-item border-top-0 pt-0 px-5">
-                                                <div class="border d-flex justify-content-between rounded border-secondary">
-                                                    <div class="">
-                                                        @if (gifts.GiftImage == "" || gifts.GiftImage == null)
-                                                        {
-                                                            <img class="order-detail-img" src="~/Content/assets/images/NA.png" alt="">
-                                                        }
-                                                        else
-                                                        {
-                                                            <img class="order-detail-img rounded-left" src="@System.Configuration.ConfigurationManager.AppSettings["Image"].ToString()@gifts.GiftImage" alt="">
-                                                        }
-                                                    </div>
-                                                    <div class="px-2 align-self-center">
-                                                        <p class="lh-16 small">@gifts.GiftTitle</p>
-                                                    </div>
-                                                    <div class="px-2 align-self-center ">
-                                                        <p class="badge badge-dark"><span class=" mx-0 text-white"></span>RS. @gifts.Price</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        }
-
-                                    }*@
-
                             }
-
                         </ul>
                     </div>
                 </div>
@@ -197,28 +147,8 @@
                         <ul class="list-group scroll-order">
                             <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item _arabic" data-translate="000ca99">
                                 Payment Method
-                                @*@if (Model.PaymentMethodTitle != "Cash on Delivery")
-                                    {
-                                        <span class="font-weight-bold">Online Payment</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="font-weight-bold">Cash On Delivery</span>
-                                    }*@
                                 <span class="font-weight-bold" data-translate="000co15">Cash On Delivery</span>
                             </li>
-                            @*<li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item">
-                                    Coupon
-                                    @if (Model.CouponID != 0)
-                                    {
-                                        <span class="font-weight-bold text-success">Applied (@Model.CouponCode)</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="font-weight-bold text-danger">Not Applied</span>
-                                    }
-
-                                </li>*@
                             @foreach (var item in ViewBag.BillingInfo)
                             {
                                 <li class="align-items-center d-flex flex-column flex-md-row justify-content-between list-group-item _arabic" data-translate="000ca100">

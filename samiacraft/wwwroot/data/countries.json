@@ -1,0 +1,34 @@
+{
+  "countries": [
+    {
+      "id": "BH",
+      "name": "Bahrain",
+      "currency": "BHD",
+      "currencyName": "Bahraini Dinar",
+      "symbol": "BHD",
+      "exchangeRate": 1.0,
+      "language": "en",
+      "flag": "🇧🇭"
+    },
+    {
+      "id": "PK",
+      "name": "Pakistan",
+      "currency": "PKR",
+      "currencyName": "Pakistani Rupee",
+      "symbol": "Rs",
+      "exchangeRate": 740.5677272727273,
+      "language": "en",
+      "flag": "🇵🇰"
+    },
+    {
+      "id": "AE",
+      "name": "United Arab Emirates",
+      "currency": "AED",
+      "currencyName": "UAE Dirham",
+      "symbol": "AED",
+      "exchangeRate": 9.729545454545455,
+      "language": "en",
+      "flag": "🇦🇪"
+    }
+  ]
+}
