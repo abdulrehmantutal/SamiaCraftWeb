@@ -109,8 +109,8 @@ else
                             <div class="cart-page-total">
                                 <h2>Cart totals</h2>
                                 <ul>
-                                    <li><strong class="">Sub-Total</strong> <span class="subtotal">BHD00.00</span></li>
-                                    <li><strong class="">Total</strong> <span class="totalamount">BHD00.00</span></li>
+                                    <li><strong class="">Sub-Total</strong> <span class="currency-text mx-1"></span><span class="subtotal">00.00</span></li>
+                                    <li><strong class="">Total</strong> <span class="currency-text mx-1"></span><span class="totalamount">00.00</span></li>
                                 </ul>
                                 <a href="~/order/checkout" id="check-btn" class="proceed-checkout-btn">Proceed to checkout</a>
                             </div>
@@ -136,6 +136,29 @@ else
             }
         }
         $('#cityClick span').text(storedCityName);
+        
+        // Monitor for country changes and recalculate cart totals
+        var lastSelectedCountry = localStorage.getItem('selectedCountry');
+        
+        // Check for country changes every 500ms
+        setInterval(function() {
+            var currentSelectedCountry = localStorage.getItem('selectedCountry');
+            
+            if (currentSelectedCountry && currentSelectedCountry !== lastSelectedCountry) {
+                lastSelectedCountry = currentSelectedCountry;
+                
+                // Recalculate cart totals with new currency
+                if (typeof cartitem === 'function') {
+                    cartitem();
+                }
+                
+                // Update currency symbol display
+                if (typeof countryManager !== 'undefined' && countryManager) {
+                    var currencySymbol = countryManager.getCurrencySymbol();
+                    $('.currency-text').text(currencySymbol);
+                }
+            }
+        }, 500);
     });
 </script>
 <!-- main-content-wrap end -->

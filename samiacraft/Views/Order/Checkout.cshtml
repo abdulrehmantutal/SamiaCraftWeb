@@ -52,6 +52,79 @@
         margin-bottom: 15px;
         font-weight: 600;
     }
+
+    /* Enhanced Country Dropdown Styling */
+    #Country {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: white url("data:image/svg+xml;utf8,<svg fill='%231C3D5A' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
+        background-size: 20px;
+        padding: 12px 44px 4px 45px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        width: 100%;
+    }
+
+    #Country:hover {
+        border-color: #1C3D5A;
+        box-shadow: 0 4px 10px rgba(28, 61, 90, 0.15);
+        background-color: #f8f9fa;
+    }
+
+    #Country:focus {
+        outline: none;
+        border-color: #1C3D5A;
+        box-shadow: 0 0 0 4px rgba(28, 61, 90, 0.1);
+        background-color: white;
+    }
+
+    #Country option {
+        padding: 12px 10px;
+        background: white;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    #Country option:first-child {
+        color: #999;
+        font-weight: 400;
+    }
+
+    #Country option:checked {
+        background: linear-gradient(135deg, #1C3D5A 0%, #0f2a3f 100%);
+        background-color: #1C3D5A;
+        color: white;
+        font-weight: 600;
+    }
+
+    #country-flag-display {
+        font-size: 24px !important;
+        line-height: 1;
+    }
+
+    .checkout-form-list label {
+        font-weight: 600;
+        color: #1C3D5A;
+        margin-bottom: 10px;
+        display: block;
+        font-size: 14px;
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+    }
+
+    .checkout-form-list .required {
+        color: #e74c3c;
+        font-weight: 800;
+        margin-left: 2px;
+    }
 </style>
 
 <!-- Breadcrumb Start -->
@@ -142,9 +215,12 @@
                             <div class="col-md-6">
                                 <div class="checkout-form-list">
                                     <label>Country <span class="required">*</span></label>
-                                    <select id="Country" name="Country" class="form-control" required>
-                                        <option value="Bahrain">Bahrain</option>
-                                    </select>
+                                    <div style="position: relative;">
+                                        <select id="Country" name="Country" class="form-control" required>
+                                            <option value="">-- Loading Countries --</option>
+                                        </select>
+                                        <div id="country-flag-display" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 20px; pointer-events: none; display: none;"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -270,24 +346,24 @@
                     <div style="border-top: 2px solid #eee; padding-top: 15px; margin-top: 15px;">
                         <div class="d-flex justify-content-between mb-2">
                             <strong>Subtotal:</strong>
-                            <strong id="display-subtotal">BHD 0.00</strong>
+                            <strong id="display-subtotal"><span id="currency-symbol"></span> 0.00</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2" id="coupon-line" style="display: none;">
                             <strong>Coupon Discount:</strong>
-                            <strong id="display-discount">BHD 0.00</strong>
+                            <strong id="display-discount"><span id="currency-symbol-discount"></span> 0.00</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2" id="delivery-line" style="display: none;">
                             <strong>Delivery Charges:</strong>
-                            <strong id="display-delivery">BHD 0.00</strong>
+                            <strong id="display-delivery"><span id="currency-symbol-delivery"></span> 0.00</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <strong>Tax:</strong>
-                            <strong id="display-tax">BHD 0.00</strong>
+                            <strong id="display-tax"><span id="currency-symbol-tax"></span> 0.00</strong>
                         </div>
                         <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
                             <div class="d-flex justify-content-between" style="font-size: 18px; font-weight: bold;">
                                 <span>Grand Total:</span>
-                                <span id="display-grand-total">BHD 0.00</span>
+                                <span id="display-grand-total"><span id="currency-symbol-total"></span> 0.00</span>
                             </div>
                         </div>
                     </div>
@@ -303,10 +379,106 @@
     <script>
         // Initialize checkout on page load
         $(document).ready(function() {
+            InitializeCountryDropdown();
             LoadCheckoutWithItems();
             WireUpPaymentMethodHandlers();
             WireUpCouponHandlers();
+            
+            // Monitor for country changes via CountryManager and recalculate totals
+            var lastSelectedCountry = localStorage.getItem('selectedCountry');
+            var countryChangeCheckInterval = setInterval(function() {
+                var currentSelectedCountry = localStorage.getItem('selectedCountry');
+                
+                if (currentSelectedCountry && currentSelectedCountry !== lastSelectedCountry) {
+                    lastSelectedCountry = currentSelectedCountry;
+                    
+                    // Recalculate totals when country changes via CountryManager
+                    LoadCheckoutWithItems();
+                    
+                    // Re-initialize country dropdown to reflect new selection
+                    InitializeCountryDropdown();
+                }
+            }, 500);
         });
+
+        // Initialize country dropdown with all countries and pre-select the chosen one
+        function InitializeCountryDropdown() {
+            // Get selected country from countryManager or localStorage
+            var selectedCountryData = null;
+            var selectedCountryName = null;
+            var selectedCountryFlag = null;
+            
+            // Try to get from countryManager first
+            if (typeof countryManager !== 'undefined' && countryManager) {
+                selectedCountryData = countryManager.getSelectedCountry();
+                if (selectedCountryData) {
+                    selectedCountryName = selectedCountryData.name;
+                    selectedCountryFlag = selectedCountryData.flag;
+                }
+            }
+            
+            // Fallback: Get from localStorage if countryManager doesn't have it
+            if (!selectedCountryName) {
+                var savedCountryData = localStorage.getItem('selectedCountryData');
+                if (savedCountryData) {
+                    try {
+                        selectedCountryData = JSON.parse(savedCountryData);
+                        selectedCountryName = selectedCountryData.name;
+                        selectedCountryFlag = selectedCountryData.flag;
+                    } catch(e) {
+                        console.log('Error parsing saved country data');
+                    }
+                }
+            }
+            
+            // Populate countries from countryManager if available
+            if (typeof countryManager !== 'undefined' && countryManager && countryManager.countriesData) {
+                var countries = countryManager.countriesData.countries;
+                
+                // Build country options with flags
+                var options = '<option value="">-- Select Your Country --</option>';
+                countries.forEach(function(country) {
+                    options += '<option value="' + country.name + '" data-flag="' + country.flag + '">' + country.flag + ' ' + country.name + '</option>';
+                });
+                
+                // Set options
+                $('#Country').html(options);
+                
+                // Pre-select the user's chosen country
+                if (selectedCountryName) {
+                    $('#Country').val(selectedCountryName);
+                    if (selectedCountryFlag) {
+                        $('#country-flag-display').text(selectedCountryFlag).show();
+                    }
+                }
+                
+                // Handle country change - update flag display and recalculate totals
+                $('#Country').on('change', function() {
+                    var selectedOption = $(this).find('option:selected');
+                    var flag = selectedOption.data('flag');
+                    if (flag) {
+                        $('#country-flag-display').text(flag).show();
+                    } else {
+                        $('#country-flag-display').hide();
+                    }
+                    
+                    // Recalculate totals when country changes
+                    LoadCheckoutWithItems();
+                });
+            } else {
+                // Fallback: Just set the selected country if we have it
+                if (selectedCountryName) {
+                    var optionHtml = '<option value="">-- Select Your Country --</option>' +
+                        '<option value="' + selectedCountryName + '" selected>' + (selectedCountryFlag ? selectedCountryFlag + ' ' : '') + selectedCountryName + '</option>';
+                    $('#Country').html(optionHtml);
+                    $('#Country').val(selectedCountryName);
+                    
+                    if (selectedCountryFlag) {
+                        $('#country-flag-display').text(selectedCountryFlag).show();
+                    }
+                }
+            }
+        }
 
         // Load cart items and display
         function LoadCheckoutWithItems() {
@@ -324,6 +496,10 @@
             // Build display table
             var tableHtml = '';
             var subTotal = 0;
+            var currencySymbol = 'BHD';
+            if (typeof countryManager !== 'undefined' && countryManager) {
+                currencySymbol = countryManager.getCurrencySymbol();
+            }
 
             cartItems.forEach(function(item, index) {
                 // Skip gift items - they'll be displayed under their parent item
@@ -334,11 +510,17 @@
                 var qty = parseInt(item.Qty) || 1;
                 var price = parseFloat(item.UPrice) || 0;
                 var itemTotal = qty * price;
+                // Accumulate in BHD (original), don't convert yet
                 subTotal += itemTotal;
+                
+                // Convert for display only
+                var convertedItemTotal = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(itemTotal) : itemTotal;
 
+                var formattedItemTotal = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.formatConvertedPrice(convertedItemTotal) : convertedItemTotal.toFixed(2);
                 tableHtml += '<tr>' +
                     '<td class="product-name">' + item.Title + ' × ' + qty + '</td>' +
-                    '<td class="product-total text-right">BHD ' + itemTotal.toFixed(2) + '</td>' +
+                    '<td class="product-total text-right">' + currencySymbol + ' ' + formattedItemTotal + '</td>' +
                     '</tr>';
 
                 // Add new-system linked gifts (items with IsGift === true and LinkedItemKey === item.Key)
@@ -366,11 +548,17 @@
                     
                     itemGifts.forEach(function(gift) {
                         var giftTotal = (parseFloat(gift.Qty) || 1) * (parseFloat(gift.DisplayPrice) || 0);
+                        // Accumulate in BHD (original), don't convert yet
+                        subTotal += giftTotal;
+                        
+                        // Convert for display only
+                        var convertedGiftTotal = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(giftTotal) : giftTotal;
+                        var formattedGiftTotal = (typeof countryManager !== 'undefined' && countryManager) ? 
+                            countryManager.formatConvertedPrice(convertedGiftTotal) : convertedGiftTotal.toFixed(2);
                         tableHtml += '<div style="padding: 8px 0; padding-left: 20px; font-size: 13px;">';
                         tableHtml += '<span>' + gift.Title + '</span>';
-                        tableHtml += ' <span style="float: right; color: #666;">× ' + gift.Qty + ' = BHD ' + giftTotal.toFixed(2) + '</span>';
+                        tableHtml += ' <span style="float: right; color: #666;">× ' + gift.Qty + ' = ' + currencySymbol + ' ' + formattedGiftTotal + '</span>';
                         tableHtml += '</div>';
-                        subTotal += giftTotal;
                     });
                     
                     tableHtml += '</div></td></tr>';
@@ -458,15 +646,38 @@
             console.log('Confirmed #SessionData value:', confirmValue);
         }
 
-        // Update display totals
+        // Update display totals with currency conversion
         function UpdateOrderSummaryDisplay(subtotal, discount, tax, grandtotal) {
-            $('#display-subtotal').text('BHD ' + subtotal.toFixed(2));
-            $('#display-tax').text('BHD ' + tax.toFixed(2));
-            $('#display-grand-total').text('BHD ' + grandtotal.toFixed(2));
+            var currencySymbol = 'BHD';
+            if (typeof countryManager !== 'undefined' && countryManager) {
+                currencySymbol = countryManager.getCurrencySymbol();
+            }
+            
+            var convertedSubtotal = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(subtotal) : subtotal;
+            var convertedTax = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(tax) : tax;
+            var convertedGrandtotal = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(grandtotal) : grandtotal;
+            var convertedDiscount = (typeof countryManager !== 'undefined' && countryManager) ? countryManager.convertPrice(discount) : discount;
+            
+            var formattedSubtotal = (typeof countryManager !== 'undefined' && countryManager) ? 
+                countryManager.formatConvertedPrice(convertedSubtotal) : convertedSubtotal.toFixed(2);
+            var formattedTax = (typeof countryManager !== 'undefined' && countryManager) ? 
+                countryManager.formatConvertedPrice(convertedTax) : convertedTax.toFixed(2);
+            var formattedGrandtotal = (typeof countryManager !== 'undefined' && countryManager) ? 
+                countryManager.formatConvertedPrice(convertedGrandtotal) : convertedGrandtotal.toFixed(2);
+            var formattedDiscount = (typeof countryManager !== 'undefined' && countryManager) ? 
+                countryManager.formatConvertedPrice(convertedDiscount) : convertedDiscount.toFixed(2);
+            
+            $('#currency-symbol').text(currencySymbol);
+            $('#currency-symbol-tax').text(currencySymbol);
+            $('#currency-symbol-total').text(currencySymbol);
+            $('#display-subtotal').html(currencySymbol + ' ' + formattedSubtotal);
+            $('#display-tax').html(currencySymbol + ' ' + formattedTax);
+            $('#display-grand-total').html(currencySymbol + ' ' + formattedGrandtotal);
 
             if (discount > 0) {
                 $('#coupon-line').show();
-                $('#display-discount').text('BHD -' + discount.toFixed(2));
+                $('#currency-symbol-discount').text(currencySymbol);
+                $('#display-discount').html(currencySymbol + ' -' + formattedDiscount);
             } else {
                 $('#coupon-line').hide();
             }

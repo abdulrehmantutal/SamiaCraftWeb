@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="~/Content/assets/css/style.css">
     <!-- jQuery JS -->
     <script src="~/Content/assets/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="~/Content/assets/js/country-manager.js"></script>
     <script src="~/Content/assets/js/custom.js"></script>
     @{
         var headertoparea = ViewBag.TopheaderArea ?? "#1C3D5A";
@@ -562,7 +563,6 @@
                             </div>
                             <p>We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.</p>
                             <div class="newsletter-footer">
-
                                 <div>
                                     <a>
                                         <img src="/Content/assets/images/socialmedia/facebook.png" alt="Facebook" class="px-1">
@@ -805,22 +805,16 @@
 
     <script>
         $(document).ready(function () {
-            debugger
-
-            // Read from cookie
             var cityID = getCookieValue("CityID");
             var cityName = getCookieValue("CityName");
 
             if (cityID && cityName) {
 
-                // Returning user → use cookie
                 $('#cityClick span').text(cityName);
                 $('#popupModal').modal('hide');
                 console.log("cookie exist");
 
             } else {
-
-                // First-time user → ask to select city
                 $('#popupModal').modal({
                     backdrop: 'static',
                     keyboard: false
@@ -836,13 +830,10 @@
                 if (parts.length === 2) {
                     return parts.pop().split(";").shift();
                 } else {
-                    return null; // Cookie not found or empty
+                    return null;
                 }
             }
-            // Handle radio button selection
             $('input[name="radioOptions"]').change(function () {
-                // Get the selected value
-
                 var CityID = $('input[name="radioOptions"]:checked').val();
                 document.cookie = "CityID=" + CityID + "; path=/";
                 document.cookie = "CityName=" + $(`label[for="${CityID}"] .city-name`).text() + "; path=/";
@@ -850,10 +841,7 @@
 
                 var selectedCityName = $(`label[for="${CityID}"] .city-name`).text();
 
-                // Update modal title
                 $('#popupModal .modal-title').text(selectedCityName);
-
-                // Update button text
 
                 var storedCityName = getCookieValue("CityName");
                 function getCookieValue(name) {
@@ -863,7 +851,7 @@
                     if (parts.length === 2) {
                         return parts.pop().split(";").shift();
                     } else {
-                        return null; // Cookie not found or empty
+                        return null;
                     }
                 }
 
@@ -871,9 +859,6 @@
 
                 $('#popupModal').modal('hide');
                 window.location.href = '/Home/Index';
-
-
-
             });
         });
 

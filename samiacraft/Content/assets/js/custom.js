@@ -6,6 +6,7 @@
     GetWishListItems();
     StockActiveColor();
     headertext();
+    convertProductPrices();  // Convert product listing prices on page load
 
     //CountDownTimer();
     var Currency;
@@ -188,7 +189,14 @@ function topheadcart() {
         
         var giftPrice = 0;
         totalQty += Number(data[i].Qty);
-        totalPrice += data[i].Qty * data[i].UPrice;
+        
+        // Convert price if using countryManager, otherwise use original
+        var itemPrice = data[i].UPrice;
+        var convertedItemPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+            countryManager.convertPrice(itemPrice) : itemPrice;
+        
+        totalPrice += data[i].Qty * convertedItemPrice;
+        
         html += '<li class="cart-item" >'
             + '<div class="cart-image">'
         if (data[i].Image == "" || data[i].Image == null) {
@@ -218,8 +226,10 @@ function topheadcart() {
             html += '<p class="mb-0 text-default small lh-16" style="color: #666; font-size: 12px;">--- Gift Wrapping</p>';
             for (var k = 0; k < linkedGifts.length; k++) {
                 var giftItem = linkedGifts[k];
-                totalPrice += giftItem.Qty * giftItem.UPrice;
-                giftPrice += giftItem.Qty * giftItem.UPrice;
+                var convertedGiftPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.convertPrice(giftItem.UPrice) : giftItem.UPrice;
+                totalPrice += giftItem.Qty * convertedGiftPrice;
+                giftPrice += giftItem.Qty * convertedGiftPrice;
                 html += '<p class="mb-0 text-default small lh-16">' + giftItem.Qty + ' x ' + giftItem.Title + '</p>';
             }
         }
@@ -231,12 +241,18 @@ function topheadcart() {
             });
 
             for (var j = 0; j < _dataGiftFilter.length; j++) {
-                totalPrice += _dataGiftFilter[j].DisplayPrice;
-                giftPrice += _dataGiftFilter[j].DisplayPrice;
+                var convertedGiftDisplayPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.convertPrice(_dataGiftFilter[j].DisplayPrice) : _dataGiftFilter[j].DisplayPrice;
+                totalPrice += convertedGiftDisplayPrice;
+                giftPrice += convertedGiftDisplayPrice;
                 html += '<p class="mb-0 text-default small lh-16 ">' + '-' + _dataGiftFilter[j].Title + '</p>'
             }
         }
-        html += '<div class="price-box"><span class="new-price">' + currency + ' ' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span>'
+        
+        var itemTotalPrice = (data[i].Qty * convertedItemPrice) + giftPrice;
+        var itemTotalPriceFormatted = (typeof countryManager !== 'undefined' && countryManager) ? 
+            countryManager.formatConvertedPrice(itemTotalPrice) : itemTotalPrice.toFixed(2);
+        html += '<div class="price-box"><span class="new-price">' + currency + ' ' + itemTotalPriceFormatted + '</span>'
             + '</div>'
             + '</li>'
     }
@@ -245,7 +261,7 @@ function topheadcart() {
 
         + '<li class="subtotal-titles">'
         + '<div class="subtotal-titles">'
-        + ' <h3 data-translate="000co23">Sub-Total :</h3><span>' + currency + ' ' + totalPrice.toFixed(2) + '</span>'
+        + ' <h3 data-translate="000co23">Sub-Total :</h3><span>' + currency + ' ' + ((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice(totalPrice) : totalPrice.toFixed(2)) + '</span>'
         + ' </div>'
         + ' </li>'
         + ' <li class="mini-cart-btns">'
@@ -288,7 +304,13 @@ function cartitem() {
         
         var giftPrice = 0;
         totalQty += Number(data[i].Qty);
-        totalPrice += data[i].Qty * data[i].UPrice;
+        
+        // Convert price if using countryManager, otherwise use original
+        var itemPrice = data[i].UPrice;
+        var convertedItemPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+            countryManager.convertPrice(itemPrice) : itemPrice;
+            
+        totalPrice += data[i].Qty * convertedItemPrice;
 
         html += '<tr>'
         if (data[i].Image == "" || data[i].Image == null) {
@@ -320,14 +342,16 @@ function cartitem() {
                 if (!giftImg.startsWith('http')) {
                     giftImg = 'https://retail.premium-pos.com/' + giftImg;
                 }
-                totalPrice += giftItem.Qty * giftItem.UPrice;
-                giftPrice += giftItem.Qty * giftItem.UPrice;
+                var convertedGiftPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.convertPrice(giftItem.UPrice) : giftItem.UPrice;
+                totalPrice += giftItem.Qty * convertedGiftPrice;
+                giftPrice += giftItem.Qty * convertedGiftPrice;
                 
                 html += '<div style="display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 8px; background-color: #f9f9f9;">'
                     + '<div style="flex-shrink: 0;"><img src="' + giftImg + '" alt="' + giftItem.Title + '" style="width: 50px; height: 50px; object-fit: cover;"></div>'
                     + '<div style="flex: 1;">'
                     + '<p style="margin: 0 0 4px 0; font-size: 14px;">' + giftItem.Title + '</p>'
-                    + '<p style="margin: 0; font-size: 12px; color: #666;">' + giftItem.Qty + ' x ' + currency + ' ' + giftItem.UPrice.toFixed(2) + '</p>'
+                    + '<p style="margin: 0; font-size: 12px; color: #666;">' + giftItem.Qty + ' x ' + currency + ' ' + ((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice(convertedGiftPrice) : convertedGiftPrice.toFixed(2)) + '</p>'
                     + '</div>'
                     + '<div style="flex-shrink: 0;"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + giftItem.Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
                     + '</div>';
@@ -341,20 +365,22 @@ function cartitem() {
             });
 
             for (var j = 0; j < _dataGiftFilter.length; j++) {
+                var convertedGiftDisplayPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.convertPrice(_dataGiftFilter[j].DisplayPrice) : _dataGiftFilter[j].DisplayPrice;
                 html += '<p class="addon"> Addon Products</p>'
                 html += '<div class="d-flex flex-wrap justify-content-center mb-3 gift-in-cart border">'
                     + '<div class="p-2 img"><img src="https://retail.premium-pos.com' + _dataGiftFilter[j].Image + '" alt=""></div>'
                     + '<div class="p-2 align-self-center"><p>' + _dataGiftFilter[j].Title + '</p></div>'
-                    + '<div class="p-2 align-self-center "><p class="badge badge-dark"><span class="currency-text mx-0 text-white"></span>' + currency + ' ' + _dataGiftFilter[j].DisplayPrice + '</p></div>'
+                    + '<div class="p-2 align-self-center "><p class="badge badge-dark"><span class="currency-text mx-0 text-white"></span>' + currency + ' ' + ((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice(convertedGiftDisplayPrice) : convertedGiftDisplayPrice.toFixed(2)) + '</p></div>'
                     + '<div class="p-2 align-self-center"><button class="bg-transparent border-0 text-danger" onclick="removeCartGift(' + _dataGiftFilter[j].Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
                     + '</div>'
-                totalPrice += _dataGiftFilter[j].DisplayPrice;
-                giftPrice += _dataGiftFilter[j].DisplayPrice;
+                totalPrice += convertedGiftDisplayPrice;
+                giftPrice += convertedGiftDisplayPrice;
             }
         }
         
         html += '</td>'
-            + '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + data[i].UPrice.toFixed(2) + '</span></td>'
+        html += '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + ((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice(convertedItemPrice) : convertedItemPrice.toFixed(2)) + '</span></td>'
             + '<td class="plantmore-product-quantity">'
             + '<div class="qty-control-wrapper">'
             + '<button class="qty-btn qty-minus" onclick="decreaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Decrease Quantity"><i class="ion-minus-round"></i></button>'
@@ -362,7 +388,7 @@ function cartitem() {
             + '<button class="qty-btn qty-plus" onclick="increaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Increase Quantity"><i class="ion-plus-round"></i></button>'
             + '</div>'
             + '</td>'
-            + '<td class="product-subtotal">' + currency + ' ' + '<span class="amount totalprice"  id="tprice' + data[i].Key + '">' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span></td>'
+            + '<td class="product-subtotal">' + currency + ' ' + '<span class="amount totalprice"  id="tprice' + data[i].Key + '">' + ((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice((data[i].Qty * convertedItemPrice) + giftPrice) : ((data[i].Qty * convertedItemPrice) + giftPrice).toFixed(2)) + '</span></td>'
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + data[i].Key + '); return false;"><i class="h3 ion-trash-a mb-0"></i></button></td>'
             + '</tr>'
     }
@@ -376,8 +402,10 @@ function cartitem() {
         $("#cart-table").html("No Item added");
         $("#check-btn").hide();
     }
-    $(".subtotal").html(currency + ' ' + totalPrice.toFixed(2));
-    $(".totalamount").html(currency + ' ' + totalPrice.toFixed(2));
+    var totalPriceFormatted = (typeof countryManager !== 'undefined' && countryManager) ? 
+        countryManager.formatConvertedPrice(totalPrice) : totalPrice.toFixed(2);
+    $(".subtotal").html(currency + ' ' + totalPriceFormatted);
+    $(".totalamount").html(currency + ' ' + totalPriceFormatted);
 
 
 }
@@ -398,7 +426,12 @@ function changeQty(key, price) {
                 // Update the main item quantity and price
                 cartItems[i].Qty = newQty;
                 cartItems[i].Price = cartItems[i].Qty * price;
-                $('#tprice' + key).html(cartItems[i].Price.toFixed(2));
+                
+                // Convert price for display
+                var displayPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+                    countryManager.convertPrice(cartItems[i].Price) : cartItems[i].Price;
+                    
+                $('#tprice' + key).html((typeof countryManager !== 'undefined' && countryManager) ? countryManager.formatConvertedPrice(displayPrice) : displayPrice.toFixed(2));
                 
                 // Scale gifts proportionally based on ORIGINAL quantities (fixes race condition)
                 if (originalMainQty > 0 && newQty > 0) {
@@ -561,7 +594,9 @@ function GetWishListItems() {
 
     for (var i = 0; i < data.length; i++) {
         totalQty += Number(data[i].Qty);
-        totalPrice += data[i].Price;
+        var convertedPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+            countryManager.convertPrice(data[i].Price) : data[i].Price;
+        totalPrice += convertedPrice;
         html += '<tr>'
         if (data[i].Image == "" || data[i].Image == null) {
             html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="wishlist-img" src="/Content/assets/images/NA.png" alt=""></a></td>'
@@ -570,8 +605,10 @@ function GetWishListItems() {
             html += '<td class="plantmore-product-thumbnail"><a href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '"><img class="wishlist-img" src="https://retail.premium-pos.com/' + data[i].Image + '" alt=""></a></td>'
         }
 
+        var formattedPrice = (typeof countryManager !== 'undefined' && countryManager) ? 
+            countryManager.formatConvertedPrice(convertedPrice) : convertedPrice.toFixed(2);
         html += '<td class="plantmore-product-name"><a href="#">' + data[i].Title + '</a></td>'
-            + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + data[i].Price.toFixed(2) + '</span></td>'
+            + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + formattedPrice + '</span></td>'
             + '<td class="plantmore-product-stock-status"><span class="stockcheck">' + data[i].Instock + '</span></td>'
             + '<td class="plantmore-product-add-cart"><a class="btn btn-default btn-small" href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">Add to Cart</a></td>'
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeWishlistitem(' + data[i].Key + '); return false;"><i class="h5 ion-trash-a mb-0"></i></a></td>'
@@ -605,14 +642,60 @@ function StockActiveColor() {
     });
 };
 
-var currency = "BHD.";
-var currencyLS = localStorage.getItem("currency");
-if (currencyLS == null) {
-    localStorage.setItem("currency", currency);
+// Currency initialization handled by countryManager
+var currency = localStorage.getItem("currency") || "BHD";
+// Don't overwrite - let countryManager set this on init
+if (!localStorage.getItem("currency")) {
+    localStorage.setItem("currency", "BHD");
 }
-else {
-    localStorage.setItem("currency", "BHD.");
+
+/**
+ * Update prices dynamically based on selected country
+ */
+function updateCurrencyDisplay() {
+    if (typeof countryManager !== 'undefined' && countryManager) {
+        var selectedCountry = countryManager.getSelectedCountry();
+        if (selectedCountry) {
+            // Update currency display
+            var currencyDisplay = selectedCountry.symbol + ' ';
+            localStorage.setItem("currency", currencyDisplay);
+            
+            console.log('Currency updated to:', selectedCountry.currency);
+            
+            // Refresh all price displays
+            ShowText();
+            topheadcart();
+            cartitem();
+            convertProductPrices();  // Convert product listing prices
+        }
+    }
 }
+
+/**
+ * Convert all product prices on the page based on selected country
+ */
+function convertProductPrices() {
+    if (typeof countryManager !== 'undefined' && countryManager) {
+        // Find all price elements with data-original-price attribute
+        $('[data-original-price]').each(function() {
+            var originalPrice = parseFloat($(this).data('original-price'));
+            if (!isNaN(originalPrice)) {
+                var formattedPrice = countryManager.formatPrice(originalPrice, false);
+                $(this).text(formattedPrice);
+            }
+        });
+        
+        // Also update prices with class 'new-price' or 'old-price'
+        $('[data-original-price]').closest('.price-box, .d-flex').each(function() {
+            // Ensure currency symbol is visible
+            var currencyText = $(this).find('.currency-text');
+            if (currencyText.length && !currencyText.text()) {
+                currencyText.text(localStorage.getItem("currency") || "BHD");
+            }
+        });
+    }
+}
+
 function ShowText() {
     var currency = localStorage.getItem("currency");
     $(".currency-text").text(currency);

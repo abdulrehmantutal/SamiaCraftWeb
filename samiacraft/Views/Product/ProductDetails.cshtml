@@ -771,8 +771,7 @@
 
                     <!-- Product Price -->
                     <div class="product-price">
-                        @* <span>@ViewBag.CurrencySymbol @ViewBag.ProductDetails?.Price</span> *@
-                        <span>BHD. @ViewBag.CurrencySymbol @ViewBag.ProductDetails?.Price.ToString("0.000")</span>
+                        <span class="currency-text"></span> <span data-original-price="@ViewBag.ProductDetails?.Price.ToString("0.000")">@ViewBag.ProductDetails?.Price.ToString("0.000")</span>
                     </div>
 
                     <!-- Product Overview -->
@@ -955,7 +954,7 @@
                                                        data-price="@gift.Price" />
                                             </div>
                                             <div class="product-price">
-                                                <span>BHD @gift.Price</span>
+                                                <span class="currency-text"></span> <span data-original-price="@gift.Price">@gift.Price</span>
                                             </div>
                                         </div>
                                     </div>

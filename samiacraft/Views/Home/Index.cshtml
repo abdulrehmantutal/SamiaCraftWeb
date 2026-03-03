@@ -1705,12 +1705,12 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                         <div class="d-flex justify-content-between">
                             @if (item.NewPrice == null || item.NewPrice == 0)
                             {
-                                <span class="text-price fw-bold">BHD. @item.Price.ToString("0.00")</span>
+                                <span class="currency-text"></span> <span class="text-price fw-bold" data-original-price="@item.Price">@item.Price.ToString("0.00")</span>
                             }
                             else
                             {
-                                <span class="text-price fw-bold">BHD. @item.NewPrice?.ToString("0.00")</span>
-                                <del class="text-del ms-2">BHD. @item.Price.ToString("0.00")</del>
+                                <span class="currency-text"></span> <span class="text-price fw-bold" data-original-price="@item.NewPrice">@item.NewPrice?.ToString("0.00")</span>
+                                <del class="text-del ms-2"><span class="currency-text"></span> <span data-original-price="@item.Price">@item.Price.ToString("0.00")</span></del>
                             }
 
                         </div>
@@ -1821,12 +1821,12 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                                     <div class="mb-2">
                                         @if (item.NewPrice != null && item.NewPrice > 0)
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.NewPrice</span>
-                                            <span class="text-del text-decoration-line-through ms-2">BHD. @item.Price</span>
+                                            <span class="currency-text"></span> <span class="text-price fw-bold  d-inline-flex align-items-center" data-original-price="@item.NewPrice">@item.NewPrice</span>
+                                            <span class="text-del text-decoration-line-through ms-2"><span class="currency-text"></span> <span data-original-price="@item.Price">@item.Price</span></span>
                                         }
                                         else
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.Price</span>
+                                            <span class="currency-text"></span> <span class="text-price fw-bold  d-inline-flex align-items-center" data-original-price="@item.Price">@item.Price</span>
                                         }
                                     </div>
                     
