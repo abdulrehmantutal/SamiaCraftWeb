@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using System.Net;
+﻿using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using samiacraft.Services;
 
@@ -11,6 +10,8 @@ namespace samiacraft.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly BenefitPayGatewayService _benefitPayService;
+
+        private string BaseUrl => "http://samiacrafts-001-site5.site4future.com";
 
         public BenefitPayController(IConfiguration configuration)
         {
@@ -28,64 +29,111 @@ namespace samiacraft.Controllers
                 responseUrl, errorUrl, isTestMode);
         }
 
+        // ════════════════════════════════════════════════════════════════
+        // POST /api/benefitpay/response
+        // BENEFIT yahan POST karta hai payment ke baad
+        // ⚠️ BENEFIT ke liye: "REDIRECT=url" return karo
+        // ⚠️ PRG Pattern: POST → process → GET redirect (no resubmission)
+        // ════════════════════════════════════════════════════════════════
         [HttpPost("response")]
         [IgnoreAntiforgeryToken]
         public IActionResult ProcessPaymentResponse()
         {
-            var baseUrl = _configuration["AppSettings:BaseUrl"]
-                           ?? "http://samiacrafts-001-site5.site4future.com";
             var trandata = Request.Form["trandata"].ToString();
 
             if (!string.IsNullOrEmpty(trandata))
             {
                 var parsed = _benefitPayService.ParseResponse(trandata);
-
                 int.TryParse(parsed.trackId, out int orderId);
 
                 if (parsed.result == "CAPTURED")
                 {
-                    return Content($"REDIRECT={baseUrl}/Order/OrderComplete?OrderID={orderId}");
+                    // ✅ Success - BENEFIT ke liye REDIRECT= format
+                    // Browser GET request karega - refresh problem nahi hogi
+                    return Content($"REDIRECT={BaseUrl}/Order/OrderComplete?OrderID={orderId}");
                 }
                 else
                 {
                     var reason = Uri.EscapeDataString(
                         BenefitPayGatewayService.GetDeclineMessage(parsed.authRespCode ?? ""));
-                    return Content($"REDIRECT={baseUrl}/Order/PaymentFailed?OrderID={orderId}&reason={reason}");
+                    return Content($"REDIRECT={BaseUrl}/Order/PaymentFailed?OrderID={orderId}&reason={reason}");
                 }
             }
 
+            // Error fields direct aaye
             var errorText = Request.Form["ErrorText"].ToString();
             if (!string.IsNullOrEmpty(errorText))
             {
                 int.TryParse(Request.Form["trackid"].ToString(), out int orderIdFromForm);
                 var errMsg = Uri.EscapeDataString(errorText);
-                return Content($"REDIRECT={baseUrl}/Order/PaymentFailed?OrderID={orderIdFromForm}&reason={errMsg}");
+                return Content($"REDIRECT={BaseUrl}/Order/PaymentFailed?OrderID={orderIdFromForm}&reason={errMsg}");
             }
 
-            return Content($"REDIRECT={baseUrl}/Order/PaymentFailed");
+            return Content($"REDIRECT={BaseUrl}");
         }
 
-        [HttpGet("error")]
+        // ════════════════════════════════════════════════════════════════
+        // GET /api/benefitpay/response  (PRG - refresh safe)
+        // Browser yahan aata hai BENEFIT ke REDIRECT= ke baad
+        // Yeh GET request hai - refresh karo toh koi problem nahi
+        // ════════════════════════════════════════════════════════════════
+        [HttpGet("response")]
+        public IActionResult PaymentResponseGet(
+            [FromQuery] string result = "",
+            [FromQuery] int orderId = 0)
+        {
+            if (result == "success")
+                return Redirect($"{BaseUrl}/Order/OrderComplete?OrderID={orderId}");
+
+            return Redirect($"{BaseUrl}/Order/PaymentFailed?OrderID={orderId}");
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // POST /api/benefitpay/error
+        // BENEFIT cancel/error pe yahan POST karta hai
+        // ════════════════════════════════════════════════════════════════
         [HttpPost("error")]
         [IgnoreAntiforgeryToken]
-        public IActionResult HandlePaymentError()
+        public IActionResult HandlePaymentErrorPost()
         {
-            var baseUrl = _configuration["AppSettings:BaseUrl"]
-                            ?? "http://samiacrafts-001-site5.site4future.com";
-            var errorText = Request.Query["ErrorText"].ToString();
-            if (string.IsNullOrEmpty(errorText))
-                errorText = Request.Form["ErrorText"].ToString();
-
-            var trackId = Request.Query["trackid"].ToString();
-            if (string.IsNullOrEmpty(trackId))
-                trackId = Request.Form["trackid"].ToString();
-
+            var errorText = Request.Form["ErrorText"].ToString();
+            var trackId = Request.Form["trackid"].ToString();
             int.TryParse(trackId, out int orderId);
 
-            var errMsg = Uri.EscapeDataString(
-                string.IsNullOrEmpty(errorText) ? "Payment processing error" : errorText);
+            // PRG: POST data ko query string mein daal ke GET pe redirect karo
+            // Ab refresh karne pe POST dobara nahi hoga - sirf GET hoga
+            if (string.IsNullOrEmpty(errorText) ||
+                errorText.ToLower().Contains("cancel") ||
+                errorText.ToLower().Contains("cancelled"))
+            {
+                // User ne cancel kiya - home page
+                return Redirect($"{BaseUrl}/api/benefitpay/error/cancelled");
+            }
 
-            return Redirect($"{baseUrl}/Order/PaymentFailed?OrderID={orderId}&reason={errMsg}");
+            var errMsg = Uri.EscapeDataString(errorText);
+            return Redirect($"{BaseUrl}/api/benefitpay/error/failed?orderid={orderId}&reason={errMsg}");
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // GET /api/benefitpay/error/cancelled  (PRG safe - refresh ok)
+        // ════════════════════════════════════════════════════════════════
+        [HttpGet("error/cancelled")]
+        public IActionResult PaymentCancelled()
+        {
+            // Refresh karo - yeh sirf GET hai, koi POST nahi hoga
+            return Redirect($"{BaseUrl}");  // Home page
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // GET /api/benefitpay/error/failed  (PRG safe - refresh ok)
+        // ════════════════════════════════════════════════════════════════
+        [HttpGet("error/failed")]
+        public IActionResult PaymentFailed(
+            [FromQuery] int orderid = 0,
+            [FromQuery] string reason = "")
+        {
+            // Refresh karo - yeh sirf GET hai, koi POST nahi hoga
+            return Redirect($"{BaseUrl}/Order/PaymentFailed?OrderID={orderid}&reason={reason}");
         }
     }
 }

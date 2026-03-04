@@ -2,6 +2,15 @@
     ViewBag.Title = "Order Complete";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<!-- Force HTTPS Redirect -->
+<script>
+    // Redirect HTTP to HTTPS automatically
+    if (window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+        window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+    }
+</script>
+
 <style>
 
     .card {
@@ -46,20 +55,43 @@
                 <div class="search-error-wrapper">
                     @if (ViewBag.OrderNo == "Reject")
                     {
-                        <h2 class="text-danger" style="font-size: 40px;">Order Cancel</h2>
+                        <h2 class="text-danger" style="font-size: 40px;">Order Cancelled</h2>
 
                         <p class="home-link">
-                            Your order is not successfully done. If you have paid by debit/credit card kindly contact to your bank. <br>
-                            or contact ot us on live chat.
+                            Your payment was not completed or cancelled. If you have any questions, please contact our support team.<br>
+                            You can try again or contact us on live chat.
                         </p>
-                        <a href="~/order/checkout" class="home-bacck-button">Try Again</a>
+                        <a href="~/order/checkout" class="home-bacck-button">Return to Checkout</a>
+                        <script>
+                            $(document).ready(function() {
+                                alert('Payment Cancelled\n\nYour order has been cancelled and you have been returned to the checkout page.\n\nPlease try again or choose another payment method.');
+                            });
+                        </script>
                     }
                     else
                     {
                         <h2 style="font-size: 40px;">Thank You for your order.</h2>
-                        <h5 class="mb-1  font-weight-lighter">Your order numer is #SC-@ViewBag.OrderNo</h5>
-                        <h2 style="font-size: 30px;">Thank you for shopping with us! You will receive the updated through email.</h2>
-                        <script>localStorage.clear();</script>
+                        <h5 class="mb-1  font-weight-lighter">Your order number is #SC-@ViewBag.OrderNo</h5>
+                        <h2 style="font-size: 30px;">Thank you for shopping with us! You will receive updates through email.</h2>
+                        <script>
+                            // Preserve country selection flag before clearing localStorage
+                            var countrySelectionInitiated = localStorage.getItem('countrySelectionInitiated');
+                            localStorage.clear();
+                            // Restore the country selection flag
+                            if (countrySelectionInitiated) {
+                                localStorage.setItem('countrySelectionInitiated', countrySelectionInitiated);
+                            }
+                            
+                            $(document).ready(function() {
+                                // Show success alert
+                                alert('Order Completed Successfully!\n\nOrder Number: #SC-@ViewBag.OrderNo\n\nYou will receive a confirmation email shortly.\n\nRedirecting to home page...');
+                                
+                                // Redirect to home after 2 seconds
+                                setTimeout(function() {
+                                    window.location.href = '/';
+                                }, 2000);
+                            });
+                        </script>
 
                     }
                 </div>

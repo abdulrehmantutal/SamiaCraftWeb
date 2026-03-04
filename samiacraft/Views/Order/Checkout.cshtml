@@ -270,24 +270,24 @@
                     <div style="border-top: 2px solid #eee; padding-top: 15px; margin-top: 15px;">
                         <div class="d-flex justify-content-between mb-2">
                             <strong>Subtotal:</strong>
-                            <strong id="display-subtotal">BHD 0.00</strong>
+                            <strong id="display-subtotal">BHD 0.000</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2" id="coupon-line" style="display: none;">
                             <strong>Coupon Discount:</strong>
-                            <strong id="display-discount">BHD 0.00</strong>
+                            <strong id="display-discount">BHD 0.000</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2" id="delivery-line" style="display: none;">
                             <strong>Delivery Charges:</strong>
-                            <strong id="display-delivery">BHD 0.00</strong>
+                            <strong id="display-delivery">BHD 0.000</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <strong>Tax:</strong>
-                            <strong id="display-tax">BHD 0.00</strong>
+                            <strong id="display-tax">BHD 0.000</strong>
                         </div>
                         <div style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
                             <div class="d-flex justify-content-between" style="font-size: 18px; font-weight: bold;">
                                 <span>Grand Total:</span>
-                                <span id="display-grand-total">BHD 0.00</span>
+                                <span id="display-grand-total">BHD 0.000</span>
                             </div>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
 
                 tableHtml += '<tr>' +
                     '<td class="product-name">' + item.Title + ' × ' + qty + '</td>' +
-                    '<td class="product-total text-right">BHD ' + itemTotal.toFixed(2) + '</td>' +
+                    '<td class="product-total text-right">BHD ' + itemTotal.toFixed(3) + '</td>' +
                     '</tr>';
 
                 // Add new-system linked gifts (items with IsGift === true and LinkedItemKey === item.Key)
@@ -350,7 +350,7 @@
                         var giftTotal = giftQty * giftPrice;
                         tableHtml += '<tr style="background: #f9f9f9;">' +
                             '<td class="product-name" style="padding-left: 40px;">--- ' + gift.Title + ' × ' + giftQty + '</td>' +
-                            '<td class="product-total text-right">BHD ' + giftTotal.toFixed(2) + '</td>' +
+                            '<td class="product-total text-right">BHD ' + giftTotal.toFixed(3) + '</td>' +
                             '</tr>';
                         subTotal += giftTotal;
                     });
@@ -368,7 +368,7 @@
                         var giftTotal = (parseFloat(gift.Qty) || 1) * (parseFloat(gift.DisplayPrice) || 0);
                         tableHtml += '<div style="padding: 8px 0; padding-left: 20px; font-size: 13px;">';
                         tableHtml += '<span>' + gift.Title + '</span>';
-                        tableHtml += ' <span style="float: right; color: #666;">× ' + gift.Qty + ' = BHD ' + giftTotal.toFixed(2) + '</span>';
+                        tableHtml += ' <span style="float: right; color: #666;">× ' + gift.Qty + ' = BHD ' + giftTotal.toFixed(3) + '</span>';
                         tableHtml += '</div>';
                         subTotal += giftTotal;
                     });
@@ -383,10 +383,10 @@
             var tax = subTotal * 0.05; // 5% tax
             var grandTotal = subTotal + tax;
 
-            $('#SubTotal').val(subTotal.toFixed(2));
-            $('#Tax').val(tax.toFixed(2));
-            $('#GrandTotal').val(grandTotal.toFixed(2));
-            $('#AmountTotal').val(grandTotal.toFixed(2));
+            $('#SubTotal').val(subTotal.toFixed(3));
+            $('#Tax').val(tax.toFixed(3));
+            $('#GrandTotal').val(grandTotal.toFixed(3));
+            $('#AmountTotal').val(grandTotal.toFixed(3));
             $('#DiscountTotal').val(0);
             $('#AmountDiscount').val(0);
             $('#DiscountPercent').val(0);
@@ -460,13 +460,13 @@
 
         // Update display totals
         function UpdateOrderSummaryDisplay(subtotal, discount, tax, grandtotal) {
-            $('#display-subtotal').text('BHD ' + subtotal.toFixed(2));
-            $('#display-tax').text('BHD ' + tax.toFixed(2));
-            $('#display-grand-total').text('BHD ' + grandtotal.toFixed(2));
+            $('#display-subtotal').text('BHD ' + subtotal.toFixed(3));
+            $('#display-tax').text('BHD ' + tax.toFixed(3));
+            $('#display-grand-total').text('BHD ' + grandtotal.toFixed(3));
 
             if (discount > 0) {
                 $('#coupon-line').show();
-                $('#display-discount').text('BHD -' + discount.toFixed(2));
+                $('#display-discount').text('BHD -' + discount.toFixed(3));
             } else {
                 $('#coupon-line').hide();
             }
@@ -494,6 +494,13 @@
                 }
                 // Update the button state
                 $(this).closest('label').addClass('active').siblings('label').removeClass('active');
+                
+                // Show alert when Benefit Pay is selected
+                if (selectedPayment === 'BenefitPay') {
+                    setTimeout(function() {
+                        alert('✓ Benefit Pay Selected\n\nYou will be redirected to Benefit payment gateway to complete your payment securely.');
+                    }, 300);
+                }
             });
         }
 
@@ -534,12 +541,12 @@
                         var tax = (subtotal - discount) * 0.05;
                         var grandTotal = (subtotal - discount) + tax;
 
-                        $('#DiscountTotal').val(discount.toFixed(2));
-                        $('#AmountDiscount').val(discount.toFixed(2));
+                        $('#DiscountTotal').val(discount.toFixed(3));
+                        $('#AmountDiscount').val(discount.toFixed(3));
                         $('#DiscountPercent').val(coupon.Type === 'Percent' ? coupon.Amount : 0);
-                        $('#Tax').val(tax.toFixed(2));
-                        $('#GrandTotal').val(grandTotal.toFixed(2));
-                        $('#AmountTotal').val(grandTotal.toFixed(2));
+                        $('#Tax').val(tax.toFixed(3));
+                        $('#GrandTotal').val(grandTotal.toFixed(3));
+                        $('#AmountTotal').val(grandTotal.toFixed(3));
 
                         UpdateOrderSummaryDisplay(subtotal, discount, tax, grandTotal);
 
@@ -573,6 +580,11 @@
 
             // Get selected payment type
             var selectedPaymentType = $('input[name="payment_type"]:checked').val();
+            
+            // Show alert for Benefit Pay before processing
+            if (selectedPaymentType === 'BenefitPay') {
+                alert('🔒 Benefit Pay Payment\n\nYour order will be placed and you will be securely directed to the Benefit payment page.\n\nPlease ensure your card details are saved for a smooth transaction.');
+            }
 
             // CRITICAL: Refresh SessionData before submission (ensure it's current)
             console.log('=== Starting order submission ===');
@@ -639,6 +651,8 @@
                         
                         // Redirect based on payment method
                         if (paymentMethod === 'BenefitPay' && response.redirectUrl) {
+                            // BenefitPay - show confirmation alert before redirecting
+                            alert('✓ Order Placed Successfully!\n\nOrder #: ' + response.orderno + '\n\nYou will now be redirected to Benefit payment gateway.');
                             // BenefitPay - redirect to Benefit payment initialization
                             window.location.href = response.redirectUrl;
                         } else if (response.redirectUrl && response.sessionID) {
@@ -652,7 +666,12 @@
                             window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
                         }
                     } else {
-                        alert('Error: ' + (response.message || 'Failed to place order'));
+                        var errorMsg = response.message || 'Failed to place order';
+                        if (selectedPaymentType === 'BenefitPay') {
+                            alert('❌ Benefit Pay Error\n\n' + errorMsg + '\n\nPlease try again or choose another payment method.');
+                        } else {
+                            alert('Error: ' + errorMsg);
+                        }
                         $('#btn_checkout').prop('disabled', false).text('Place Order');
                     }
                 },

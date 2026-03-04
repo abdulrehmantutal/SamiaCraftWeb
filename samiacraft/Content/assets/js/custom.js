@@ -236,7 +236,7 @@ function topheadcart() {
                 html += '<p class="mb-0 text-default small lh-16 ">' + '-' + _dataGiftFilter[j].Title + '</p>'
             }
         }
-        html += '<div class="price-box"><span class="new-price">' + currency + ' ' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span>'
+        html += '<div class="price-box"><span class="new-price">' + currency + ' ' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(3) + '</span>'
             + '</div>'
             + '</li>'
     }
@@ -245,7 +245,7 @@ function topheadcart() {
 
         + '<li class="subtotal-titles">'
         + '<div class="subtotal-titles">'
-        + ' <h3 data-translate="000co23">Sub-Total :</h3><span>' + currency + ' ' + totalPrice.toFixed(2) + '</span>'
+        + ' <h3 data-translate="000co23">Sub-Total :</h3><span>' + currency + ' ' + totalPrice.toFixed(3) + '</span>'
         + ' </div>'
         + ' </li>'
         + ' <li class="mini-cart-btns">'
@@ -327,7 +327,7 @@ function cartitem() {
                     + '<div style="flex-shrink: 0;"><img src="' + giftImg + '" alt="' + giftItem.Title + '" style="width: 50px; height: 50px; object-fit: cover;"></div>'
                     + '<div style="flex: 1;">'
                     + '<p style="margin: 0 0 4px 0; font-size: 14px;">' + giftItem.Title + '</p>'
-                    + '<p style="margin: 0; font-size: 12px; color: #666;">' + giftItem.Qty + ' x ' + currency + ' ' + giftItem.UPrice.toFixed(2) + '</p>'
+                    + '<p style="margin: 0; font-size: 12px; color: #666;">' + giftItem.Qty + ' x ' + currency + ' ' + giftItem.UPrice.toFixed(3) + '</p>'
                     + '</div>'
                     + '<div style="flex-shrink: 0;"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + giftItem.Key + '); return false;"><i class="h6 ion-trash-a mb-0"></i></button></div>'
                     + '</div>';
@@ -354,7 +354,7 @@ function cartitem() {
         }
         
         html += '</td>'
-            + '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + data[i].UPrice.toFixed(2) + '</span></td>'
+            + '<td class="plantmore-product-price"><span class="amount"><span class="currency-text mx-0"></span>' + currency + ' ' + data[i].UPrice.toFixed(3) + '</span></td>'
             + '<td class="plantmore-product-quantity">'
             + '<div class="qty-control-wrapper">'
             + '<button class="qty-btn qty-minus" onclick="decreaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Decrease Quantity"><i class="ion-minus-round"></i></button>'
@@ -362,7 +362,7 @@ function cartitem() {
             + '<button class="qty-btn qty-plus" onclick="increaseQty(' + data[i].Key + ',' + data[i].UPrice + '); return false;" title="Increase Quantity"><i class="ion-plus-round"></i></button>'
             + '</div>'
             + '</td>'
-            + '<td class="product-subtotal">' + currency + ' ' + '<span class="amount totalprice"  id="tprice' + data[i].Key + '">' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(2) + '</span></td>'
+            + '<td class="product-subtotal">' + currency + ' ' + '<span class="amount totalprice"  id="tprice' + data[i].Key + '">' + ((data[i].Qty * data[i].UPrice) + giftPrice).toFixed(3) + '</span></td>'
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeCartItem(' + data[i].Key + '); return false;"><i class="h3 ion-trash-a mb-0"></i></button></td>'
             + '</tr>'
     }
@@ -376,8 +376,8 @@ function cartitem() {
         $("#cart-table").html("No Item added");
         $("#check-btn").hide();
     }
-    $(".subtotal").html(currency + ' ' + totalPrice.toFixed(2));
-    $(".totalamount").html(currency + ' ' + totalPrice.toFixed(2));
+    $(".subtotal").html(currency + ' ' + totalPrice.toFixed(3));
+    $(".totalamount").html(currency + ' ' + totalPrice.toFixed(3));
 
 
 }
@@ -398,7 +398,7 @@ function changeQty(key, price) {
                 // Update the main item quantity and price
                 cartItems[i].Qty = newQty;
                 cartItems[i].Price = cartItems[i].Qty * price;
-                $('#tprice' + key).html(cartItems[i].Price.toFixed(2));
+                $('#tprice' + key).html(cartItems[i].Price.toFixed(3));
                 
                 // Scale gifts proportionally based on ORIGINAL quantities (fixes race condition)
                 if (originalMainQty > 0 && newQty > 0) {
@@ -571,7 +571,7 @@ function GetWishListItems() {
         }
 
         html += '<td class="plantmore-product-name"><a href="#">' + data[i].Title + '</a></td>'
-            + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + data[i].Price.toFixed(2) + '</span></td>'
+            + '<td class="plantmore-product-price"><span class="currency-text mx-0">' + currency + ' ' + data[i].Price.toFixed(3) + '</span></td>'
             + '<td class="plantmore-product-stock-status"><span class="stockcheck">' + data[i].Instock + '</span></td>'
             + '<td class="plantmore-product-add-cart"><a class="btn btn-default btn-small" href="/Product/ProductDetails?ItemID=' + data[i].ItemID + '">Add to Cart</a></td>'
             + '<td class="plantmore-product-remove"><button class="bg-transparent border-0 text-danger" onclick="removeWishlistitem(' + data[i].Key + '); return false;"><i class="h5 ion-trash-a mb-0"></i></a></td>'

@@ -1705,12 +1705,12 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                         <div class="d-flex justify-content-between">
                             @if (item.NewPrice == null || item.NewPrice == 0)
                             {
-                                <span class="text-price fw-bold">BHD. @item.Price.ToString("0.00")</span>
+                                <span class="text-price fw-bold">BHD. @item.Price.ToString("0.000")</span>
                             }
                             else
                             {
-                                <span class="text-price fw-bold">BHD. @item.NewPrice?.ToString("0.00")</span>
-                                <del class="text-del ms-2">BHD. @item.Price.ToString("0.00")</del>
+                                <span class="text-price fw-bold">BHD. @item.NewPrice?.ToString("0.000")</span>
+                                <del class="text-del ms-2">BHD. @item.Price.ToString("0.000")</del>
                             }
 
                         </div>
@@ -1821,12 +1821,12 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                                     <div class="mb-2">
                                         @if (item.NewPrice != null && item.NewPrice > 0)
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.NewPrice</span>
-                                            <span class="text-del text-decoration-line-through ms-2">BHD. @item.Price</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.NewPrice?.ToString("0.000")</span>
+                                            <span class="text-del text-decoration-line-through ms-2">BHD. @item.Price.ToString("0.000")</span>
                                         }
                                         else
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.Price</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.Price.ToString("0.000")</span>
                                         }
                                     </div>
                     

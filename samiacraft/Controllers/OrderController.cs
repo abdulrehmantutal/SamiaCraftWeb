@@ -163,7 +163,6 @@ namespace samiacraft.Controllers
         {
             try
             {
-                // Build checkout data from form submission
                 var checkoutData = ExtractCheckoutData();
                 
                 if (checkoutData == null)
@@ -171,14 +170,12 @@ namespace samiacraft.Controllers
                     return Json(new { Success = false, Message = "Invalid order data" });
                 }
 
-                // Validate required fields
                 var validationResult = ValidateCheckoutData(checkoutData);
                 if (!validationResult.IsValid)
                 {
                     return Json(new { Success = false, Message = validationResult.Message });
                 }
 
-                // Parse order items from SessionData
                 ParseOrderItems(checkoutData);
 
                 if (checkoutData.OrderDetail == null || checkoutData.OrderDetail.Count == 0)
@@ -186,7 +183,6 @@ namespace samiacraft.Controllers
                     return Json(new { Success = false, Message = "No items in order" });
                 }
 
-                // Insert order to database
                 var checkoutService = new checkoutBLL();
                 if (checkoutData.PaymentMethodID == 1 || checkoutData.PaymentMethodID == 5)
                 {
@@ -204,12 +200,11 @@ namespace samiacraft.Controllers
                     return Json(new { Success = false, Message = "Failed to create order" });
                 }
 
-                // Determine payment type and handle accordingly
                 int paymentType = checkoutData.PaymentMethodID ?? 1;
 
                 switch (paymentType)
                 {
-                    case 1: // Cash
+                    case 1:
                         {
                             var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                             SendCompleteOrderEmails(OrderID, checkoutData, giftDataJson);
@@ -222,13 +217,13 @@ namespace samiacraft.Controllers
                             });
                         }
 
-                    case 2: // Credimax (Mastercard Gateway)
-                        return await HandleCredimaxPayment(OrderID, checkoutData);
+                    case 2: 
+                        return await HandleAfsPayment(OrderID, checkoutData);
 
-                    case 3: // BenefitPay
+                    case 3: 
                         return await HandleBenefitPayment(OrderID, checkoutData);
 
-                    case 4: // Mastercard Direct
+                    case 4:
                         {
                             var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                             SendPendingPaymentEmails(OrderID, checkoutData, giftDataJson);
@@ -241,7 +236,7 @@ namespace samiacraft.Controllers
                             });
                         }
 
-                    case 5: // Bank Transfer
+                    case 5:
                         {
                             var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                             SendCompleteOrderEmails(OrderID, checkoutData, giftDataJson);
@@ -263,57 +258,54 @@ namespace samiacraft.Controllers
                 return Json(new { Success = false, Message = $"Error: {ex.Message}" });
             }
         }
-
-        private async Task<JsonResult> HandleCredimaxPayment(int OrderID, checkoutBLL data)
+        private async Task<JsonResult> HandleAfsPayment(int OrderID, checkoutBLL data)
         {
             try
             {
                 var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                 SendPendingPaymentEmails(OrderID, data, giftDataJson);
 
-                string sessionUrl = "https://credimax.gateway.mastercard.com/api/rest/version/60/merchant/E10561950/session";
-                string credentials = "bWVyY2hhbnQuRTEwNTYxOTUwOjhhYTlhZmI5OTg0ODZhMjA0ZjI0ODY0YzIyOTY1OGNh";
-                string baseUrl = _configuration["AppSettings:BaseUrl"] ?? "https://localhost:7051";
+                string sessionUrl = "https://afs.gateway.mastercard.com/api/rest/version/72/merchant/100538314/session";
+                string credentials = "merchant.100538314:b671b94a10177ff07386518e6b1aef86";
+                string base64Creds = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+                string baseUrl = _configuration["AppSettings:BaseUrl"]
+                                     ?? "http://samiacrafts-001-site5.site4future.com";
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Clear();
-                    client.DefaultRequestHeaders.Add("Authorization", $"Basic {credentials}");
-                    
+                    client.DefaultRequestHeaders.Add("Authorization", $"Basic {base64Creds}");
+
                     var payload = new
                     {
-                        apiOperation = "CREATE_CHECKOUT_SESSION",
+                        apiOperation = "INITIATE_CHECKOUT",
                         order = new
                         {
-                            amount = (data.GrandTotal ?? 0).ToString("0.00"),
-                            currency = "BHD",
-                            id = OrderID.ToString(),
-                            description = "Unique, handmade décor and gifts to bring warmth and personality into your home.",
-                            reference = $"Order#{OrderID}"
+                            amount = Math.Round(data.GrandTotal ?? 0, 3),
+                            id = OrderID,
+                            currency = "BHD"
                         },
                         interaction = new
                         {
                             operation = "PURCHASE",
-                            returnUrl = $"{baseUrl}/Order/PaymentCallback?OrderID={OrderID}&status=success",
-                            cancelUrl = $"{baseUrl}/Order/PaymentCallback?OrderID={OrderID}&status=cancel",
-                            merchant = new
-                            {
-                                name = "HANDCRAFTED HEAVEN TRADING BY SAMIA WLL",
-                            }
+                            merchant = new { name = "HANDCRAFTED HEAVEN TRADING BY SAMIA WLL" },
+                            displayControl = new { billingAddress = "HIDE" }
                         }
                     };
-                    
-                    var json = JsonConvert.SerializeObject(payload, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    System.Diagnostics.Debug.WriteLine($"Credimax Payload: {json}");
-                    
-                    var content = new StringContent(json, Encoding.UTF8, "text/plain");
 
+                    var json = JsonConvert.SerializeObject(payload,
+                                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    System.Diagnostics.Debug.WriteLine($"[AFS] Payload: {json}");
+
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = await client.PostAsync(sessionUrl, content);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    System.Diagnostics.Debug.WriteLine($"[AFS] Response: {responseContent}");
+
                     if (response.IsSuccessStatusCode)
                     {
-                        var responseContent = await response.Content.ReadAsStringAsync();
                         dynamic responseData = JsonConvert.DeserializeObject(responseContent);
                         string sessionID = responseData["session"]["id"];
 
@@ -323,25 +315,18 @@ namespace samiacraft.Controllers
                             orderid = OrderID,
                             orderno = OrderID.ToString(),
                             sessionID = sessionID,
-                            redirectUrl = $"https://credimax.gateway.mastercard.com/checkout/pay/{sessionID}?checkoutVersion=1.0.0"
+                            redirectUrl = $"https://afs.gateway.mastercard.com/checkout/pay/{sessionID}?checkoutVersion=1.0.0"
                         });
                     }
                     else
                     {
-                        var responseContent = await response.Content.ReadAsStringAsync();
-                        System.Diagnostics.Debug.WriteLine($"Credimax Error: {responseContent}");
-                        return Json(new
-                        {
-                            Success = false,
-                            Message = $"Payment session creation failed: {responseContent}"
-                        });
+                        return Json(new { Success = false, Message = $"AFS session failed: {responseContent}" });
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"HandleCredimaxPayment Exception: {ex.Message}");
-                return Json(new { Success = false, Message = $"Payment error: {ex.Message}" });
+                return Json(new { Success = false, Message = $"AFS error: {ex.Message}" });
             }
         }
 
