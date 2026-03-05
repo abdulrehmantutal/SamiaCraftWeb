@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="~/Content/assets/css/plugins/animation.css">
     <link rel="stylesheet" href="~/Content/assets/css/plugins/jqueryui.min.css">
     <link href="~/Content/assets/css/plugins/flag-icon.min.css" rel="stylesheet" />
-   
+
 
     <!-- Swipper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -59,29 +59,29 @@
         gtag('config', 'G-35G8V97V5F');
     </script>
     <style>
-    :root {
-        --headertoparea: @(headertoparea) !important;
-        --logo: url('@(logo)');
-        --bgworkflow: url('@(workflow)');
-        --bgfeaturedproduct: url('@(featured)');
-        --bgpopularproduct: url('@(popular)');
-        --bgnewarrivals: url('@(newarrival)');
-        --bgtestimonials: url('@(testimonial)');
-        --bgnewsletter: url('@(newsletter)');
-        --addbutton: @(addbutton);
-    }
+        :root {
+            --headertoparea: @(headertoparea) !important;
+            --logo: url('@(logo)');
+            --bgworkflow: url('@(workflow)');
+            --bgfeaturedproduct: url('@(featured)');
+            --bgpopularproduct: url('@(popular)');
+            --bgnewarrivals: url('@(newarrival)');
+            --bgtestimonials: url('@(testimonial)');
+            --bgnewsletter: url('@(newsletter)');
+            --addbutton: @(addbutton);
+        }
 
-    .btn-default-opposite {
-        color: white !important;
-        background-color: var(--addbutton);
-        border-color: var(--addbutton);
-    }
-
-        .btn-default-opposite:hover {
-            color: var(--addbutton);
-            background-color: #ffffff !important;
+        .btn-default-opposite {
+            color: white !important;
+            background-color: var(--addbutton);
             border-color: var(--addbutton);
         }
+
+            .btn-default-opposite:hover {
+                color: var(--addbutton);
+                background-color: #ffffff !important;
+                border-color: var(--addbutton);
+            }
 
         .nav-bg {
             background-color: white !important;
@@ -197,20 +197,20 @@
                 color: red;
             }
 
-    .imgcon .wl {
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 2; /* add this to make icon stack over image */
-        margin-right: 8px;
-        margin-top: 8px;
-        border: 1px solid var(--addbutton);
-        justify-content: center;
-        border-radius: 50%;
-        height: 30px;
-        width: 30px;
-        padding-top: 1%;
-    }
+        .imgcon .wl {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2; /* add this to make icon stack over image */
+            margin-right: 8px;
+            margin-top: 8px;
+            border: 1px solid var(--addbutton);
+            justify-content: center;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            padding-top: 1%;
+        }
 
         .social-top ul {
             list-style: none; /* remove bullets */
@@ -221,10 +221,10 @@
             gap: 10px;
         }
 
-        .social-top ul li {
-            display: inline-block;
-            margin-right: 2px !important;
-        }
+            .social-top ul li {
+                display: inline-block;
+                margin-right: 2px !important;
+            }
 
         .parent {
             height: 100vh;
@@ -382,20 +382,20 @@
             transition: all 0.3s ease-out;
         }
 
-        .fl-header.nav-fixed-top {
-            position: fixed;
-            z-index: 1000;
-            width: 100%;
-            top: 0;
-            left: 0;
-            right: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+            .fl-header.nav-fixed-top {
+                position: fixed;
+                z-index: 1000;
+                width: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
 
-        .fl-header.nav-fixed-top .haeader-bottom-area {
-            background: white;
-            border-bottom: 1px solid #154a901a;
-        }
+                .fl-header.nav-fixed-top .haeader-bottom-area {
+                    background: white;
+                    border-bottom: 1px solid #154a901a;
+                }
 
         /* Prevent flash of unstyled content */
         body {
@@ -405,9 +405,7 @@
         .footer-list:hover li a {
             color: #fff !important;
         }
-    
     </style>
-
 
 </head>
 <body>
@@ -453,7 +451,6 @@
             </div>
         </div>
         <!-- Header Top End -->
-
         <!-- haeader bottom Start -->
         <div class="haeader-bottom-area nav-bg" id="Head">
             <div class="container w-100">
@@ -490,12 +487,11 @@
                                 </ul>
                             </div>
                             <div class="login-icon ">
-
-                                @* @if (Session["CustomerName"] != null)
+                                @if (@Context.Session.GetString("CustomerName") != null)
                                 {
                                     <a href="" dropdown-toggle" data-toggle="dropdown"><i class="ion-ios-contact"></i></a>
                                     <div class="dropdown-menu alignment p-0 mt-0">
-                                        <a class="dropdown-item border-bottom text-center" style="font-size:12px;" href="#"><span class="font-weight-bold">Hi!</span> @Session["CustomerName"]</a>
+                                        <a class="dropdown-item border-bottom text-center" style="font-size:12px;" href="#"><span class="font-weight-bold">Hi!</span> @Context.Session.GetString("CustomerName")</a>
                                         <a href="~/Order/Myorders" class="about-bg border-bottom dropdown-item font-weight-bold py-4 text-center" style="font-size:12px;">My Orders</a>
                                         <a class="dropdown-item text-center " style="font-size:12px;" href="~/account/logout">Logout</a>
                                     </div>
@@ -503,7 +499,7 @@
                                 else
                                 {
                                     <a href="~/account/Login_Register?id=1"><i class="ion-ios-contact"></i></a>
-                                } *@
+                                }
 
                             </div>
                             <div class="mobile-menu-btn d-block d-lg-none">
@@ -518,7 +514,6 @@
             </div>
         </div>
         <!-- haeader bottom End -->
-
         <!-- Inline Search Bar -->
         <div id="searchBar" class="search-bar-container" style="display: none; background: rgba(28, 61, 90, 0.8); padding: 30px 0; position: relative; z-index: 999;">
             <div class="container">
@@ -558,6 +553,7 @@
                             <div class="footer-logo">
                                 <a href="~/home/index">
                                     <img src="https://samiacrafts.com/assets/images/logo.svg" style=" width: 130px;" alt="">
+                                    @* <img src="../Content/assets/sm-images/WhatsApp Image 2026-03-05 at 11.28.57 AM.jpeg" style=" width: 130px;" alt=""> *@
                                 </a>
                             </div>
                             <p>We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.</p>
@@ -803,24 +799,38 @@
     <script src="~/Content/assets/js/main.js"></script>
     @RenderSection("scripts", false)
 
+    @* ── Payment Result Alerts (Mastercard / BenefitPay callback) ── *@
+    @if (TempData["PaymentSuccess"] != null)
+    {
+        <script>
+            window.addEventListener('load', function () {
+                var orderID = '@TempData["OrderID"]';
+                alert('✅ Payment Successful!\n\nYour order #' + orderID + ' has been placed successfully.\nYou will receive a confirmation email shortly.\n\nThank you for shopping with us!');
+            });
+        </script>
+    }
+    @if (TempData["PaymentFailed"] != null)
+    {
+        <script>
+            window.addEventListener('load', function () {
+                alert('❌ Payment Failed\n\nYour payment could not be processed.\nPlease try again or contact our support team.');
+            });
+        </script>
+    }
+
     <script>
         $(document).ready(function () {
-            debugger
-
-            // Read from cookie
             var cityID = getCookieValue("CityID");
             var cityName = getCookieValue("CityName");
 
             if (cityID && cityName) {
 
-                // Returning user → use cookie
                 $('#cityClick span').text(cityName);
                 $('#popupModal').modal('hide');
                 console.log("cookie exist");
 
             } else {
 
-                // First-time user → ask to select city
                 $('#popupModal').modal({
                     backdrop: 'static',
                     keyboard: false
@@ -888,7 +898,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="~/Content/assets/js/cookie/js.cookie.js"></script>
     <script src="~/Content/assets/js/cookie/js.cookie.min.js"></script>
-
-    @*<script src="~/language/translations.js"></script>*@
 </body>
 </html>

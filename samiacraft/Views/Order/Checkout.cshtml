@@ -31,9 +31,9 @@
         cursor: pointer;
     }
 
-    .btn-place-order:hover {
-        opacity: 0.9;
-    }
+        .btn-place-order:hover {
+            opacity: 0.9;
+        }
 
     .paymenttype .active {
         border: 2px solid #004270 !important;
@@ -47,11 +47,11 @@
         margin-top: 20px;
     }
 
-    .payment-method h5 {
-        text-align: center;
-        margin-bottom: 15px;
-        font-weight: 600;
-    }
+        .payment-method h5 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
 </style>
 
 <!-- Breadcrumb Start -->
@@ -69,7 +69,6 @@
     </div>
 </div>
 <!-- Breadcrumb End -->
-
 <!-- Checkout Area Start -->
 <div class="checkout-area pt-20 pb-100">
     <div class="container">
@@ -300,15 +299,14 @@
 </div>
 
 @section Scripts {
+
     <script>
-        // Initialize checkout on page load
         $(document).ready(function() {
             LoadCheckoutWithItems();
             WireUpPaymentMethodHandlers();
             WireUpCouponHandlers();
         });
 
-        // Load cart items and display
         function LoadCheckoutWithItems() {
             var cartItems = JSON.parse(localStorage.getItem("_cartitems") || "[]");
             var giftItems = JSON.parse(localStorage.getItem("_giftitems") || "[]");
@@ -321,12 +319,10 @@
                 return;
             }
 
-            // Build display table
             var tableHtml = '';
             var subTotal = 0;
 
             cartItems.forEach(function(item, index) {
-                // Skip gift items - they'll be displayed under their parent item
                 if (item.IsGift === true) {
                     return;
                 }
@@ -363,7 +359,7 @@
                     tableHtml += '<td colspan="2">';
                     tableHtml += '<div style="padding: 10px 0; border-top: 1px solid #ddd; margin-top: 5px;">';
                     tableHtml += '<strong style="color: #666; font-size: 12px;">Addon Products:</strong>';
-                    
+
                     itemGifts.forEach(function(gift) {
                         var giftTotal = (parseFloat(gift.Qty) || 1) * (parseFloat(gift.DisplayPrice) || 0);
                         tableHtml += '<div style="padding: 8px 0; padding-left: 20px; font-size: 13px;">';
@@ -372,7 +368,7 @@
                         tableHtml += '</div>';
                         subTotal += giftTotal;
                     });
-                    
+
                     tableHtml += '</div></td></tr>';
                 }
             });
@@ -447,12 +443,12 @@
 
             // Ensure SessionData is always set - even if empty array
             var sessionDataJSON = JSON.stringify(sessionData);
-            
+
             console.log('Final sessionData JSON:', sessionDataJSON);
             console.log('Setting #SessionData to:', sessionDataJSON);
-            
+
             $('#SessionData').val(sessionDataJSON);
-            
+
             // Verify it was set
             var confirmValue = $('#SessionData').val();
             console.log('Confirmed #SessionData value:', confirmValue);
@@ -483,7 +479,7 @@
                     $(this).siblings('label').removeClass('active');
                 }
             });
-            
+
             // Handle radio button change
             $('input[name="payment_type"]').on('change', function() {
                 var selectedPayment = $(this).val();
@@ -494,7 +490,7 @@
                 }
                 // Update the button state
                 $(this).closest('label').addClass('active').siblings('label').removeClass('active');
-                
+
                 // Show alert when Benefit Pay is selected
                 if (selectedPayment === 'BenefitPay') {
                     setTimeout(function() {
@@ -562,122 +558,108 @@
             });
         }
 
-        // Place order
-        $('#btn_checkout').on('click', function() {
-            // Validate form
-            if (!ValidateCheckoutForm()) {
-                return;
-            }
 
-            // Validate payment method
+        // ── AFS Checkout.js Callbacks ─────────────────────────────────
+        function errorCallback(error) {
+            console.error('[AFS] Error:', error);
+            alert('Payment error occurred. Please try again.');
+            $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
+        }
+
+        function cancelCallback() {
+            console.log('[AFS] Payment cancelled by user');
+            alert('Payment was cancelled.');
+            $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
+        }
+
+        // ── Place Order Button Click ───────────────────────────────────
+        $('#btn_checkout').on('click', function () {
+
+            if (!ValidateCheckoutForm()) return;
+
             if (!$('input[name="payment_type"]:checked').val()) {
                 alert('Please select a payment method');
                 return;
             }
 
-            // Disable button during submission
-            $(this).prop('disabled', true).text('Processing...');
+            $(this).prop('disabled', true).html('<span>Processing...</span>');
 
-            // Get selected payment type
             var selectedPaymentType = $('input[name="payment_type"]:checked').val();
-            
-            // Show alert for Benefit Pay before processing
-            if (selectedPaymentType === 'BenefitPay') {
-                alert('🔒 Benefit Pay Payment\n\nYour order will be placed and you will be securely directed to the Benefit payment page.\n\nPlease ensure your card details are saved for a smooth transaction.');
-            }
 
-            // CRITICAL: Refresh SessionData before submission (ensure it's current)
-            console.log('=== Starting order submission ===');
             var cartItems = JSON.parse(localStorage.getItem("_cartitems") || "[]");
             var giftItems = JSON.parse(localStorage.getItem("_giftitems") || "[]");
-            
-            console.log('Cart items from localStorage:', cartItems.length, 'items');
-            console.log('Gift items from localStorage:', giftItems.length, 'items');
-            
+
             if (cartItems.length === 0) {
                 alert('Your cart is empty!');
-                $(this).prop('disabled', false).text('Place Order');
+                $(this).prop('disabled', false).html('<span>Place Order</span>');
                 return;
             }
-            
+
             UpdateSessionData(cartItems, giftItems);
 
-            // Verify SessionData was set
             var sessionDataValue = $('#SessionData').val();
-            console.log('SessionData value before submit:', sessionDataValue);
-            console.log('SessionData length:', sessionDataValue ? sessionDataValue.length : 0);
-            
-            if (!sessionDataValue || sessionDataValue === 'null' || sessionDataValue === '' || sessionDataValue === '[]') {
-                console.error('SessionData is invalid!', sessionDataValue);
-                alert('Error: Unable to prepare order data. Please refresh the page and try again.');
-                $(this).prop('disabled', false).text('Place Order');
+            if (!sessionDataValue || sessionDataValue === '[]') {
+                alert('Error: Cart data missing. Please refresh and try again.');
+                $(this).prop('disabled', false).html('<span>Place Order</span>');
                 return;
             }
 
-            // Populate GiftData from localStorage
             $('#GiftData').val(JSON.stringify(giftItems));
 
-            // Submit form via AJAX
             var formData = new FormData($('#FormCheckOut')[0]);
-
-            // Explicitly set SessionData in formData to ensure it's included
             formData.delete('SessionData');
             formData.append('SessionData', sessionDataValue);
-
-            // Explicitly set payment type (remove and re-add to ensure it's set correctly)
             formData.delete('payment_type');
             formData.append('payment_type', selectedPaymentType);
 
-            console.log('FormData being sent:');
-            console.log('  - SessionData:', sessionDataValue.substring(0, 100) + '...');
-            console.log('  - payment_type:', selectedPaymentType);
-
-            // Submit to order placement endpoint
             $.ajax({
                 type: 'POST',
                 url: '/Order/PlaceOrder',
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(response) {
-                    console.log('PlaceOrder response:', response);
+                success: function (response) {
                     if (response.success) {
-                        // Clear localStorage
-                        localStorage.removeItem('_cartitems');
-                        localStorage.removeItem('_giftitems');
 
-                        // Check payment method to determine redirect
-                        var paymentMethod = selectedPaymentType;
-                        
-                        // Redirect based on payment method
-                        if (paymentMethod === 'BenefitPay' && response.redirectUrl) {
-                            // BenefitPay - show confirmation alert before redirecting
-                            alert('✓ Order Placed Successfully!\n\nOrder #: ' + response.orderno + '\n\nYou will now be redirected to Benefit payment gateway.');
-                            // BenefitPay - redirect to Benefit payment initialization
+                        // ── BenefitPay ────────────────────────────────
+                        if (selectedPaymentType === 'BenefitPay' && response.redirectUrl) {
+                            localStorage.removeItem('_cartitems');
+                            localStorage.removeItem('_giftitems');
                             window.location.href = response.redirectUrl;
-                        } else if (response.redirectUrl && response.sessionID) {
-                            // Gateway payment (Credimax/Mastercard) - redirect to payment gateway
-                            window.location.href = response.redirectUrl;
-                        } else if (response.paymentPending) {
-                            // Pending payment methods - redirect to order complete
-                            window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
-                        } else {
-                            // Cash and Bank Transfer - redirect to order complete
+                        }
+
+                        // ── AFS Mastercard (INITIATE_CHECKOUT) ────────
+                        else if (selectedPaymentType === 'Mastercard' && response.sessionID) {
+                            console.log('[Order] Mastercard payment initiated, OrderID:', response.orderid);
+                            console.log('[Order] Redirect URL:', response.redirectUrl);
+                            localStorage.removeItem('_cartitems');
+                            localStorage.removeItem('_giftitems');
+
+                            // ✅ Use redirectUrl directly - no need for Checkout.js library
+                            if (response.redirectUrl) {
+                                console.log('[Order] Redirecting to Mastercard payment page...');
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                alert('Error: Payment gateway URL not available');
+                                $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
+                            }
+                        }
+
+                        // ── Cash / Bank Transfer ──────────────────────
+                        else {
+                            localStorage.removeItem('_cartitems');
+                            localStorage.removeItem('_giftitems');
                             window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
                         }
+
                     } else {
-                        var errorMsg = response.message || 'Failed to place order';
-                        if (selectedPaymentType === 'BenefitPay') {
-                            alert('❌ Benefit Pay Error\n\n' + errorMsg + '\n\nPlease try again or choose another payment method.');
-                        } else {
-                            alert('Error: ' + errorMsg);
-                        }
-                        $('#btn_checkout').prop('disabled', false).text('Place Order');
+                        alert('Error: ' + (response.message || 'Failed to place order'));
+                        $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     alert('Error placing order: ' + error);
-                    $('#btn_checkout').prop('disabled', false).text('Place Order');
+                    $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
                 }
             });
         });

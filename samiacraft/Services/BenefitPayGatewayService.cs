@@ -10,7 +10,6 @@ namespace samiacraft.Services
     {
         private const string PRODUCTION_ENDPOINT = "https://www.benefit-gateway.bh/payment/API/hosted.htm";
         private const string TEST_ENDPOINT = "https://test.benefit-gateway.bh/payment/API/hosted.htm";
-
         private const string AES_IV = "PGKEYENCDECIVSPC";
 
         private readonly string _tranportalId;
@@ -50,9 +49,9 @@ namespace samiacraft.Services
             _isTestMode = isTestMode;
         }
 
-
         // ════════════════════════════════════════════════════════════════
         // INITIATE PAYMENT
+        // ✅ overrideResponseUrl / overrideErrorUrl - localhost ya production
         // ════════════════════════════════════════════════════════════════
         public BenefitPayPaymentResult InitiatePayment(
             string trackId,
@@ -63,37 +62,43 @@ namespace samiacraft.Services
             string udf2 = "",
             string udf3 = "",
             string udf4 = "",
-            string udf5 = "")
+            string udf5 = "",
+            string? overrideResponseUrl = null,   // ✅ Dynamic URL support
+            string? overrideErrorUrl = null)      // ✅ Dynamic URL support
         {
             try
             {
                 if (_resourceKey.Length != 32)
                     return Fail($"ResourceKey must be 32 chars. Got: {_resourceKey.Length}");
 
-                // ── Step 1: Inner payload - EXACT original plugin format ──
+                // ✅ Override URLs use karo agar diye hain, warna default
+                string responseUrl = overrideResponseUrl ?? _responseUrl;
+                string errorUrl = overrideErrorUrl ?? _errorUrl;
+
+                // ── Step 1: Inner payload ──
                 var innerList = new[]
                 {
                     new
                     {
-                        amt          = amount.ToString("F3"),  // "23.100" - 3 decimal places
+                        amt          = amount.ToString("F3"),
                         action       = "1",
                         password     = _tranportalPassword,
                         id           = _tranportalId,
-                        resourceKey  = _resourceKey,           // ← MUST be here!
+                        resourceKey  = _resourceKey,
                         currencycode = currency,
                         trackId      = trackId,
-                        udf1         = "",                     // Always empty per BENEFIT docs
+                        udf1         = "",
                         udf2         = udf2,
                         udf3         = udf3,
                         udf4         = udf4,
                         udf5         = udf5,
-                        responseURL  = _responseUrl,
-                        errorURL     = _errorUrl,
-                        cancelURL    = _cancelUrl,             // ← NEW: Cancel URL for Home Page redirect
+                        responseURL  = responseUrl,
+                        errorURL     = errorUrl,
+                        cancelURL    = _cancelUrl,
                     }
                 };
 
-                // ── Step 2: Serialize to JSON - NullValueHandling.Ignore ──
+                // ── Step 2: Serialize ──
                 var innerJson = JsonConvert.SerializeObject(innerList, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -113,13 +118,12 @@ namespace samiacraft.Services
                     Formatting = Formatting.None
                 });
 
-                // ── Step 5: POST as JSON (application/json) ───────────────
+                // ── Step 3: POST ──
                 var endpoint = _isTestMode ? TEST_ENDPOINT : PRODUCTION_ENDPOINT;
                 var apiResp = SendRequest(outerJson, endpoint);
 
                 if (apiResp.status == "1" && !string.IsNullOrEmpty(apiResp.result))
                 {
-                    // result = "PaymentID:https://payment-page-url"
                     var firstColon = apiResp.result.IndexOf(':');
                     if (firstColon < 0)
                         return Fail($"Unexpected result format: {apiResp.result}");
@@ -149,19 +153,14 @@ namespace samiacraft.Services
 
         // ════════════════════════════════════════════════════════════════
         // PARSE RESPONSE - trandata decrypt karo
-        // Original plugin: decrypt → HttpUtility.UrlDecode → JArray.Parse
         // ════════════════════════════════════════════════════════════════
         public BenefitPayDecryptedResponse ParseResponse(string trandata)
         {
             try
             {
-                // Decrypt
                 var decrypted = AesDecrypt(trandata, _resourceKey);
-
-                // URL decode (original plugin HttpUtility.UrlDecode use karta hai)
                 var urlDecoded = Uri.UnescapeDataString(decrypted);
 
-                // Deserialize - could be array or single object
                 BenefitPayDecryptedResponse? result = null;
                 try
                 {
@@ -182,8 +181,7 @@ namespace samiacraft.Services
         }
 
         // ════════════════════════════════════════════════════════════════
-        // AES ENCRYPT - exact same as original plugin
-        // CryptoStream → X2 uppercase hex
+        // AES ENCRYPT
         // ════════════════════════════════════════════════════════════════
         private static string AesEncrypt(string plainText, string resourceKey)
         {
@@ -199,7 +197,6 @@ namespace samiacraft.Services
             using (var sw = new StreamWriter(cs))
                 sw.Write(plainText);
 
-            // Original plugin: X2 = uppercase hex
             return string.Concat(Array.ConvertAll(ms.ToArray(), x => x.ToString("X2")));
         }
 
@@ -227,7 +224,7 @@ namespace samiacraft.Services
         }
 
         // ════════════════════════════════════════════════════════════════
-        // HTTP POST - application/json
+        // HTTP POST
         // ════════════════════════════════════════════════════════════════
         private static BenefitPayApiResponse SendRequest(string json, string endpoint)
         {
@@ -240,7 +237,7 @@ namespace samiacraft.Services
                 req.Timeout = 30000;
 
                 using var sw = new StreamWriter(req.GetRequestStream());
-                sw.WriteLine(json);   // Original plugin uses WriteLine
+                sw.WriteLine(json);
                 sw.Flush();
 
                 using var resp = (HttpWebResponse)req.GetResponse();
