@@ -107,6 +107,17 @@ namespace samiacraft.Models.Service
                 return new List<itemBLL>();
             }
         }
+        public List<itemBLL> GetAllByCategories(string CategoryIds)
+        {
+            try
+            {
+                return _service.GetAllByCategories(CategoryIds);
+            }
+            catch (Exception ex)
+            {
+                return new List<itemBLL>();
+            }
+        }
         public List<blogBLL> GetAllBlog(int LocationID)
         {
             try

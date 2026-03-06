@@ -89,6 +89,29 @@ namespace samiacraft.Models.BLL
                 return null;
             }
         }
+        public List<itemBLL> GetAllByCategories(string CategoryIds)
+        {
+            try
+            {
+                var lst = new List<itemBLL>();
+                SqlParameter[] p = new SqlParameter[1];
+                p[0] = new SqlParameter("@CategoryIds", CategoryIds);
+                _dt = (new DBHelper().GetTableFromSP)("sp_Website_GetItemByCategories", p);
+
+                if (_dt != null)
+                {
+                    if (_dt.Rows.Count > 0)
+                    {
+                        lst = JArray.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(_dt)).ToObject<List<itemBLL>>();
+                    }
+                }
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public itemBLL GetSelecteditems(int? ID, int LocationID)
         {
             try

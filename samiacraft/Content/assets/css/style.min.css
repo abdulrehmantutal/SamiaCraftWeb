@@ -9752,7 +9752,7 @@ img.mfp-img {
 }
 
 .breadcrumb-area {
-    background: #ebebeb;
+    background: url('../Content/assets/sm-images/about.png') no-repeat center center;
     text-align: center
 }
 

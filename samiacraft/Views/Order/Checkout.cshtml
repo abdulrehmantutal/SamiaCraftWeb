@@ -623,21 +623,18 @@
 
                         // ── BenefitPay ────────────────────────────────
                         if (selectedPaymentType === 'BenefitPay' && response.redirectUrl) {
-                            localStorage.removeItem('_cartitems');
-                            localStorage.removeItem('_giftitems');
+                            // ✅ localStorage clear mat karo - sirf OrderID save karo
+                            // Clear tab hoga jab payment complete ho (BenefitCompleteOrder mein)
+                            sessionStorage.setItem('_pendingOrderID', response.orderid);
                             window.location.href = response.redirectUrl;
                         }
 
-                        // ── AFS Mastercard (INITIATE_CHECKOUT) ────────
+                        // ── AFS Mastercard ────────────────────────────
                         else if (selectedPaymentType === 'Mastercard' && response.sessionID) {
-                            console.log('[Order] Mastercard payment initiated, OrderID:', response.orderid);
-                            console.log('[Order] Redirect URL:', response.redirectUrl);
-                            localStorage.removeItem('_cartitems');
-                            localStorage.removeItem('_giftitems');
-
-                            // ✅ Use redirectUrl directly - no need for Checkout.js library
+                            // ✅ localStorage clear mat karo - sirf OrderID save karo
+                            // Clear tab hoga jab payment complete ho (CompleteOrder mein)
+                            sessionStorage.setItem('_pendingOrderID', response.orderid);
                             if (response.redirectUrl) {
-                                console.log('[Order] Redirecting to Mastercard payment page...');
                                 window.location.href = response.redirectUrl;
                             } else {
                                 alert('Error: Payment gateway URL not available');
@@ -647,8 +644,10 @@
 
                         // ── Cash / Bank Transfer ──────────────────────
                         else {
+                            // ✅ Cash/Bank: payment instant complete - ab clear karo
                             localStorage.removeItem('_cartitems');
                             localStorage.removeItem('_giftitems');
+                            sessionStorage.removeItem('_pendingOrderID');
                             window.location.href = '/Order/OrderComplete?OrderID=' + response.orderid;
                         }
 

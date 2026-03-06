@@ -9932,7 +9932,7 @@ img.mfp-img {
     - Breadcrumb Css
 ------------------------------------------*/
 .breadcrumb-area {
-    background: #ebebeb;
+    background: url('../Content/assets/sm-images/about.png') no-repeat center center;
     text-align: center;
     background-size: cover;
 }

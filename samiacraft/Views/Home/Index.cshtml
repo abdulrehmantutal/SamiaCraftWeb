@@ -1348,7 +1348,7 @@
 @*-------Hero Section-------*@
 
 <!-- Desktop banners -->
-<section class="hero-slider hero-slider-one desktop-banner">
+@* <section class="hero-slider hero-slider-one desktop-banner">
     @if (ViewBag.Banner != null)
     {
         foreach (var item in ViewBag.Banner)
@@ -1362,6 +1362,40 @@
             </div>
         }
     }
+</section> *@
+<section class="hero-slider hero-slider-one desktop-banner">
+
+    <div class="single-slide d-flex align-items-center bg-cover bg-center">
+        <img loading="lazy"
+             style="width:100%; object-fit:cover;"
+             src="../Content/assets/sm-images/37856af56a2e94c29192f3d7f9abbb012ebfded6.png"
+             alt="Banner 1"
+             title="Banner 1" />
+    </div>
+    <div class="single-slide d-flex align-items-center bg-cover bg-center">
+        <img loading="lazy"
+             style="width:100%; object-fit:cover;"
+             src="../Content/assets/sm-images/home1.png"
+             alt="Banner 1"
+             title="Banner 1" />
+    </div>
+
+    <div class="single-slide d-flex align-items-center bg-cover bg-center">
+        <img loading="lazy"
+             style="width:100%; object-fit:cover;"
+             src="../Content/assets/sm-images/home2.png"
+             alt="Banner 2"
+             title="Banner 2" />
+    </div>
+
+    <div class="single-slide d-flex align-items-center bg-cover bg-center">
+        <img loading="lazy"
+             style="width:100%; object-fit:cover;"
+             src="../Content/assets/sm-images/home3.png"
+             alt="Banner 3"
+             title="Banner 3" />
+    </div>
+
 </section>
 
 <!-- Mobile banners -->
@@ -1385,9 +1419,8 @@
 @*-------Occasion Section-------*@
 <section class="occasion py-5 text-center" style="background-color: #fff;">
     <!-- Top Heading -->
-    <p class="text-muted mb-1" style="color:var(--addbutton);">Occasions</p>
     <h2 class="fw-bold mb-4">
-        Shop By <span style="color: var(--addbutton);">Occasions</span>
+        Shop By <span style="color: var(--addbutton);">Categories</span>
     </h2>
 
     <div class="container">
@@ -1524,45 +1557,6 @@
     }
 </script>
 
-@*-------About us Section-------*@
-<section class="about-section">
-    <div class="container">
-        <div class="row align-items-center gy-4">
-            <div class="col-md-5 text-center">
-                <img src="../Content/assets/sm-images/ceb3ed1746d849bc24a44f74a958c75019d2b72b.png" alt="Florist" class="about-image">
-            </div>
-            <div class="col-md-7">
-                <p class=" mb-2">About Us</p>
-                <h2 class="about-title mb-3">
-                    Samiacrafts was launched as a small upstart kiosk in Enma Mall, Bahrain by Samia Samiullah.
-                </h2>
-                <p class="text-muted mb-4" style="color: #000 !important;">
-                    Being a graduate of Interior Design and having an art background I always had a passion for product design and home decor. Samiacrafts aims to be a voice of the unheard hardworking craftsmen and to provide a platform to display their ravishing talent by adding elements of design and a flair of innovativeness.
-                    </<br>
-                    We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.
-
-We’d like to welcome you on this journey with us to allow us to revamp your spaces with our pieces. We hope you enjoy SamiaCrafts.
-                </p>
-
-                <div class="about-box row text-center">
-                    <div class="col">
-                        <div class="number">20+</div>
-                        <div>Categories</div>
-                    </div>
-                    <div class="col">
-                        <div class="number">1000+</div>
-                        <div>Products</div>
-                    </div>
-                    <div class="col">
-                        <div class="number">99%</div>
-                        <div>Satisfied Customer</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 @*-------Product  Section-------*@
 
 <div class="porduct-area section-pt section-pb-60 prod-banner">
@@ -1690,27 +1684,17 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                             </div>
                         </div>
 
-                        <div class="mt-2 d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center gap-1" style="gap: 10px;">
-                                <i class="ion-ios-star-outline"></i>
-                                <i class="ion-ios-star-outline"></i>
-                                <i class="ion-ios-star-outline"></i>
-                                <i class="ion-ios-star-outline"></i>
-                                <i class="ion-ios-star-outline"></i>
-                            </div>
-                        </div>
-
                         <h6 class="mb-1 fw-semibold">@item.Name</h6>
 
                         <div class="d-flex justify-content-between">
                             @if (item.NewPrice == null || item.NewPrice == 0)
                             {
-                                <span class="text-price fw-bold">BHD. @item.Price.ToString("0.000")</span>
+                                <span class="text-price fw-bold">BHD @item.Price.ToString("0.000")</span>
                             }
                             else
                             {
-                                <span class="text-price fw-bold">BHD. @item.NewPrice?.ToString("0.000")</span>
-                                <del class="text-del ms-2">BHD. @item.Price.ToString("0.000")</del>
+                                <span class="text-price fw-bold">BHD @item.NewPrice?.ToString("0.000")</span>
+                                <del class="text-del ms-2">BHD @item.Price.ToString("0.000")</del>
                             }
 
                         </div>
@@ -1821,12 +1805,12 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                                     <div class="mb-2">
                                         @if (item.NewPrice != null && item.NewPrice > 0)
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.NewPrice?.ToString("0.000")</span>
-                                            <span class="text-del text-decoration-line-through ms-2">BHD. @item.Price.ToString("0.000")</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD @item.NewPrice?.ToString("0.000")</span>
+                                            <span class="text-del text-decoration-line-through ms-2">BHD @item.Price.ToString("0.000")</span>
                                         }
                                         else
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD. @item.Price.ToString("0.000")</span>
+                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD @item.Price.ToString("0.000")</span>
                                         }
                                     </div>
                     
@@ -2185,7 +2169,7 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
                     <img src="/Content/assets/images/Faq/free-shiping.png" class="feature-icon mb-2 mb-md-0" alt="Free Shipping">
                     <div class="text-md-start text-center px-md-3">
                         <h5 class="teal-text fw-bold mb-1">Free Shipping</h5>
-                        <p class="text-muted mb-0 small">For Order Above BHD. 5000</p>
+                        <p class="text-muted mb-0 small">For Order Above BHD 5000</p>
                     </div>
                 </div>
             </div>
@@ -2211,27 +2195,6 @@ We’d like to welcome you on this journey with us to allow us to revamp your sp
             </div>
         </div>
 
-    </div>
-</section>
-
-<!-- ====== NEWSLETTER SECTION START ====== -->
-<section class="newsletter-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <div class="newsletter-label">Our Newsletter</div>
-
-                <h2 class="newsletter-title">Subscribe To Our Newsletter To</h2>
-                <h2 class="newsletter-subtitle">Get Updates On Our Latest Offers</h2>
-
-                <p class="newsletter-description">Get 20% Off On Your First Order Just By Subscribing To Our Newsletter</p>
-
-                <div class="input-group">
-                    <input type="email" class="form-control email-input" placeholder="Your Email Address" aria-label="Email address">
-                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Samia Crafts. we will keep you updated with our latest news and offers', 1); return false; this.value = '';" class="btn subscribe-btn"><span>Subscribe</span></button>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 

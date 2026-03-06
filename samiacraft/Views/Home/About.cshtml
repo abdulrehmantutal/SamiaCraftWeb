@@ -1,126 +1,197 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "About";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var imageUrl = ViewBag.ImageUrl ?? "https://retail.premium-pos.com";
 }
+
 <style>
-    .about-us-contents .about-us-btn > a {
-        background: var(--addbutton);
+
+    .about-section {
+        padding: 80px 0;
+        background: #f8f9fb;
     }
 
-        .about-us-contents .about-us-btn > a:hover {
+    .about-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #0f3c5f;
+        line-height: 1.4;
+        margin-bottom: 20px;
+        font-family: cursive;
+    }
+
+    .about-text {
+        font-size: 16px;
+        color: #444;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+
+    .about-btn a {
+        display: inline-block;
+        background: var(--addbutton);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all .3s;
+    }
+
+        .about-btn a:hover {
+            background: white;
             color: var(--addbutton);
-            background-color: white !important;
-            border-color: var(--addbutton);
-            border-radius: 6px;
             border: 1px solid var(--addbutton);
         }
+
+    .about-image img {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+
+    @@media(max - width:991px) {
+        .about-section
+
+    {
+        padding: 50px 0;
+    }
+
+    .about-title {
+        font-size: 24px;
+    }
+
+    .about-image {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    }
 </style>
+
 
 @if (ViewBag.Banner != null && ViewBag.Banner.Count > 0)
 {
-    <div class="breadcrumb-area section-ptb" style="background: #ebebeb;background-size: cover;">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading </h2>
-                <!-- breadcrumb-list start -->
-                <ul class="breadcrumb-list">
-                    <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
-                    <li class="breadcrumb-item active">About</li>
-                </ul>
-                <!-- breadcrumb-list end -->
-            </div>
-        </div>
-    </div>
-</div>
-}
-else
-{
-    <!-- breadcrumb-area start -->
-    <div class="breadcrumb-area section-ptb">
+    <div class="breadcrumb-area section-ptb" style="background: url('../Content/assets/sm-images/about.png') no-repeat center center; background-size: cover;">
         <div class="container">
             <div class="row">
-                <div class="col-12">
-                    <h2 class="breadcrumb-title">About Us</h2>
-                    <!-- breadcrumb-list start -->
+                <div class="col-12 text-center">
+                    <h2 class="breadcrumb-title">@ViewBag.Banner[0].MainHeading</h2>
+
                     <ul class="breadcrumb-list">
                         <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
                         <li class="breadcrumb-item active">About</li>
                     </ul>
-                    <!-- breadcrumb-list end -->
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- breadcrumb-area end -->
+}
+else
+{
+    <div class="breadcrumb-area section-ptb" style="background: url('../Content/assets/sm-images/about.png') no-repeat center center; background-size: cover;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+
+                    <h2 class="breadcrumb-title">About Us</h2>
+
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active">About</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
-<!-- main-content-wrap start -->
-<div class="main-content-wrap about-bg">
-    <!-- About Us Area -->
-    <div class="about-us-area section-ptb">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <div class="about-us-contents">
-                        <h3><span>Samiacrafts was launched as a small upstart kiosk in Enma Mall, Bahrain by Samia Samiullah.</span></h3>
-                        <p>
-                            Being a graduate of Interior Design and having an art background I always had a passion for product design and home decor. Samiacrafts aims to be a voice of the unheard hardworking craftsmen and to provide a platform to display their ravishing talent by adding elements of design and a flair of innovativeness.
-                            </br>
-                            We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday.
 
-                            We’d like to welcome you on this journey with us to allow us to revamp your spaces with our pieces. We hope you enjoy SamiaCrafts.
+
+<div class="main-content-wrap">
+
+    <div class="about-section">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-7">
+
+                    <div class="about-content">
+
+                        <h3 class="about-title">
+                            Samiacrafts was launched as a small upstart kiosk in Enma Mall, Bahrain by Samia Samiullah.
+                        </h3>
+
+                        <p class="about-text">
+
+                            Being a graduate of Interior Design and having an art background, Samia has always had a passion for product design and home décor. Samiacrafts aims to be a voice for hardworking craftsmen and provide a platform where their beautiful handmade creations can reach the world.
+
                         </p>
-                        <div class="about-us-btn">
+
+                        <p class="about-text">
+
+                            Our mission is to showcase unique handcrafted products that transform homes and inspire creativity. Each piece is carefully designed with artistic passion and dedication.
+
+                        </p>
+
+                        <p class="about-text">
+
+                            We welcome you to explore our handcrafted collection and allow us to add beauty and creativity to your spaces. Thank you for being part of the SamiaCrafts journey.
+
+                        </p>
+
+
+                        <div class="about-btn">
                             <a href="~/home/contact">Contact Us</a>
                         </div>
+
                     </div>
 
                 </div>
-                <div class="col-lg-5 d-lg-block d-md-none">
-                    <div class="about-us-image text-right">
-                        <img src="~/Content/assets/images/about/about.png" alt="">
+
+
+                <div class="col-lg-5 mt-3">
+
+                    <div class="about-image">
+
+                        <img src="https://samiacrafts.com/assets/images/bgimg.jpg" alt="Samiacrafts">
+
                     </div>
+
                 </div>
+
+
             </div>
+
         </div>
+
     </div>
+
 </div>
-<!--// About Us Area -->
-<!-- newsletter-area start -->
-<div class=" bg-newsletter py-5">
-    <div class="container">
-        <div class="row justify-content-center ">
-            <div class="col-lg-4 ">
-                <h4 class="text-newsletter text-center text-white">Subscribe Our <span>Newsletter</span></h4>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control rounded-0" placeholder="Enter your email">
-                    <div class="input-group-append">
-                        <a onclick="getmail(); toast('Thank you: You have been successfully subscribed to Samia Crafts. we will keep you updated with our latest news and offers', 1); return false" class="btn btn-small rounded-0 btn-newsletter"><i class="ion-paper-airplane newsletter-icon" aria-hidden="true"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+
+
 <script>
-    $(document).ready(function () {
-        
-        var storedCityName = getCookieValue("CityName");
-        function getCookieValue(name) {
-            var value = "; " + document.cookie;
-            var parts = value.split("; " + name + "=");
 
-            if (parts.length === 2) {
-                return parts.pop().split(";").shift();
-            } else {
-                return null; // Cookie not found or empty
-            }
-        }
-        $('#cityClick span').text(storedCityName);
+    $(document).ready(function () {
+
+    var storedCityName = getCookieValue("CityName");
+
+    function getCookieValue(name) {
+
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+
+    if (parts.length === 2)
+    return parts.pop().split(";").shift();
+
+    }
+
+    $('#cityClick span').text(storedCityName);
+
     });
+
 </script>
-<!-- newsletter-area end -->
-<!-- main-content-wrap end -->

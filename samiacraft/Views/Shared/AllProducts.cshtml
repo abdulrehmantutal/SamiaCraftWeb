@@ -454,11 +454,11 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 @if (item.DiscountedPrice == null || item.DiscountedPrice == 0)
                                 {
-                                    <span class="text-price fw-bold">BHD. @item.Price.ToString("0.000")</span>
+                                    <span class="text-price fw-bold">BHD @item.Price.ToString("0.000")</span>
                                 }
                                 else
                                 {
-                                    <del class="text-del ms-2">BHD. @item.Price.ToString("0.000")</del>
+                                    <del class="text-del ms-2">BHD @item.Price.ToString("0.000")</del>
                                 }
                             </div>
                         </div>
@@ -582,11 +582,17 @@
 
         $('.all-items').paginathing({
             perPage: 40,
-            containerClass: 'panel-footer'
+            containerClass: 'panel-footer',
+            limitPagination: 3,
+            prevNext: true,
+            firstLast: true
         })
         $('.all-list-items').paginathing({
             perPage: 20,
-            containerClass: 'panel-footer'
+            containerClass: 'panel-footer',
+            limitPagination: 2,
+            prevNext: true,
+            firstLast: true
         })
     });
 </script>

@@ -63,19 +63,19 @@ namespace samiacraft.Controllers
             }
             else
             {
-                var itemData = new itemService().GetAll((int)LocationId);
+                var itemData = new itemService().GetAllByCategories("1281,1288,2777");
                 if (itemData != null)
                 {
                     ViewBag.itemList = itemData.Where(x => x.DisplayOrder > 0).OrderBy(x => x.DisplayOrder).ToList();
                     ViewBag.Featureditems = itemData.OrderByDescending(x => x.DisplayOrder).Where(x => x.IsFeatured == true).OrderBy(c => Guid.NewGuid()).Take(8).ToList();
                     ViewBag.NewArrivals = itemData.OrderByDescending(c => c.LastUpdatedDate).Take(8).ToList();
-                    ViewBag.TenItems = itemData.Take(40).ToList();
+                    ViewBag.TenItems = itemData.Take(20).ToList();
                 }
 
                 var catlist = new categoryBLL().GetAll(LocationId);
                 if (catlist != null && catlist.Count > 0)
                 {
-                    ViewBag.categoryList = catlist.ToList();
+                    ViewBag.categoryList = catlist.Take(5).ToList();
                     ViewBag.Category = catlist.ToList();
                 }
                 else

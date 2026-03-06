@@ -86,7 +86,13 @@ namespace samiacraft.Controllers
                 }
 
                 int CustomerID = id;
-                if (CustomerID == 0)
+                if (CustomerID == -1)
+                {
+                    // Direct checkout from "Proceed to Checkout" button - allow guest checkout
+                    HttpContext.Session.SetInt32("CustomerID", 0);
+                    return View();
+                }
+                else if (CustomerID == 0)
                 {
                     HttpContext.Session.SetInt32("CustomerID", 0);
                     return View();
@@ -254,6 +260,82 @@ namespace samiacraft.Controllers
         // MASTERCARD (AFS) PAYMENT
         // ============================================================================
 
+        //private async Task<JsonResult> HandleAfsPayment(int OrderID, checkoutBLL data)
+        //{
+        //    try
+        //    {
+        //        var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
+        //        SendPendingPaymentEmails(OrderID, data, giftDataJson);
+
+        //        string sessionUrl = "https://afs.gateway.mastercard.com/api/rest/version/72/merchant/100538314/session";
+        //        string credentials = "merchant.100538314:b671b94a10177ff07386518e6b1aef86";
+        //        string base64Creds = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
+
+        //        // ✅ Dynamic base URL - localhost ya production automatically detect
+        //        string baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+        //        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+        //        using (var client = new HttpClient())
+        //        {
+        //            client.DefaultRequestHeaders.Clear();
+        //            client.DefaultRequestHeaders.Add("Authorization", $"Basic {base64Creds}");
+
+        //            var payload = new
+        //            {
+        //                apiOperation = "INITIATE_CHECKOUT",
+        //                order = new
+        //                {
+        //                    amount = Math.Round(data.GrandTotal ?? 0, 3),
+        //                    id = OrderID,
+        //                    currency = "BHD"
+        //                },
+        //                interaction = new
+        //                {
+        //                    operation = "PURCHASE",
+        //                    merchant = new { name = "HANDCRAFTED HEAVEN TRADING BY SAMIA WLL" },
+        //                    displayControl = new { billingAddress = "HIDE" },
+        //                    // ✅ returnUrl - AFS success ke baad yahan aayega
+        //                    returnUrl = $"{baseUrl}/Order/MastercardCallback?OrderID={OrderID}"
+        //                }
+        //            };
+
+        //            var json = JsonConvert.SerializeObject(payload,
+        //                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+        //            System.Diagnostics.Debug.WriteLine($"[AFS] Payload: {json}");
+
+        //            var content = new StringContent(json, Encoding.UTF8, "application/json");
+        //            var response = await client.PostAsync(sessionUrl, content);
+        //            var responseContent = await response.Content.ReadAsStringAsync();
+
+        //            System.Diagnostics.Debug.WriteLine($"[AFS] Response: {responseContent}");
+
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                dynamic responseData = JsonConvert.DeserializeObject(responseContent);
+        //                string sessionID = responseData["session"]["id"];
+
+        //                return Json(new
+        //                {
+        //                    Success = true,
+        //                    orderid = OrderID,
+        //                    orderno = OrderID.ToString(),
+        //                    sessionID = sessionID,
+        //                    redirectUrl = $"https://afs.gateway.mastercard.com/checkout/pay/{sessionID}?checkoutVersion=1.0.0"
+        //                });
+        //            }
+        //            else
+        //            {
+        //                return Json(new { Success = false, Message = $"AFS session failed: {responseContent}" });
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { Success = false, Message = $"AFS error: {ex.Message}" });
+        //    }
+        //}
         private async Task<JsonResult> HandleAfsPayment(int OrderID, checkoutBLL data)
         {
             try
@@ -265,7 +347,6 @@ namespace samiacraft.Controllers
                 string credentials = "merchant.100538314:b671b94a10177ff07386518e6b1aef86";
                 string base64Creds = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
-                // ✅ Dynamic base URL - localhost ya production automatically detect
                 string baseUrl = $"{Request.Scheme}://{Request.Host}";
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -289,8 +370,10 @@ namespace samiacraft.Controllers
                             operation = "PURCHASE",
                             merchant = new { name = "HANDCRAFTED HEAVEN TRADING BY SAMIA WLL" },
                             displayControl = new { billingAddress = "HIDE" },
-                            // ✅ returnUrl - AFS success ke baad yahan aayega
-                            returnUrl = $"{baseUrl}/Order/MastercardCallback?OrderID={OrderID}"
+                            // ✅ Success redirect
+                            returnUrl = $"{baseUrl}/Order/MastercardCallback?OrderID={OrderID}",
+                            // ✅ Back/Cancel button click pe checkout page pe wapas
+                            cancelUrl = $"{baseUrl}/Order/Checkout"
                         }
                     };
 
@@ -345,25 +428,32 @@ namespace samiacraft.Controllers
                 return Redirect("/");
             }
 
-            // ✅ Alert pehle → user OK kare → status update + email → home
+            // ✅ Payment success - alert → status update + email → localStorage clear → home
             return Content($@"
-                <!DOCTYPE html>
-                <html>
-                <body>
-                <script>
-                    alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly. Thank you!');
-                    
-                    fetch('/Order/CompleteOrder?OrderID={OrderID}')
-                        .then(function() {{
-                            window.location.href = '/';
-                        }})
-                        .catch(function() {{
-                            window.location.href = '/';
-                        }});
-                </script>
-                </body>
-                </html>
-            ", "text/html");
+        <!DOCTYPE html>
+        <html>
+        <body>
+        <script>
+            alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly. Thank you!');
+            
+            fetch('/Order/CompleteOrder?OrderID={OrderID}')
+                .then(function() {{
+                    // ✅ Payment complete hone ke BAAD clear karo
+                    localStorage.removeItem('_cartitems');
+                    localStorage.removeItem('_giftitems');
+                    sessionStorage.removeItem('_pendingOrderID');
+                    window.location.href = '/';
+                }})
+                .catch(function() {{
+                    localStorage.removeItem('_cartitems');
+                    localStorage.removeItem('_giftitems');
+                    sessionStorage.removeItem('_pendingOrderID');
+                    window.location.href = '/';
+                }});
+        </script>
+        </body>
+        </html>
+    ", "text/html");
         }
 
         // ============================================================================
@@ -414,8 +504,14 @@ namespace samiacraft.Controllers
                 var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                 SendPendingPaymentEmails(OrderID, data, giftDataJson);
 
-                // ✅ Dynamic base URL - localhost ya production automatically
-                string baseUrl = $"{Request.Scheme}://{Request.Host}";
+                // ✅ Production pe AppSettings:BaseUrl use karo, localhost pe Request se lo
+                string baseUrl = _configuration["AppSettings:BaseUrl"];
+                if (string.IsNullOrEmpty(baseUrl))
+                {
+                    baseUrl = $"{Request.Scheme}://{Request.Host}";
+                }
+                // Trailing slash hata do
+                baseUrl = baseUrl.TrimEnd('/');
 
                 var result = _benefitPayGatewayService.InitiatePayment(
                     trackId: OrderID.ToString(),
@@ -427,7 +523,6 @@ namespace samiacraft.Controllers
                     udf3: data.CustomerName ?? "",
                     udf4: data.Email ?? "",
                     udf5: data.GrandTotal?.ToString("F2") ?? "",
-                    // ✅ Dynamic URLs - localhost pe bhi kaam karega
                     overrideResponseUrl: $"{baseUrl}/Order/BenefitPayResponse?OrderID={OrderID}",
                     overrideErrorUrl: $"{baseUrl}/Order/BenefitPayResponse?OrderID=0"
                 );
@@ -481,7 +576,7 @@ namespace samiacraft.Controllers
 
                 if (orderID == 0)
                 {
-                    return Redirect("/");
+                    return Redirect("/Order/Checkout");
                 }
 
                 string encryptedResponse = "";
@@ -528,25 +623,32 @@ namespace samiacraft.Controllers
                     return Redirect("/");
                 }
 
-                // ✅ Alert pehle → user OK kare → status update + email → home
+                // ✅ Payment success - alert → status update + email → localStorage clear → home
                 return Content($@"
-                    <!DOCTYPE html>
-                    <html>
-                    <body>
-                    <script>
-                        alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly. Thank you!');
-                        
-                        fetch('/Order/BenefitCompleteOrder?OrderID={OrderID}')
-                            .then(function() {{
-                                window.location.href = '/';
-                            }})
-                            .catch(function() {{
-                                window.location.href = '/';
-                            }});
-                    </script>
-                    </body>
-                    </html>
-                ", "text/html");
+            <!DOCTYPE html>
+            <html>
+            <body>
+            <script>
+                alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly. Thank you!');
+                
+                fetch('/Order/BenefitCompleteOrder?OrderID={OrderID}')
+                    .then(function() {{
+                        // ✅ Payment complete hone ke BAAD clear karo
+                        localStorage.removeItem('_cartitems');
+                        localStorage.removeItem('_giftitems');
+                        sessionStorage.removeItem('_pendingOrderID');
+                        window.location.href = '/';
+                    }})
+                    .catch(function() {{
+                        localStorage.removeItem('_cartitems');
+                        localStorage.removeItem('_giftitems');
+                        sessionStorage.removeItem('_pendingOrderID');
+                        window.location.href = '/';
+                    }});
+            </script>
+            </body>
+            </html>
+        ", "text/html");
             }
             catch (Exception ex)
             {
