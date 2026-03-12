@@ -573,6 +573,7 @@
         }
 
         // ── Place Order Button Click ───────────────────────────────────
+        // ── Place Order Button Click ───────────────────────────────────
         $('#btn_checkout').on('click', function () {
 
             if (!ValidateCheckoutForm()) return;
@@ -619,20 +620,21 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    if (response.success) {
+
+                    // ✅ FIX: Server "Success" (capital S) return karta hai
+                    // response.success aur response.Success dono check karo
+                    var isSuccess = response.Success || response.success;
+
+                    if (isSuccess) {
 
                         // ── BenefitPay ────────────────────────────────
                         if (selectedPaymentType === 'BenefitPay' && response.redirectUrl) {
-                            // ✅ localStorage clear mat karo - sirf OrderID save karo
-                            // Clear tab hoga jab payment complete ho (BenefitCompleteOrder mein)
                             sessionStorage.setItem('_pendingOrderID', response.orderid);
                             window.location.href = response.redirectUrl;
                         }
 
                         // ── AFS Mastercard ────────────────────────────
                         else if (selectedPaymentType === 'Mastercard' && response.sessionID) {
-                            // ✅ localStorage clear mat karo - sirf OrderID save karo
-                            // Clear tab hoga jab payment complete ho (CompleteOrder mein)
                             sessionStorage.setItem('_pendingOrderID', response.orderid);
                             if (response.redirectUrl) {
                                 window.location.href = response.redirectUrl;
@@ -644,7 +646,6 @@
 
                         // ── Cash / Bank Transfer ──────────────────────
                         else {
-                            // ✅ Cash/Bank: payment instant complete - ab clear karo
                             localStorage.removeItem('_cartitems');
                             localStorage.removeItem('_giftitems');
                             sessionStorage.removeItem('_pendingOrderID');
@@ -652,7 +653,8 @@
                         }
 
                     } else {
-                        alert('Error: ' + (response.message || 'Failed to place order'));
+                        // ✅ FIX: Message bhi capital M check karo
+                        alert('Error: ' + (response.Message || response.message || 'Failed to place order'));
                         $('#btn_checkout').prop('disabled', false).html('<span>Place Order</span>');
                     }
                 },

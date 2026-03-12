@@ -10317,7 +10317,7 @@ img.mfp-img {
 
         .main-menu-area ul > li > a::before {
             content: "";
-            background: #006782;
+            background: #F0A500;
             width: 0%;
             height: 2px;
             position: absolute;
@@ -16549,7 +16549,7 @@ justify-content: space-between;*/
 }
 
 .prod-banner {
-/*    background: url('../../assets/images/product/All/banner.jpg');*/
+    background: #fff;
     background-repeat: no-repeat;
     background-size: cover;
 }

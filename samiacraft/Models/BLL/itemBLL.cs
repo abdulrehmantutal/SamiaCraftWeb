@@ -42,6 +42,7 @@ namespace samiacraft.Models.BLL
         public bool? IsStockOut { get; set; }
         public double? CurrentStock { get; set; }
         public int? Stars { get; set; }
+        public string CategoryName { get; set; }
         public List<ReviewsBLL> Reviews = new List<ReviewsBLL>();
         public static DataTable _dt;
         public static DataSet _ds;

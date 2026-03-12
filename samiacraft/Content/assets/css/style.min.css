@@ -10089,7 +10089,7 @@ img.mfp-img {
 
         .main-menu-area ul > li > a::before {
             content: "";
-            background: #ff5151;
+            background: #F0A500;
             width: 0%;
             height: 2px;
             position: absolute;

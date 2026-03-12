@@ -1,4 +1,4 @@
-@using Microsoft.Extensions.Configuration
+﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Home Page";
@@ -80,14 +80,26 @@
     }
 
 
-    .category-circle {
-        width: 100px;
-        height: 100px;
-        transition: transform 0.3s;
-        border-radius: 50%;
-        padding: 1px 1px;
-        border: 1px solid #C6A45B;
-    }
+.category-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    padding: 1px;
+    border: 1px solid #F0A500;
+    transition: transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-circle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #c4e1dc;
+    object-fit: contain;
+    padding: 12px;
+}
 
         .category-circle:hover {
             transform: scale(1.1);
@@ -96,7 +108,7 @@
 
     /*About us*/
     .about-section {
-        background-color: #77C9D4;
+        background-color: #85828233;
         padding: 60px 0;
     }
 
@@ -110,7 +122,7 @@
         box-shadow: 0 0 0 5px #fff, 0 0 0 10px #e8f8f5;
         position: relative;
         z-index: 1;
-        border-color: #16563B;
+        border-color: #F1A502;
     }
 
     .about-title {
@@ -206,7 +218,7 @@
 
     .hover-icons {
         position: absolute;
-        top: 50%;
+        top: 25%;
         right: 10px;
         transform: translateY(-50%);
         display: flex;
@@ -252,10 +264,6 @@
             background-color: var(--addbutton);
             color: white;
         }
-
-    .new-arrival {
-        margin-top: 5%;
-    }
 
         .new-arrival .slick-list .card {
             border: 1px solid #16563B !important;
@@ -340,7 +348,7 @@
     }
 
     .shop-now-btn {
-        background-color: #67EAF5;
+        background-color: #57A99A;
         border: none;
         color: white;
         padding: 15px 30px;
@@ -490,7 +498,7 @@
     }
 
     .instagram-section {
-        background-color: #e8f4f8;
+        background-color: #85828233;
         padding: 60px 0;
     }
 
@@ -1192,7 +1200,7 @@
 
 
     .newsletter-section {
-        background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+        background: #85828233;
         padding: 80px 0;
         min-height: 400px;
     }
@@ -1341,8 +1349,246 @@
     -webkit-line-clamp: 4; /* Number of lines to show */
     -webkit-box-orient: vertical;
 }
+.gradient-text{
+    background: #C6A45B;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+    .new-arrival-slider .slick-slide { padding: 6px 8px; }
+    .new-arrival-slider .slick-prev,
+    .new-arrival-slider .slick-next { display: none !important; }
 
+    
+/* ── Header Top Bar ── */
+@@media (max-width: 768px) {
+    .header-top-area {
+        padding: 6px 0;
+    }
+    .header-top-area .container-topheader .row {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    /* Social icons hide on mobile */
+    .header-top-area .col-lg-1,
+    .header-top-area .col-lg-3:last-child {
+        display: none !important;
+    }
+    /* Payment icons hide on mobile top bar */
+    .header-top-area .col-lg-3:nth-child(3) {
+        display: none !important;
+    }
+    #TopHeaderText {
+        font-size: 11px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
 
+/* ── Logo ── */
+@@media (max-width: 768px) {
+    .logo-area img.main-logo {
+        max-width: 100px;
+    }
+}
+
+/* ── Search Bar ── */
+@@media (max-width: 768px) {
+    #searchBar {
+        padding: 16px 0 !important;
+    }
+    #search {
+        font-size: 14px !important;
+    }
+}
+
+/* ── Hero Banner ── */
+@@media (max-width: 768px) {
+    .hero-slider-one .single-slide img {
+        height: 220px;
+        object-fit: cover;
+    }
+}
+
+/* ── Category Circles ── */
+@@media (max-width: 576px) {
+    .category-circle {
+        width: 70px !important;
+        height: 70px !important;
+    }
+    .occasion .col-4 span {
+        font-size: 11px;
+    }
+}
+
+/* ── Promo Cards (2 col → 1 col) ── */
+@@media (max-width: 576px) {
+    .promo-card-section .row {
+        flex-direction: column;
+    }
+    .promo-card-section .col-md-6 {
+        width: 100% !important;
+    }
+    /* Inner card layout: stack vertically on very small */
+    .promo-card-section [style*="display:flex"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    .promo-card-section img[style*="width: 160px"] {
+        width: 100% !important;
+        height: 160px !important;
+        object-fit: cover;
+        margin: 12px 0 0 0 !important;
+    }
+}
+
+/* ── Top Seller Products Grid (4 col → 2 col) ── */
+@@media (max-width: 576px) {
+    .all-products .col-lg-3 {
+        padding: 6px !important;
+    }
+    .all-products .col-lg-3 img {
+        height: auto !important;
+    }
+}
+
+/* ── Holiday Sales Section ── */
+@@media (max-width: 768px) {
+    .holiday-sales-section .col-md-6 {
+        width: 100% !important;
+        padding: 0 8px !important;
+    }
+    /* Hide side images on mobile */
+    .holiday-sales-section .col-md-3 {
+        display: none !important;
+    }
+}
+
+/* ── New Arrival Slider ── */
+@@media (max-width: 576px) {
+    .new-arrival-slider .slick-slide > div > div {
+        height: 160px !important;
+    }
+    .new-arrival-slider img {
+        width: 120px !important;
+        min-width: 120px !important;
+    }
+}
+
+/* ── Deals of the Day ── */
+@@media (max-width: 768px) {
+    /* Hide left tall image */
+    .deals-left-img {
+        display: none !important;
+    }
+    /* 2 col grid */
+    .deals-grid .col-3 {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+}
+@@media (max-width: 480px) {
+    .deals-grid .col-3 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ── Testimonial Slider ── */
+@@media (max-width: 576px) {
+    .testimonial-new-slider .slick-slide {
+        padding: 0 6px !important;
+    }
+    section[style*="padding: 60px"] {
+        padding: 30px 12px !important;
+    }
+}
+
+/* ── About Section ── */
+@@media (max-width: 768px) {
+    .about-title {
+        font-size: 26px !important;
+    }
+    .about-image {
+        max-width: 240px !important;
+        margin: 0 auto 24px !important;
+        display: block;
+    }
+}
+
+/* ── Weekly Deals Banner ── */
+@@media (max-width: 576px) {
+    .deals-content {
+        padding: 24px 16px !important;
+    }
+    .deals-title, .deals-subtitle {
+        font-size: 1.5rem !important;
+    }
+    .deals-image {
+        display: none !important;
+    }
+}
+
+/* ── Instagram Grid ── */
+@@media (max-width: 576px) {
+    .instagram-grid img {
+        height: 100px !important;
+        border-radius: 10px !important;
+    }
+}
+
+/* ── FAQ Section ── */
+@@media (max-width: 768px) {
+    .faqs .col-lg-7,
+    .faqs .col-lg-5 {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .contact-card {
+        margin-top: 24px;
+    }
+}
+
+/* ── Footer ── */
+@@media (max-width: 768px) {
+    footer [style*="background: #1C3D5A"] > div:first-child {
+        padding: 30px 0 20px !important;
+    }
+    footer .col-lg-3,
+    footer .col-lg-2 {
+        margin-bottom: 24px;
+    }
+    footer .col-md-6.text-end {
+        text-align: left !important;
+        margin-top: 12px;
+    }
+    footer .col-md-6.text-end > div {
+        justify-content: flex-start !important;
+    }
+}
+
+/* ── Category Strip ── */
+@@media (max-width: 576px) {
+    .category-item {
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ── General spacing fixes ── */
+@@media (max-width: 576px) {
+    .sec-heading {
+        font-size: 22px !important;
+    }
+    .new-arrival h2 {
+        font-size: 24px !important;
+    }
+    section {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
 </style>
 
 @*-------Hero Section-------*@
@@ -1364,15 +1610,13 @@
     }
 </section> *@
 <section class="hero-slider hero-slider-one desktop-banner">
-
     <div class="single-slide d-flex align-items-center bg-cover bg-center">
         <img loading="lazy"
-             style="width:100%; object-fit:cover;"
+             style="width:100%; height:500px; object-fit:cover;"
              src="../Content/assets/sm-images/37856af56a2e94c29192f3d7f9abbb012ebfded6.png"
-             alt="Banner 1"
-             title="Banner 1" />
+             alt="Banner 1" />
     </div>
-    <div class="single-slide d-flex align-items-center bg-cover bg-center">
+    @* <div class="single-slide d-flex align-items-center bg-cover bg-center">
         <img loading="lazy"
              style="width:100%; object-fit:cover;"
              src="../Content/assets/sm-images/home1.png"
@@ -1394,7 +1638,7 @@
              src="../Content/assets/sm-images/home3.png"
              alt="Banner 3"
              title="Banner 3" />
-    </div>
+    </div> *@
 
 </section>
 
@@ -1418,25 +1662,23 @@
 
 @*-------Occasion Section-------*@
 <section class="occasion py-5 text-center" style="background-color: #fff;">
-    <!-- Top Heading -->
     <h2 class="fw-bold mb-4">
-        Shop By <span style="color: var(--addbutton);">Categories</span>
+        Shop By <span class="gradient-text">Categories</span>
     </h2>
-
     <div class="container">
-        <div class="row justify-content-center g-4">
+        <div class="category-slider">
             @if (ViewBag.categoryList != null && ViewBag.categoryList.Count > 0)
             {
                 @foreach (var item in ViewBag.categoryList)
                 {
-                    <div class="col-4 col-sm-4 col-md-2 col-lg-2">
+                    <div style="padding: 20px 10px;">
                         <a href="@Url.Action("shop", "shop", new {
                               Category = "",
                               CategoryIDs = item.ID,
                               SubCategoryIDs = "",
                               ColorIDs = "",
-                              MinPrice = "RS0",
-                              MaxPrice = "RS50000",
+                              MinPrice = "BHD0",
+                              MaxPrice = "BHD500",
                               Searchtext = "",
                               SortID = 0
                               })" class="text-decoration-none">
@@ -1447,16 +1689,16 @@
                                     var imageSrc = !string.IsNullOrEmpty(imageBase) ? imageBase + item.Image : item.Image;
                                     <img src="@imageSrc"
                                          alt="@(item.Name ?? "Category")"
-                                         class="img-fluid" style="max-width: 70%; max-height: 70%;" />
+                                         class="img-fluid" style="max-width:100%; max-height:100%;" />
                                 }
                                 else
                                 {
                                     <img src="~/Content/assets/images/NA.png"
                                          alt="@(item.Name ?? "Category")"
-                                         class="img-fluid" style="max-width: 70%; max-height: 70%;" />
+                                         class="img-fluid" style="max-width:70%; max-height:70%;" />
                                 }
                             </div>
-                            <span class="d-block mt-2 text-dark fw-medium">@(item.Name ?? "Category")</span>
+                            <span class="d-block mt-2 text-dark fw-medium" style="font-size:13px;">@(item.Name ?? "Category")</span>
                         </a>
                     </div>
                 }
@@ -1465,10 +1707,213 @@
     </div>
 </section>
 
+<style>
+    /* Dots hide */
+    .category-slider .slick-dots { display: none !important; }
+    /* ✅ Arrows hide */
+    .category-slider .slick-prev,
+    .category-slider .slick-next { display: none !important; }
+</style>
 
+<script>
+    $(document).ready(function () {
+        if ($('.category-slider').hasClass('slick-initialized')) {
+            $('.category-slider').slick('destroy');
+        }
+        $('.category-slider').slick({
+            slidesToShow: 6,
+            slidesToScroll: 2,
+            arrows: false,      // ✅ No arrows
+            dots: false,
+            infinite: true,
+            autoplay: true,
+            autoplaySpeed: 2500,
+            responsive: [
+                { breakpoint: 1200, settings: { slidesToShow: 5, slidesToScroll: 2 } },
+                { breakpoint: 992,  settings: { slidesToShow: 4, slidesToScroll: 2 } },
+                { breakpoint: 768,  settings: { slidesToShow: 3, slidesToScroll: 1 } },
+                { breakpoint: 480,  settings: { slidesToShow: 2, slidesToScroll: 1 } }
+            ]
+        });
+    });
+</script>
 
+<section class="promo-card-section" style="padding: 40px 20px; background: #fff;">
+    <div class="container">
+        <div class="row g-4 d-flex justify-content-center">
 
+            <div class="col-md-5 mt-2" style="display:flex;">
+                <div style="
+                    background: #57A99A;
+                    border-radius: 20px;
+                    padding: 36px 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    overflow: hidden;
+                    position: relative;
+                    width: 100%;">
+                    
+                    <div style="flex: 1; z-index: 1;">
+                        <h3 style="
+                            font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+                            font-weight: 700;
+                            color: #1C3D5A;
+                            line-height: 1.2;
+                            margin-bottom: 12px;
+                            font-family: 'Poppins', sans-serif;">
+                            @(ViewBag.PromoCard1Title ?? "Top Ceramic Lamps")
+                        </h3>
 
+                        <p style="
+                            font-size: 13px;
+                            color: #555;
+                            line-height: 1.6;
+                            margin-bottom: 24px;
+                            font-family: 'Trebuchet MS', sans-serif;
+                            max-width: 200px;">
+                            @(ViewBag.PromoCard1Desc ?? "Discover our premium ceramic lamps designed to add elegance and warmth to your space. Perfect for modern and classic interiors.")
+                        </p>
+
+                        <a href="@(ViewBag.PromoCard1Link ?? "/Shop/shop")"
+                           style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #1C3D5A;
+                            color: #fff;
+                            font-size: 14px;
+                            font-weight: 600;
+                            padding: 12px 24px;
+                            border-radius: 50px;
+                            text-decoration: none;
+                            font-family: 'Trebuchet MS', sans-serif;
+                            transition: background 0.2s;">
+                            Shop Now
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div style="flex-shrink: 0; margin-left: 16px; z-index: 1;">
+                        <img src="../Content/assets/sm-images/1654a5808bd1a76d7365e25aea43194ba4ef5789.png"
+                             alt="Promo 1"
+                             style="
+                                width: 160px;
+                                height: 160px;
+                                object-fit: contain;
+                                filter: drop-shadow(0 8px 16px rgba(0,0,0,0.12));" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 mt-2"  style="display:flex;">
+                <div style="
+                    background: #1C3D5A;
+                    border-radius: 20px;
+                    padding: 36px 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    overflow: hidden;
+                    position: relative;
+                    width: 100%;">
+
+                    <div style="flex: 1; z-index: 1;">
+                        <h3 style="
+                            font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+                            font-weight: 700;
+                            color: #ffffff;
+                            line-height: 1.2;
+                            margin-bottom: 12px;
+                            font-family:  'Poppins', sans-serif;">
+                            @(ViewBag.PromoCard2Title ?? "Himalyan Salt Lamp")
+                        </h3>
+
+                        <p style="
+                            font-size: 13px;
+                            color: rgba(255,255,255,0.75);
+                            line-height: 1.6;
+                            margin-bottom: 24px;
+                            font-family: 'Trebuchet MS', sans-serif;
+                            max-width: 200px;">
+                            @(ViewBag.PromoCard2Desc ?? "Natural Himalayan salt lamps that create a relaxing atmosphere and enhance the beauty of your home decor.")
+                        </p>
+
+                        <a href="@(ViewBag.PromoCard2Link ?? "/Shop/shop")"
+                           style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #67EAF5;
+                            color: #000;
+                            font-size: 14px;
+                            font-weight: 600;
+                            padding: 12px 24px;
+                            border-radius: 50px;
+                            text-decoration: none;
+                            font-family: 'Trebuchet MS', sans-serif;
+                            transition: background 0.2s;">
+                            Shop Now
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div style="flex-shrink: 0; margin-left: 16px; z-index: 1;">
+                        <img src="../Content/assets/sm-images/ed4f1739ab367d1650327468f6150b69920d88f8.png"
+                             alt="Promo 2"
+                             style="
+                                width: 160px;
+                                height: 160px;
+                                object-fit: contain;
+                                filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@*-------About us Section-------*@
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-md-5 text-center">
+                <img src="../Content/assets/sm-images/ceb3ed1746d849bc24a44f74a958c75019d2b72b.png" alt="Florist" class="about-image">
+            </div>
+            <div class="col-md-7">
+                <p style="font-size: 17px; color:#000; font-family:'Trebuchet MS',sans-serif; margin-bottom:8px;">
+                    About Us
+                </p>
+            
+                <h2 style="font-size:clamp(1.8rem,3vw,2.6rem); font-weight:500; line-height:1.25; margin-bottom:20px; font-family:Georgia,serif;">
+                    <span style="color: #57A99A; font-family: 'Poppins', sans-serif;">Kiosk in Mall,</span><br>
+                    <span style="color:#1C3D5A; font-family: 'Poppins', sans-serif;">By Samia Samiullah.</span>
+                </h2>
+            
+                <p style="font-size:15px; color:#444; line-height:1.85; font-family:'Trebuchet MS',sans-serif; margin-bottom:16px;">
+                    Being a graduate of Interior Design and having an art background I always had a passion for product design and home decor. Samiacrafts aims to be a voice of the unheard hardworking craftsmen and to provide a platform to display their ravishing talent by adding elements of design and a flair of innovativeness.
+                </p>
+                <p style="font-size:15px; color:#444; line-height:1.85; font-family:'Trebuchet MS',sans-serif; margin-bottom:30px;">
+                    We hope to indulge you with our extraordinary pieces that are beautifully crafted with intricate designs which will not only transform your space magically but also inspire you everyday. We'd like to welcome you on this journey with us to allow us to revamp your spaces with our pieces. We hope you enjoy SamiaCrafts.
+                </p>
+            
+                <!-- Cursive Signature -->
+                <p style="font-family:'Dancing Script',cursive; font-size:2rem; color:#1C3D5A; margin:0; line-height:1.2;">
+                    Samia Samiullah
+                </p>
+            </div>
+
+            <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+        </div>
+    </div>
+</section>
 
 <div class="deal-row"></div>
 
@@ -1563,19 +2008,17 @@
     <div class="container w-100">
         <div class="row">
             <div class="col-lg-12">
-                <div class="section-title text-center">
-                    <h2 class="main-heading" style="text-align: start; font-weight: 500; font-size: 20px;">
-                        Our Products
-                    </h2>
+                <div class="section-title">
+                    <p style="text-align: start; font-weight: 500; font-size: 17px; color:#000; font-family:'Trebuchet MS',sans-serif;">Our Products</p>
                     <div class="d-flex justify-content-between mb-3 ">
 
-                        <h2 class="main-heading sec-heading">
-                            Our <span style="color: var(--addbutton);" class="instagram-text">Top Seller Products</span>
+                        <h2 class="main-heading sec-heading" style="color: #1C3D5A;">
+                            Our <span class="instagram-text" style="color: #F0A500">Top Seller Products</span>
                         </h2>
 
                         <div class="align-self-center " style="margin-left:auto; padding:1px;">
                             <a href="/Shop/shop" class="btn view-prod">
-                                View Products
+                                View All Products 
                             </a>
                         </div>
 
@@ -1631,214 +2074,254 @@
 
 
         <div class="row all-products d-flex">
-            @if (ViewBag.TenItems != null && ViewBag.TenItems.Count > 0)
-            {
-                @foreach (var item in ViewBag.TenItems)
-                {
-                    <div class="col-lg-3 col-6 mb-4 pt-3">
-                        <div class="position-relative rounded-3 overflow-hidden shadow-sm">
-                            @{
-                                var imageBase = Configuration["Image"];
-                                var imageSrc = !string.IsNullOrEmpty(item.Image) && !string.IsNullOrEmpty(imageBase) ? imageBase + item.Image : item.Image;
-                                if (string.IsNullOrEmpty(imageSrc))
-                                {
-                                    imageSrc = Url.Content("~/Content/assets/images/NA.png");
-                                }
-                            }
-                            <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })">
-                                <img src="@imageSrc"
-                                     alt="@item.Name"
-                                     class="img-fluid rounded-3 shadow-sm"
-                                     style="object-fit: cover; width: 100%; aspect-ratio: 1/1;"
-                                     onerror="this.style.display='none'" />
+    @if (ViewBag.TenItems != null && ViewBag.TenItems.Count > 0)
+    {
+        int pCount = 0;
+        @foreach (var item in ViewBag.TenItems)
+        {
+            if (pCount >= 3) break;
+            pCount++;
+
+            <div class="col-lg-4 col-6 mb-4 pt-3">
+                <div class="position-relative rounded-3 overflow-hidden shadow-sm">
+                    @{
+                        var imageBase = Configuration["Image"];
+                        var imageSrc = !string.IsNullOrEmpty(item.Image) && !string.IsNullOrEmpty(imageBase)
+                            ? imageBase + item.Image : item.Image;
+                        if (string.IsNullOrEmpty(imageSrc))
+                            imageSrc = Url.Content("~/Content/assets/images/NA.png");
+                    }
+                    <a class="img-a" href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })">
+                        <img src="@imageSrc"
+                             alt="@item.Name"
+                             class="img-fluid rounded-3 shadow-sm"
+                             style="object-fit: cover; width: 100%; aspect-ratio: 1/1;"
+                             onerror="this.src='/Content/assets/images/NA.png'" />
+                    </a>
+
+                    @if (item.NewPrice != null && item.NewPrice > 0)
+                    {
+                        <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-info text-white small px-3 py-1">
+                            @(((item.Price - item.NewPrice) / item.Price * 100).ToString("0"))% off
+                        </span>
+                    }
+
+                    <!-- Hover Icons -->
+                    <div class="hover-icons d-flex flex-column align-items-center">
+                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })" class="icon-btn" title="Preview">
+                            <img src="~/Content/assets/images/preview.png" alt="Preview">
+                        </a>
+                        <a onclick="addtoWishlist(@item.ID, '@item.Name', '@item.Image', @item.Price, '@(item.CurrentStock > 0 ? "true" : "false")', 1); toast('Item Added to wishlist', 1); return false;" class="icon-btn" title="Wishlist">
+                            <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
+                        </a>
+                        @if (item.NewPrice == null || item.NewPrice == 0)
+                        {
+                            <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
                             </a>
-
-                            @if (item.NewPrice != null && item.NewPrice > 0)
-                            {
-                                <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-info text-white small px-3 py-1">
-                                    @(((item.Price - item.NewPrice) / item.Price * 100).ToString("0"))% off
-                                </span>
-                            }
-
-                            @*--Hover Icons--*@
-                            <div class="hover-icons d-flex flex-column align-items-center">
-                                <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })" class="icon-btn" title="Preview">
-                                    <img src="~/Content/assets/images/preview.png" alt="Preview">
-                                </a>
-                                <a onclick="addtoWishlist(@item.ID, '@item.Name', '@item.Image',@item.Price, '@(item.CurrentStock > 0 ? "true" : "false")',1);toast('Item Added to wishlist', 1); return false; " class="icon-btn" title="Wishlist">
-                                    <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
-                                </a>
-
-                                @if (item.NewPrice == null || item.NewPrice == 0)
-                                {
-                                    <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
-                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.NewPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
-                                        <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
-                                    </a>
-                                }
-                            </div>
-                        </div>
-
-                        <h6 class="mb-1 fw-semibold">@item.Name</h6>
-
-                        <div class="d-flex justify-content-between">
-                            @if (item.NewPrice == null || item.NewPrice == 0)
-                            {
-                                <span class="text-price fw-bold">BHD @item.Price.ToString("0.000")</span>
-                            }
-                            else
-                            {
-                                <span class="text-price fw-bold">BHD @item.NewPrice?.ToString("0.000")</span>
-                                <del class="text-del ms-2">BHD @item.Price.ToString("0.000")</del>
-                            }
-
-                        </div>
+                        }
+                        else
+                        {
+                            <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.NewPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
+                                <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
+                            </a>
+                        }
                     </div>
-                }
+                </div>
+
+                <!-- ✅ Category + Rating row -->
+                <div class="d-flex justify-content-between align-items-center mt-2" style="padding: 0 2px;">
+                    <span style="font-size:16px; color: #F1A502 ; font-weight:600; font-family:'Trebuchet MS',sans-serif;">
+                        @(item.CategoryName ?? item.Category ?? "Product")
+                    </span>
+                    <span style="font-size:12px; color:#555; font-weight:600; display:flex; align-items:center; gap:3px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#F1A502">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        4.9
+                    </span>
+                </div>
+
+                <!-- Product Name -->
+                <h6 class="mb-1 fw-semibold" style="color:#000; font-family:system-ui; padding-top:4px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    @item.Name
+                </h6>
+
+                <!-- Price -->
+                <div class="d-flex align-items-center gap-2">
+                    @if (item.NewPrice == null || item.NewPrice == 0)
+                    {
+                        <span class="fw-bold" style="color:#1C3D5A; font-size:15px; font-family:system-ui;    font-weight: 700;">
+                            BHD @item.Price.ToString("0.00")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="fw-bold" style="color:#1C3D5A; font-size:15px; font-family:system-ui;    font-weight: 700;">
+                            BHD @item.NewPrice?.ToString("0.00")
+                        </span>
+                        <del style="color:#33B6AE; font-size:13px;">
+                            @item.Price.ToString("0.00")
+                        </del>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+    </div>
+</div>
+
+<!-- Category Strip Bottom -->
+<div class="category-strip overflow-hidden">
+    <div class="category-strip-inner d-flex">
+        @if (ViewBag.categoryList != null && ViewBag.categoryList.Count > 0)
+        {
+            foreach (var cat in ViewBag.categoryList)
+            {
+                var catImgBase = Configuration["Image"];
+                var catImgSrc = !string.IsNullOrEmpty(cat.Image) && !string.IsNullOrEmpty(catImgBase)
+                    ? catImgBase + cat.Image
+                    : "https://samiacrafts.com/assets/images/logo.svg";
+
+                <a href="@Url.Action("shop", "shop", new {
+                        Category = "",
+                        CategoryIDs = cat.ID,
+                        SubCategoryIDs = "",
+                        ColorIDs = "",
+                        MinPrice = "BHD0",
+                        MaxPrice = "BHD500",
+                        Searchtext = "",
+                        SortID = 0
+                    })" class="category-item d-flex align-items-center justify-content-center text-decoration-none" style="color: #fff">
+                    <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                        <img src="@catImgSrc"
+                             alt="@cat.Name"
+                             class="circle-img"
+                             onerror="this.src='https://samiacrafts.com/assets/images/logo.svg'" />
+                    </div>
+                    @cat.Name
+                </a>
             }
-        </div>
-
-        <div class="col-md-12 text-center my-4 pt-lg-5">
-            <a href="@Url.Action("shop", "shop", new { Category = "", CategoryIDs = "", SubCategoryIDs = "",ColorIDs = "",MinPrice = "RS0",MaxPrice = "RS50000",Searchtext = "",SortID=0})" class="btn btn-default  btn-large" tabindex="0"><span>View All</span></a>
-        </div>
-
+        }
     </div>
 </div>
 
 <!--  New Arrival  -->
-<section class="new-arrival">
+<section class="new-arrival" style="padding: 40px 0; background: #fff;">
 
-    <h2 class="fw-bold mb-4 text-center" style="font-size: 32px;">
-        New Arrival <span style="color: var(--addbutton);">Products</span>
+<div class="text-center mb-2">
+    <p style="font-size:17px;color: #000;font-family:'Trebuchet MS',sans-serif;margin-bottom:6px;">About Us</p>
+    <h2 class="fw-bold" style="font-size: 32px;">
+        <span class="gradient-text">New Arrival</span> 
+        <span style="color: #1C3D5A;">Products</span>
     </h2>
+</div>
 
-    <div class="container-fluid">
-        <div class="row g-4 product-active-lg-4 product-active mt-4">
+    <div class="container-fluid px-4 mt-4">
+        <div class="new-arrival-slider">
             @if (ViewBag.NewArrivals != null && ViewBag.NewArrivals.Count > 0)
             {
-                @foreach (var item in ViewBag.NewArrivals)
+                foreach (var item in ViewBag.NewArrivals)
                 {
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card shadow-sm border rounded-4 p-1 h-100" style="font-family: 'Segoe UI', sans-serif;">
-                            <div class="row g-3 align-items-center">
-@{
-    var imageBase = Configuration["Image"];
-    var imageSrc = !string.IsNullOrEmpty(item.Image) && !string.IsNullOrEmpty(imageBase)
-        ? imageBase + item.Image
-        : Url.Content("~/Content/assets/images/NA.png");
-}
-                                <!-- Image Column -->
-                                <div class="col-6 position-relative text-center">
-                                    @if (string.IsNullOrEmpty(item.Image))
+                    var naImgBase = Configuration["Image"];
+                    var naImgSrc = !string.IsNullOrEmpty(item.Image) && !string.IsNullOrEmpty(naImgBase)
+                        ? naImgBase + item.Image
+                        : Url.Content("~/Content/assets/images/NA.png");
+
+                    var naDesc = string.IsNullOrEmpty(item.Description)
+                        ? "No description available."
+                        : System.Text.RegularExpressions.Regex.Replace(item.Description, "<.*?>", "");
+                    if (naDesc.Length > 55) naDesc = naDesc.Substring(0, 55) + "...";
+
+                    var naDiscount = (item.NewPrice != null && item.NewPrice > 0 && item.Price > item.NewPrice)
+                        ? (int)Math.Round(100 - ((double)item.NewPrice / (double)item.Price * 100))
+                        : 0;
+
+                    <div style="padding: 8px; width: 391px;">
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            border-radius: 18px;
+                            overflow: hidden;
+                            background: #fff;
+                            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                            position: relative;
+                            border: 2px solid transparent;
+                            background-image: linear-gradient(white,white), linear-gradient(45deg,#F1A502,#77C9D4);
+                            background-origin: border-box;
+                            background-clip: padding-box, border-box;">
+
+                            <!-- Card Inner: image + content -->
+                            <div style="display:flex; height:180px;">
+
+                                <!-- Left: Fixed size image -->
+                                <div style="width:150px; min-width:150px; height:100%; position:relative; overflow:hidden; flex-shrink:0;">
+                                    <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })" style="display:block; width:100%; height:100%;">
+                                        <img src="@naImgSrc"
+                                             alt="@item.Name"
+                                             style="width:100%; height:100%; object-fit:cover; display:block; padding:8px; border-radius:18px;"
+                                             onerror="this.src='/Content/assets/images/NA.png'" />
+                                    </a>
+                                    @if (naDiscount > 0)
                                     {
-                                        <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })">
-                                            <img src="~/Content/assets/images/NA.png" alt="@item.Name" class="product-image img-fluid">
-                                        </a>
-                                    }
-                                    else
-                                    {
-<a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })">
-    <img src="@imageSrc"
-         alt="@item.Name"
-         class="product-image img-fluid">
-</a>
-
-                                        @*--Hover Icons--*@
-                                        <div class="hover-icons d-flex flex-column align-items-center">
-                                            <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })" class="icon-btn" title="Preview">
-                                                <img src="~/Content/assets/images/preview.png" alt="Preview">
-                                            </a>
-                                            <a onclick="addtoWishlist(@item.ID, '@item.Name', '@item.Image',@item.Price, '@(item.CurrentStock > 0 ? true : false)',1);toast('Item Added to wishlist', 1); return false; " class="icon-btn" title="Wishlist">
-                                                <img src="~/Content/assets/images/wishlist.png" alt="Wishlist">
-                                            </a>
-
-                                            @if (item.NewPrice == null || item.NewPrice == 0)
-                                            {
-                                                <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.Price,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
-                                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                <a onclick="addtocart(@item.ID,'@item.Name','@item.Image',@item.NewPrice,1);toast('Item Added to Cart', 1); return false;" class="icon-btn" title="Add to Cart">
-                                                    <img src="~/Content/assets/images/addcart.png" alt="Add to Cart">
-                                                </a>
-                                            }
-
-
+                                        <div style="position:absolute; top:10px; left:10px; background:#F1A502; color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:50px; font-family:'Trebuchet MS',sans-serif;">
+                                            @naDiscount% OFF
                                         </div>
-
-
-
-                                    }
-
-                                    <!-- Discount Badge -->
-                                    @if (item.NewPrice != null && item.NewPrice > 0 && item.Price > item.NewPrice)
-                                    {
-                                        var discount = Math.Round(100 - ((double)item.NewPrice / (double)item.Price * 100));
-                                        <div class="badge bg-info text-white position-absolute top-0 end-0 mt-2 me-2">@discount% off</div>
                                     }
                                 </div>
 
-                                <!-- Content Column -->
-                                <div class="col-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="text-card small">@(item.Name ?? "N/A")</span>
-                                        <span class="fw-bold d-inline-flex align-items-center p-2">
-                                            @if (item.Stars > 0)
-                                            {
-                                                <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
-                                                <span>@item.Stars</span>
-                                            }
-                                            else
-                                            {
-                                                <img class="rating-icon" src="~/Content/assets/images/Star.png" alt="rating">
-                                                <span>0</span>
-                                            }
+                                <!-- Right: Content -->
+                                <div style="padding:12px 12px 8px; flex:1; display:flex; flex-direction:column; justify-content:center; overflow:hidden; min-width:0;">
+
+                                    <!-- ✅ Category + Rating -->
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                        <span style="font-size:11px; color: #F0A500; font-weight:600; font-family:'Trebuchet MS',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70%;">
+                                            @(item.CategoryName ?? item.Category ?? "Product")
+                                        </span>
+                                        <span style="font-size:11px; color:#555; font-weight:600; display:flex; align-items:center; gap:2px; flex-shrink:0;">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#F1A502">
+                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                            </svg>
+                                            4.9
                                         </span>
                                     </div>
-                                    <div class="mb-2">
+
+                                    <!-- Product Name -->
+                                    <h6 style="font-size:13px; font-weight:700; color:#1a1a1a; margin-bottom:5px; font-family:'Segoe UI',sans-serif; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                        @item.Name
+                                    </h6>
+
+                                    <!-- Price -->
+                                    <div style="margin-bottom:5px;">
                                         @if (item.NewPrice != null && item.NewPrice > 0)
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD @item.NewPrice?.ToString("0.000")</span>
-                                            <span class="text-del text-decoration-line-through ms-2">BHD @item.Price.ToString("0.000")</span>
+                                            <span style="font-size:13px; font-weight:700; color:#1C3D5A; font-family:'Segoe UI',sans-serif;">BHD @item.NewPrice?.ToString("0.00")</span>
+                                            <span style="font-size:11px; color:#33B6AE; text-decoration:line-through; margin-left:6px;">@item.Price.ToString("0.00")</span>
                                         }
                                         else
                                         {
-                                            <span class="text-price fw-bold  d-inline-flex align-items-center">BHD @item.Price.ToString("0.000")</span>
+                                            <span style="font-size:13px; font-weight:700; color:#1C3D5A; font-family:'Segoe UI',sans-serif;">BHD @item.Price.ToString("0.00")</span>
                                         }
                                     </div>
-                    
-@{
-    var plainDescription = string.IsNullOrEmpty(item.Description) 
-        ? "No description available." 
-        : System.Text.RegularExpressions.Regex.Replace(item.Description, "<.*?>", ""); // HTML tags remove
 
-    if (plainDescription.Length > 60)
-    {
-        plainDescription = plainDescription.Substring(0, 60) + "...";
-    }
-}
+                                    <!-- Description -->
+                                    <p style="font-size:11px; color:#888; line-height:1.5; margin-bottom:8px; font-family:'Trebuchet MS',sans-serif; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+                                        @naDesc
+                                    </p>
 
-<p class="text-muted small mb-3 product-card-description">
-    @plainDescription
-</p>
-
-
-
-
+                                    <!-- Shop Now -->
                                     <a href="@Url.Action("ProductDetails", "Product", new { ItemID = item.ID })"
-                                       class="text-shopnow fw-semibold text-decoration-none d-inline-flex align-items-center">
-                                        Shop Now <img class="img-arrow" src="~/Content/assets/images/arrow.png" alt="arrow" />
+                                       style="display:inline-flex; align-items:center; gap:5px; color:var(--addbutton,#217E79); font-size:12px; font-weight:700; text-decoration:none; font-family:'Trebuchet MS',sans-serif;">
+                                        Shop Now
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
                                     </a>
                                 </div>
-
                             </div>
+
                         </div>
                     </div>
                 }
@@ -1847,113 +2330,386 @@
     </div>
 </section>
 
+
 <!--  Weekly Deals -->
 <section class="weekly-deals-section">
     <div class="container-fluid">
-        <div class="deals-banner">
+        <div class="deals-banner" style="border-radius: 20px; overflow: visible; position: relative;">
             <div class="row g-0 align-items-center">
-                <div class="col-lg-7 col-md-12">
+                <div class="col-lg-8 col-md-12">
                     <div class="deals-content">
-                        <div class="deals-label">Weekly Deals</div>
-                        <h2 class="deals-title">Unbeatable Weekly Offers on Beautiful FLowers & Ceramic Vase</h2>
-                        <h3 class="deals-subtitle">on Beautiful Flowers</h3>
-                        <p class="deals-description">Lorem Ipsum Is Simply Dummy Text Of The Printing Industry.</p>
-                        <a href="@ViewBag.shopButtonURL" class="btn shop-now-btn" style="color: #1C3D5A;">
+                        <div class="deals-label" style="font-size:15px; font-weight:400; opacity:0.85; margin-bottom:12px;">
+                            Weekly Deals
+                        </div>
+                        <h2 style="font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight:700; color:#fff; line-height:1.3; margin-bottom:16px;">
+                            Unbeatable Weekly Offers<br>
+                            on <span style="color: #F1A502;">Beautiful FLowers & Ceramic Vase</span>
+                        </h2>
+                        <p class="deals-description" style="opacity:0.85; font-size:14px; margin-bottom:28px;">
+                            Check out our best-selling ceramic jars, lamps, and vases. These items are carefully crafted and perfect for gifts or decorating your home.
+                        </p>
+                        <a href="@ViewBag.shopButtonURL" class="btn shop-now-btn" style="color:#fff; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
                             Shop Now
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
-                                <path d="M5 12H19M19 12L12 5M19 12L12 19"
-                                      stroke="currentColor"
-                                      stroke-width="2"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round" />
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left:8px;">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
+                    </div>
+                </div>
 
+                <!-- ✅ Right Image - bottom se chipki, bahar nikal sakti hai -->
+                <div class="col-lg-4 col-md-4 d-none d-lg-block" style="position:relative;">
+                    <div style="
+                        position: absolute;
+                        bottom: -155px;
+                        right: 15px;
+                        height: 340px;
+                        display: flex;
+                        align-items: flex-end;
+                        justify-content: flex-end;">
+                        <img src="../Content/assets/sm-images/9fedc8b82eae495ab9ae069fa5fdb914c4e91b0a.png"
+                             alt="Ceramic Vase with Flowers"
+                             style="
+                                height: 100%;
+                                width: auto;
+                                object-fit: contain;
+                                object-position: bottom;" />
                     </div>
                 </div>
-                <div class="col-lg-5 col-md-6">
-                    <div class="deals-image">
-                        <img src="../Content/assets/sm-images/9fedc8b82eae495ab9ae069fa5fdb914c4e91b0a.png" alt="Woman with beautiful flower bouquet" class="img-fluid">
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
 </section>
 
-@if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
-{
-    <div class="testimonial-area testimonial-bg bg-gray overly-image pt-60 pb-60  mobimg" style="background-image: var(--bgtestimonials); ">
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-9 offset-md-3 col-md-8 col-sm-12">
-                    <div class="testimonial-slider">
-                        @foreach (var item in ViewBag.Reviews)
-                        {
-                            <div class="text-center pb-35">
-                                <div class="test-cont">
-                                    <img src="~/Content/assets/images/icon/quite.png" alt="">
-                                    <p style="font-size:20px;line-height:24px">@item.Description</p>
-                                </div>
-                                <br />
-                                <div class="test-author">
-                                    <h5>@item.Name</h5>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
-<!-- ====== INFINITE CATEGORY STRIP START ====== -->
 <!-- Category Strip Bottom -->
 <div class="category-strip overflow-hidden">
     <div class="category-strip-inner d-flex">
-        <!-- Reusable circular icon item -->
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
+        @if (ViewBag.categoryList != null && ViewBag.categoryList.Count > 0)
+        {
+            foreach (var cat in ViewBag.categoryList)
+            {
+                var catImgBase = Configuration["Image"];
+                var catImgSrc = !string.IsNullOrEmpty(cat.Image) && !string.IsNullOrEmpty(catImgBase)
+                    ? catImgBase + cat.Image
+                    : "https://samiacrafts.com/assets/images/logo.svg";
+
+                <a href="@Url.Action("shop", "shop", new {
+                        Category = "",
+                        CategoryIDs = cat.ID,
+                        SubCategoryIDs = "",
+                        ColorIDs = "",
+                        MinPrice = "BHD0",
+                        MaxPrice = "BHD500",
+                        Searchtext = "",
+                        SortID = 0
+                    })" class="category-item d-flex align-items-center justify-content-center text-decoration-none"  style="color: #fff">
+                    <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                        <img src="@catImgSrc"
+                             alt="@cat.Name"
+                             class="circle-img"
+                             onerror="this.src='https://samiacrafts.com/assets/images/logo.svg'" />
+                    </div>
+                    @cat.Name
+                </a>
+            }
+
+        }
+    </div>
+</div>
+
+<!-- ── Best Seller / Deals of the Day ── -->
+<section style="padding: 50px 20px; background: #fff;">
+    <div class="container">
+
+        <p style="font-size:17px; color:#000; font-family:'Trebuchet MS',sans-serif; margin-bottom:4px;">Best Seller</p>
+        <h2 style="font-size:32px; font-weight:700; color:#1a1a1a; margin-bottom:24px; font-family: 'Poppins', sans-serif;">
+            <span style="color:#F1A502;">Deals</span> of the Day
+        </h2>
+
+        <div style="display:flex; gap:16px; align-items:stretch;">
+
+            <!-- LEFT: Tall Feature Image -->
+            <div class="deals-left-img" style="width:250px; min-width:180px; border-radius:16px; overflow:hidden; flex-shrink:0;">
+                <img src="../Content/assets/sm-images/125730fa9f1218d31112eccb505a73cb00744cc1.png"
+                     alt="Feature"
+                     style="width:100%; height:100%; object-fit:cover; display:block;" />
             </div>
-            Vasses
+
+<!-- RIGHT: 2x3 Product Grid - Static 6 images -->
+<div style="flex:1; min-width:0;">
+    <div class="deals-grid row g-3" style="align-items:stretch;">
+
+        @{
+            var staticProducts = new[]
+            {
+                new { Img = "../Content/assets/sm-images/655f506d9423813d08abd27311382ec5976f5aa9.png", Name = "Ceramic Storage Jar", Price = "7.70" },
+                new { Img = "../Content/assets/sm-images/b7c84cdf1eb4ed5af00bcf029a9507c8afe0e14b.png", Name = "Floral Multi Color Design Lamp", Price = "33.00" },
+                new { Img = "../Content/assets/sm-images/9044e9d3aaaa97d28d658a408f08b37e51745007.png", Name = "Ceramic Ginger Jar (Large) C.", Price = "48.40" },
+                new { Img = "../Content/assets/sm-images/c429c855dfecef6690432249c648150c66645b66.png", Name = "Ceramic Jinger Jar (Large) A", Price = "48.40" },
+                new { Img = "../Content/assets/sm-images/2bddd9291f8a28e61ab6e127df4a6982f7ead320.png", Name = "Floral On Green Tall Lamp 003", Price = "33.00" },
+                new { Img = "../Content/assets/sm-images/b7c84cdf1eb4ed5af00bcf029a9507c8afe0e14b.png", Name = "Floral Multi Color Design Lamp", Price = "33.00" },
+                new { Img = "../Content/assets/sm-images/ae15cec2474a36ddbfe7f22aa1880421a36f3dce.png", Name = "Ceramic Ginger Jaw (Large) B.", Price = "48.40" },
+                new { Img = "../Content/assets/sm-images/b7c84cdf1eb4ed5af00bcf029a9507c8afe0e14b.png", Name = "Floral Multi Color Design Lamp", Price = "33.00" },
+            };
+        }
+
+        @foreach (var p in staticProducts)
+        {
+            <div class="col-3 mt-2" style="display:flex;">
+                <div style="
+                    background:#fff;
+                    border-radius:12px;
+                    overflow:hidden;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.07);
+                    transition:transform 0.2s;
+                    width:100%;
+                    display:flex;
+                    flex-direction:column;"
+                    onmouseover="this.style.transform='translateY(-3px)'"
+                    onmouseout="this.style.transform='translateY(0)'">
+
+                    <!-- Image -->
+                    <div style="position:relative; overflow:hidden; flex-shrink:0;">
+                        <img src="@p.Img"
+                             alt="@p.Name"
+                             style="width:100%; height:150px; object-fit:cover; display:block;"
+                             onerror="this.src='/Content/assets/images/NA.png'" />
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding:8px 10px 12px; flex:1;">
+                        <h6 style="font-size:12px; font-weight:600; color:#1a1a1a; margin-bottom:5px; font-family:'Segoe UI',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            @p.Name
+                        </h6>
+                        <span style="font-size:12px; font-weight:700; color:#1C3D5A;">BHD @p.Price</span>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── Testimonial Section ── -->
+<section style="padding: 60px 20px;background: #16563B26;">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <p style="font-size:14px; color:#000; font-family:'Trebuchet MS',sans-serif; margin-bottom:6px;">Testimonial</p>
+            <h2 style="font-size:36px; font-weight:700; color:#1C3D5A; font-family: 'Poppins', sans-serif;">
+                What <span style="color:#F1A502;">Our Clients Say</span>
+            </h2>
         </div>
 
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Jars
+        <div class="testimonial-new-slider">
+            @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+            {
+                foreach (var item in ViewBag.Reviews)
+                {
+                    <div style="padding: 0 12px;">
+                        <div style="background:#fff; border-radius:16px; border:1.5px solid #F1A502; padding:28px 24px; min-height:260px; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:4px; margin-bottom:14px;">
+                                    @for (int s = 0; s < 5; s++) {
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#F1A502"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                    }
+                                    <span style="font-size:16px; font-weight:700; color:#1a1a1a; margin-left:4px;">4.8</span>
+                                </div>
+                                <h5 style="font-size:18px; font-weight:700; color:#1a1a1a; margin-bottom:10px; font-family:'Segoe UI',sans-serif;">@(item.Name ?? "Great Product!")</h5>
+                                <p style="font-size:13px; color:var(--addbutton,#217E79); line-height:1.7; font-family:'Trebuchet MS',sans-serif;">@(item.Description ?? "Lorem Ipsum Is Simply Dummy Text.")</p>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:14px; margin-top:20px;">
+                                <div style="width:52px; height:52px; border-radius:50%; overflow:hidden; flex-shrink:0;">
+                                    @if (!string.IsNullOrEmpty(item.Image)) {
+                                        <img src="@item.Image" alt="@item.Name" style="width:100%; height:100%; object-fit:cover;" />
+                                    } else {
+                                        <div style="width:100%; height:100%; background:linear-gradient(135deg,#77C9D4,#1C3D5A); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:700;">
+                                            @(item.Name?.Length > 0 ? item.Name[0].ToString().ToUpper() : "C")
+                                        </div>
+                                    }
+                                </div>
+                                <div>
+                                    <div style="font-size:15px; font-weight:700; color:#1a1a1a; font-family:'Segoe UI',sans-serif;">@(item.Name ?? "Happy Customer")</div>
+                                    <div style="font-size:12px; color:var(--addbutton,#217E79); font-family:'Trebuchet MS',sans-serif;">Happy Customer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                @* Dummy cards *@
+                var dummies = new[] {
+                    new { Name = "Fatima",   Title = "Ceramic Bukhoor!",  Letter = "J",  Discription = "The Ceramic Bukhoor is truly an exquisite addition to my home! The craftsmanship is impeccable, with its elegant design and smooth finish. The ceramic material not only looks sophisticated but also enhances the experience by holding the bukhoor incense perfectly." },
+                    new { Name = "Awais",   Title = " Blue Geometric Rug!",  Letter = "J",  Discription = "The Blue Geometric Rug is an absolute delight! Its modern geometric pattern and rich blue tones add a sophisticated and stylish touch to my living room. The quality of the material is excellent—soft, durable, and easy to maintain, making it perfect for both high-traffic areas and cozy spaces." },
+                    new { Name = "Ammad",   Title = "Multi-Color Floral Planter!",  Letter = "J",  Discription = "I absolutely love the Multi-Color Floral Planter! The vibrant colors and elegant design make it a perfect addition to any space, whether indoors or outdoors. It's sturdy, well-crafted, and provides a great base for showcasing my favorite plants. The multi-color finish adds a cheerful and artistic touch, instantly brightening up my garden." },
+                };
+                foreach (var d in dummies)
+                {
+                    <div style="padding: 0 12px;">
+                        <div style="background:#fff; border-radius:16px; border:1.5px solid #F1A502; padding:28px 24px; min-height:260px; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:4px; margin-bottom:14px;">
+                                    @for (int s = 0; s < 5; s++) {
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#F1A502"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                    }
+                                    <span style="font-size:16px; font-weight:700; color:#1a1a1a; margin-left:4px;">4.8</span>
+                                </div>
+                                <h5 style="font-size:18px; font-weight:700; color:#1a1a1a; margin-bottom:10px; font-family:'Segoe UI',sans-serif;">@d.Title</h5>
+                                <p style="font-size:13px; color:var(--addbutton,#217E79); line-height:1.7; font-family:'Trebuchet MS',sans-serif;">@d.Discription</p>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:14px; margin-top:20px;">
+                                <div style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#77C9D4,#1C3D5A); display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:700; border-radius:50%;">@d.Letter</div>
+                                <div>
+                                    <div style="font-size:15px; font-weight:700; color:#1a1a1a; font-family:'Segoe UI',sans-serif;">@d.Name</div>
+                                    <div style="font-size:12px; color:var(--addbutton,#217E79); font-family:'Trebuchet MS',sans-serif;">Happy Customer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
         </div>
 
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Table Ware
-        </div>
+    </div>
+</section>
 
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Lamps
-        </div>
+<style>
+    /* ✅ Dots style - figma jaisa */
+    .testimonial-new-slider .slick-dots {
+        bottom: -35px;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+    .testimonial-new-slider .slick-dots li button:before {
+        display: none;
+    }
+    .testimonial-new-slider .slick-dots li button {
+        width: 32px;
+        height: 8px;
+        border-radius: 50px;
+        background: #ccc;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: background 0.3s, width 0.3s;
+        font-size: 0 !important;  /* ✅ number hide */
+        line-height: 0 !important;
+    }
+    .testimonial-new-slider .slick-dots li.slick-active button {
+        background: #1C3D5A;
+        width: 40px;
+    }
+    /* Hide arrows */
+    .testimonial-new-slider .slick-prev,
+    .testimonial-new-slider .slick-next { display: none !important; }
+</style>
 
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Himalyan
-        </div>
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Wall Hangings
-        </div>
+<script>
+    $(document).ready(function () {
+        // ✅ Destroy if already initialized (prevent double init)
+        if ($('.testimonial-new-slider').hasClass('slick-initialized')) {
+            $('.testimonial-new-slider').slick('destroy');
+        }
+        $('.testimonial-new-slider').slick({
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            arrows: false,
+            dots: true,
+            infinite: true,
+            autoplay: true,
+            autoplaySpeed: 3500,
+            responsive: [
+                { breakpoint: 768, settings: { slidesToShow: 1 } }
+            ]
+        });
+    });
+</script>
+
+<style>
+    /* Dots styling - bilkul figma jaisa */
+    .testimonial-slider-wrap .slick-dots {
+        bottom: -35px;
+    }
+    .testimonial-slider-wrap .slick-dots li button:before {
+        font-size: 10px;
+        color: #ccc;
+        opacity: 1;
+    }
+    .testimonial-slider-wrap .slick-dots li.slick-active button:before {
+        color: #1C3D5A;
+        opacity: 1;
+    }
+    .testimonial-slider-wrap .slick-dots li.slick-active button {
+        background: #1C3D5A;
+        border-radius: 10px;
+        width: 28px;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('.testimonial-slider-wrap').slick({
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            arrows: false,
+            dots: true,
+            infinite: true,
+            autoplay: true,
+            autoplaySpeed: 3500,
+            responsive: [
+                { breakpoint: 768, settings: { slidesToShow: 1 } }
+            ]
+        });
+    });
+</script>
+
+<!-- ====== INFINITE CATEGORY STRIP START ====== -->
+
+<!-- Category Strip Bottom -->
+<div class="category-strip overflow-hidden">
+    <div class="category-strip-inner d-flex">
+        @if (ViewBag.categoryList != null && ViewBag.categoryList.Count > 0)
+        {
+            foreach (var cat in ViewBag.categoryList)
+            {
+                var catImgBase = Configuration["Image"];
+                var catImgSrc = !string.IsNullOrEmpty(cat.Image) && !string.IsNullOrEmpty(catImgBase)
+                    ? catImgBase + cat.Image
+                    : "https://samiacrafts.com/assets/images/logo.svg";
+
+                <a href="@Url.Action("shop", "shop", new {
+                        Category = "",
+                        CategoryIDs = cat.ID,
+                        SubCategoryIDs = "",
+                        ColorIDs = "",
+                        MinPrice = "BHD0",
+                        MaxPrice = "BHD500",
+                        Searchtext = "",
+                        SortID = 0
+                    })" class="category-item d-flex align-items-center justify-content-center text-decoration-none" style="color: #fff">
+                    <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                        <img src="@catImgSrc"
+                             alt="@cat.Name"
+                             class="circle-img"
+                             onerror="this.src='https://samiacrafts.com/assets/images/logo.svg'" />
+                    </div>
+                    @cat.Name
+                </a>
+            }
+        }
     </div>
 </div>
 
@@ -1962,35 +2718,35 @@
 <section class="instagram-section">
     <div class="container">
         <div class="text-center">
-            <p class="follow-text mb-2 sec-para">Follow Us</p>
-            <h2 class="main-heading sec-heading">
-                Follow Us On <span style="color: var(--addbutton);" class="instagram-text">Instagram</span>
+            <p style="font-size:14px; color:#000; font-family:'Trebuchet MS',sans-serif; margin-bottom:8px;">Follow Us</p>
+            <h2 class="main-heading sec-heading" style="color: var(--addbutton);">
+                Follow Us On <span  class="gradient-text">Instagram</span>
             </h2>
         </div>
 
         <div class="row instagram-grid">
             <div class="col-lg-2 col-md-4 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/66eb469699ce7ab72af94f662e1bca3889853c89.png" alt="Image 1" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-2 col-md-4 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/014684f0bc6b667457264d8befaf1a85c37bc723.png" alt="Image 2" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-4 col-md-4 col-12 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/55c5d03efb85bfa8530bc92268bad8741f6a6fc6.png" alt="Image 3" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-2 col-md-6 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/8ec1404bc2a2ef97cbb113e76bec117868fda9fc.png" alt="Image 4" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-2 col-md-6 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/9a137a715f6e57571f9bdabc3cbb00fb2cf19a5d.png" alt="Image 5" class="img-fluid" />
                 </a>
             </div>
@@ -1998,22 +2754,22 @@
 
         <div class="row instagram-grid mt-3">
             <div class="col-lg-4 col-md-4 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/6507b5036cc3f2a776bdaf17482b39571fdd6e99.png".png" alt="Image 6" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-2 col-md-4 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/ce00766978b65cd538cbcda7864c9170e90e801d.png" alt="Image 7" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-2 col-md-4 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/7ea1d1da4f2d1a013d1cad5c614a580ac8b666c2.png" alt="Image 8" class="img-fluid" />
                 </a>
             </div>
             <div class="col-lg-4 col-md-12 col-6 instagram-item">
-                <a class="d-block w-100">
+                <a href="https://www.instagram.com/accounts/login/?next=%2Fsamia_crafts&source=omni_redirect" class="d-block w-100">
                     <img src="../Content/assets/sm-images/11114f6e81df6192e4744c0d3a79c43b6d64c80b.png" alt="Image 9" class="img-fluid" />
                 </a>
             </div>
@@ -2025,40 +2781,35 @@
 <!-- Category Strip Bottom -->
 <div class="category-strip overflow-hidden">
     <div class="category-strip-inner d-flex">
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Gardenware
-        </div>
+        @if (ViewBag.categoryList != null && ViewBag.categoryList.Count > 0)
+        {
+            foreach (var cat in ViewBag.categoryList)
+            {
+                var catImgBase = Configuration["Image"];
+                var catImgSrc = !string.IsNullOrEmpty(cat.Image) && !string.IsNullOrEmpty(catImgBase)
+                    ? catImgBase + cat.Image
+                    : "https://samiacrafts.com/assets/images/logo.svg";
 
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Luxury Basin
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Bukhoor Burners
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Clearance
-        </div>
-
-        <div class="category-item d-flex align-items-center justify-content-center">
-            <div class="circle-bg d-flex align-items-center justify-content-center me-2">
-                <img src="https://samiacrafts.com/assets/images/logo.svg" alt="Fly" class="circle-img">
-            </div>
-            Vases
-        </div>
+                <a href="@Url.Action("shop", "shop", new {
+                        Category = "",
+                        CategoryIDs = cat.ID,
+                        SubCategoryIDs = "",
+                        ColorIDs = "",
+                        MinPrice = "BHD0",
+                        MaxPrice = "BHD500",
+                        Searchtext = "",
+                        SortID = 0
+                    })" class="category-item d-flex align-items-center justify-content-center text-decoration-none" style="color: #fff">
+                    <div class="circle-bg d-flex align-items-center justify-content-center me-2">
+                        <img src="@catImgSrc"
+                             alt="@cat.Name"
+                             class="circle-img"
+                             onerror="this.src='https://samiacrafts.com/assets/images/logo.svg'" />
+                    </div>
+                    @cat.Name
+                </a>
+            }
+        }
     </div>
 </div>
 
@@ -2067,8 +2818,8 @@
 <section class="py-5 faqs">
     <div class="container">
         <div class="text-center mb-5">
-            <p class="text-muted mb-2 sec-para">FAQs</p>
-            <h2 class="fw-bold sec-heading">Question? <span style="color: var(--addbutton);">Look Here.</span></h2>
+            <p style="font-size:17px; color:#000; font-family:'Trebuchet MS',sans-serif; margin-bottom:8px;">FAQs</p>
+            <h2 class="fw-bold sec-heading">Question? <span style="color: #C6A45B;">Look Here.</span></h2>
         </div>
 
         <div class="row">
@@ -2082,7 +2833,7 @@
                             </button>
                         </h2>
                         <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body teal-bg text-white">
+                            <div class="accordion-body teal-bg text-white" style="padding: 10px;">
                                 Samia Craft is a full-service florist based in Bahrain, offering a wide range of ceramic vases etc for arrangements, bouquets, and gift combos. They import Ceramic vases etc from global suppliers and also handle home, office, etc arrangements for events, including bridal bouquets and floral decor
                             </div>
                         </div>
@@ -2096,7 +2847,7 @@
                             </button>
                         </h2>
                         <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body teal-bg text-white">
+                            <div class="accordion-body teal-bg text-white" style="padding: 10px;">
                                 Yes, we provide delivery within Bahrain limits.
                             </div>
                         </div>
@@ -2110,7 +2861,7 @@
                             </button>
                         </h2>
                         <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body teal-bg text-white">
+                            <div class="accordion-body teal-bg text-white" style="padding: 10px;">
                                 You can place an order through our website, phone, or visit our store directly.
                             </div>
                         </div>
@@ -2124,7 +2875,7 @@
                             </button>
                         </h2>
                         <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body teal-bg text-white">
+                            <div class="accordion-body teal-bg text-white" style="padding: 10px;">
                                 We accept cash, card payments, and online transfers.
                             </div>
                         </div>
@@ -2138,7 +2889,7 @@
                             </button>
                         </h2>
                         <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body teal-bg text-white">
+                            <div class="accordion-body teal-bg text-white" style="padding: 10px;">
                                 Currently, we only serve within Bahrain limits.
                             </div>
                         </div>
@@ -2156,7 +2907,12 @@
                         <h4 class="fw-bold mb-2">You Have Different Questions?</h4>
                         <p class="mb-0">Our Team Will Answer All Your Questions.</p>
                         <p class="mb-4">We Ensure A Quick Response.</p>
-                        <button class="btn btn-light text-dark fw-semibold">Contact Us</button>
+                         <a href="/home/contact" class="btn shop-now-btn" style="color:#fff; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+                            Contact Us
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left:8px;">
+                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -2166,27 +2922,27 @@
         <div class="row mt-5 pt-4">
             <div class="col-md-4 text-center mb-4">
                 <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
-                    <img src="/Content/assets/images/Faq/free-shiping.png" class="feature-icon mb-2 mb-md-0" alt="Free Shipping">
+                    <img src="/Content/assets/sm-images/la_shipping-fast (1).png" class="feature-icon mb-2 mb-md-0" alt="Free Shipping">
                     <div class="text-md-start text-center px-md-3">
-                        <h5 class="teal-text fw-bold mb-1">Free Shipping</h5>
-                        <p class="text-muted mb-0 small">For Order Above BHD 5000</p>
+                        <h5 class="teal-text fw-bold mb-1">Fast Delivery</h5>
+                        <p class="text-muted mb-0 small">Start from BD 2</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4 text-center mb-4">
                 <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
-                    <img src="/Content/assets/images/Faq/payment.png" class="feature-icon mb-2 mb-md-0" alt="Payment">
+                    <img src="/Content/assets/sm-images/ri_secure-payment-fill (1).png" class="feature-icon mb-2 mb-md-0" alt="Payment">
                     <div class="text-md-start text-center px-md-3">
-                        <h5 class="teal-text fw-bold mb-1">Flexible Payment</h5>
-                        <p class="text-muted mb-0 small">Multiple Secure Payment Options</p>
+                        <h5 class="teal-text fw-bold mb-1">Secure Payment</h5>
+                        <p class="text-muted mb-0 small">100% secured</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4 text-center mb-4">
                 <div class="d-flex flex-column flex-md-row align-items-center justify-content-center mb-3">
-                    <img src="/Content/assets/images/Faq/support.png" class="feature-icon mb-2 mb-md-0" alt="Support">
+                    <img src="/Content/assets/sm-images/ix_support (1).png" class="feature-icon mb-2 mb-md-0" alt="Support">
                     <div class="text-md-start text-center px-md-3">
                         <h5 class="teal-text fw-bold mb-1">24 x 7 Support</h5>
                         <p class="text-muted mb-0 small">We Support Online All Days.</p>
@@ -2195,6 +2951,35 @@
             </div>
         </div>
 
+    </div>
+</section>
+
+<!-- ====== NEWSLETTER SECTION START ====== -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <p style="font-size:14px;color: #000;font-family:'Trebuchet MS',sans-serif;margin-bottom:6px;">
+                    Our Newsletter
+                </p>
+
+                <h2 style="font-size:36px; font-weight:500; color:#1C3D5A; font-family: 'Poppins', sans-serif;">
+                    Subscribe To Our Newsletter To 
+                    <span style="color:#F1A502;">Get Updates On Our Latest Offers</span>
+                </h2>
+
+                <p class="newsletter-description">
+                    Get 20% Off On Your First Order Just By Subscribing To Our Newsletter
+                </p>
+
+                <div class="input-group">
+                    <input type="email" class="form-control email-input" placeholder="Your Email Address" aria-label="Email address">
+                    <button onclick="getmail(); toast('Thank you: You have been successfully subscribed to Samia Crafts. we will keep you updated with our latest news and offers', 1); return false; this.value = '';" class="btn subscribe-btn">
+                        <span>Subscribe</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -2338,6 +3123,54 @@
                 var SubCategoryIDs =  SubCategory.join();
                 var ColorIDs =  Color.join();
                 window.location.href = '/shop/shop?Category=""&CategoryIDs=' + CategoryIDs + '&SubCategoryIDs=' + SubCategoryIDs + '&ColorIDs=' + ColorIDs + '&MinPrice=' + MinPrice + '&MaxPrice=' + MaxPrice + '&Searchtext=' + Searchtxt + '&SortID=' + SortID + '';
+            });
+        });
+    </script>
+
+    <script>
+    // Holiday Sales Countdown
+    (function () {
+        var endDate = new Date();
+        endDate.setDate(endDate.getDate() + 4);
+        endDate.setHours(endDate.getHours() + 14);
+
+        function updateTimer() {
+            var now = new Date();
+            var diff = endDate - now;
+            if (diff <= 0) return;
+
+            var days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+            var hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            function pad(n) { return n < 10 ? '0' + n : n; }
+
+            document.getElementById('hsDays').textContent  = pad(days);
+            document.getElementById('hsHours').textContent = pad(hours);
+            document.getElementById('hsMins').textContent  = pad(minutes);
+            document.getElementById('hsSecs').textContent  = pad(seconds);
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    })();
+</script>
+
+    <script>
+        $(document).ready(function () {
+            $('.new-arrival-slider').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                arrows: false,      // ✅ No arrows
+                dots: false,
+                infinite: true,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                responsive: [
+                    { breakpoint: 1024, settings: { slidesToShow: 2 } },
+                    { breakpoint: 600,  settings: { slidesToShow: 1 } }
+                ]
             });
         });
     </script>

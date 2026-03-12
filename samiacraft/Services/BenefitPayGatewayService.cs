@@ -39,7 +39,8 @@ namespace samiacraft.Services
             string resourceKey,
             string responseUrl,
             string errorUrl,
-            bool isTestMode)
+            bool isTestMode,
+            string cancelUrl = "")   // ✅ NEW
         {
             _tranportalId = tranportalId;
             _tranportalPassword = tranportalPassword;
@@ -47,11 +48,15 @@ namespace samiacraft.Services
             _responseUrl = responseUrl;
             _errorUrl = errorUrl;
             _isTestMode = isTestMode;
+            _cancelUrl = cancelUrl;   // ✅ NEW
         }
 
         // ════════════════════════════════════════════════════════════════
         // INITIATE PAYMENT
         // ✅ overrideResponseUrl / overrideErrorUrl - localhost ya production
+        // ════════════════════════════════════════════════════════════════
+        // ════════════════════════════════════════════════════════════════
+        // INITIATE PAYMENT - FIXED
         // ════════════════════════════════════════════════════════════════
         public BenefitPayPaymentResult InitiatePayment(
             string trackId,
@@ -63,19 +68,19 @@ namespace samiacraft.Services
             string udf3 = "",
             string udf4 = "",
             string udf5 = "",
-            string? overrideResponseUrl = null,   // ✅ Dynamic URL support
-            string? overrideErrorUrl = null)      // ✅ Dynamic URL support
+            string? overrideResponseUrl = null,
+            string? overrideErrorUrl = null,
+            string? overrideCancelUrl = null)  // ✅ NEW
         {
             try
             {
                 if (_resourceKey.Length != 32)
                     return Fail($"ResourceKey must be 32 chars. Got: {_resourceKey.Length}");
 
-                // ✅ Override URLs use karo agar diye hain, warna default
                 string responseUrl = overrideResponseUrl ?? _responseUrl;
                 string errorUrl = overrideErrorUrl ?? _errorUrl;
+                string cancelUrl = overrideCancelUrl ?? _cancelUrl ?? errorUrl; // ✅ 3 alag
 
-                // ── Step 1: Inner payload ──
                 var innerList = new[]
                 {
                     new
@@ -87,18 +92,17 @@ namespace samiacraft.Services
                         resourceKey  = _resourceKey,
                         currencycode = currency,
                         trackId      = trackId,
-                        udf1         = "",
+                        udf1         = trackId,
                         udf2         = udf2,
                         udf3         = udf3,
                         udf4         = udf4,
                         udf5         = udf5,
-                        responseURL  = responseUrl,
-                        errorURL     = errorUrl,
-                        cancelURL    = _cancelUrl,
+                        responseURL  = responseUrl,  // ✅ Success
+                        errorURL     = errorUrl,     // ✅ Error
+                        cancelURL    = cancelUrl,    // ✅ Cancel (alag!)
                     }
                 };
 
-                // ── Step 2: Serialize ──
                 var innerJson = JsonConvert.SerializeObject(innerList, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -109,8 +113,8 @@ namespace samiacraft.Services
 
                 var outerList = new[]
                 {
-                    new { id = _tranportalId, trandata = encryptedHex }
-                };
+            new { id = _tranportalId, trandata = encryptedHex }
+        };
 
                 var outerJson = JsonConvert.SerializeObject(outerList, new JsonSerializerSettings
                 {
@@ -118,7 +122,6 @@ namespace samiacraft.Services
                     Formatting = Formatting.None
                 });
 
-                // ── Step 3: POST ──
                 var endpoint = _isTestMode ? TEST_ENDPOINT : PRODUCTION_ENDPOINT;
                 var apiResp = SendRequest(outerJson, endpoint);
 
@@ -149,7 +152,8 @@ namespace samiacraft.Services
             {
                 return Fail($"Exception: {ex.Message}");
             }
-        }
+        }  
+
 
         // ════════════════════════════════════════════════════════════════
         // PARSE RESPONSE - trandata decrypt karo

@@ -415,7 +415,7 @@
 
 .category-strip-inner {
     display: inline-flex;
-    animation: slide-left 30s linear infinite;
+    animation: slide-left 70s linear infinite;
     will-change: transform;
 }
 
@@ -502,7 +502,7 @@ body {
 }
 
 .main-heading {
-    color: #16563B;
+    color: #1C3D5A;
     font-weight: 600;
     font-size: 2.5rem;
     margin-bottom: 50px;

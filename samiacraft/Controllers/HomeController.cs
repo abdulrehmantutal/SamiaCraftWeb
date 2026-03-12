@@ -75,7 +75,7 @@ namespace samiacraft.Controllers
                 var catlist = new categoryBLL().GetAll(LocationId);
                 if (catlist != null && catlist.Count > 0)
                 {
-                    ViewBag.categoryList = catlist.Take(5).ToList();
+                    ViewBag.categoryList = catlist.ToList();
                     ViewBag.Category = catlist.ToList();
                 }
                 else

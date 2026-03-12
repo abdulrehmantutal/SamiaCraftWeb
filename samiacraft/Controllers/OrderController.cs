@@ -38,13 +38,17 @@ namespace samiacraft.Controllers
             string errorUrl = _configuration["BenefitPay:ErrorUrl"] ?? "";
             bool isTestMode = bool.Parse(_configuration["BenefitPay:IsTestMode"] ?? "false");
 
+            string baseUrl = _configuration["AppSettings:BaseUrl"]?.TrimEnd('/') ?? "";
+            string cancelUrl = $"{baseUrl}/Order/BenefitPayCancelled";
+
             _benefitPayGatewayService = new BenefitPayGatewayService(
                 tranportalId,
                 tranportalPassword,
                 resourceKey,
                 responseUrl,
                 errorUrl,
-                isTestMode
+                isTestMode,
+                cancelUrl
             );
         }
 
@@ -504,28 +508,25 @@ namespace samiacraft.Controllers
                 var giftDataJson = HttpContext.Items["GiftDataJson"]?.ToString() ?? "[]";
                 SendPendingPaymentEmails(OrderID, data, giftDataJson);
 
-                // ✅ Production pe AppSettings:BaseUrl use karo, localhost pe Request se lo
                 string baseUrl = _configuration["AppSettings:BaseUrl"];
                 if (string.IsNullOrEmpty(baseUrl))
-                {
                     baseUrl = $"{Request.Scheme}://{Request.Host}";
-                }
-                // Trailing slash hata do
                 baseUrl = baseUrl.TrimEnd('/');
 
                 var result = _benefitPayGatewayService.InitiatePayment(
                     trackId: OrderID.ToString(),
                     amount: (decimal)(data.GrandTotal ?? 0),
-                    currency: "048",   // BHD
+                    currency: "048",
                     cardType: "D",
                     udf1: OrderID.ToString(),
                     udf2: data.CustomerID?.ToString() ?? "",
                     udf3: data.CustomerName ?? "",
                     udf4: data.Email ?? "",
                     udf5: data.GrandTotal?.ToString("F2") ?? "",
-                    overrideResponseUrl: $"{baseUrl}/Order/BenefitPayResponse?OrderID={OrderID}",
-                    overrideErrorUrl: $"{baseUrl}/Order/BenefitPayResponse?OrderID=0"
-                );
+                    overrideResponseUrl: $"{baseUrl}/Order/BenefitPayResponse?OrderID={OrderID}",  // ✅ Success
+                    overrideErrorUrl: $"{baseUrl}/Order/BenefitPayCancelled?OrderID={OrderID}", // ✅ Error
+                    overrideCancelUrl: $"{baseUrl}/Order/BenefitPayCancelled?OrderID={OrderID}"  // ✅ Cancel
+                ); ;
 
                 if (result.IsSuccessful)
                 {
@@ -554,34 +555,90 @@ namespace samiacraft.Controllers
         }
 
         // ============================================================================
-        // BENEFITPAY RESPONSE - Gateway se callback
+        // BENEFITPAY CANCELLED - User ne cancel kiya ya payment fail hui
         // ============================================================================
+        [HttpGet]
+        [HttpPost]
+        public IActionResult BenefitPayCancelled(int OrderID = 0)
+        {
+            // ✅ Status 103 = Rejected/Cancelled
+            if (OrderID > 0) 
+            {
+                try
+                {
+                    new checkoutBLL().OrderUpdate(OrderID, 103);
+                }
+                catch { }
+            }
 
+            return Content($@"<!DOCTYPE html>
+<html>
+<head><title>Payment Cancelled</title></head>
+<body>
+<script>
+    alert('❌ Payment was cancelled or failed.\n\nYour order has not been placed.\nPlease try again.');
+    window.location.href = '/Order/Checkout';
+</script>
+</body>
+</html>", "text/html");
+        }
+
+        [HttpGet]
+        public IActionResult TestPaymentSuccess(int OrderID = 0)
+        {
+            if (OrderID <= 0)
+                return Content("Use: /Order/TestPaymentSuccess?OrderID=123");
+
+            return Content($@"<!DOCTYPE html><html><body>
+    <script>
+        fetch('/Order/BenefitCompleteOrder?OrderID={OrderID}')
+        .then(r => r.json())
+        .then(d => {{
+            localStorage.removeItem('_cartitems');
+            localStorage.removeItem('_giftitems');
+            sessionStorage.removeItem('_pendingOrderID');
+            alert('✅ Payment Successful!\n\nOrder #{OrderID} placed!\nEmail sent. Thank you!');
+            window.location.href = '/';
+        }});
+    </script></body></html>", "text/html");
+        }
+
+        // ============================================================================
+        // BENEFITPAY RESPONSE - Fixed (trandata missing = cancelled)
+        // ============================================================================
         [HttpPost]
         [HttpGet]
         public IActionResult BenefitPayResponse()
         {
-            string baseUrl = $"{Request.Scheme}://{Request.Host}";
+            string baseUrl = _configuration["AppSettings:BaseUrl"];
+            if (string.IsNullOrEmpty(baseUrl))
+                baseUrl = $"{Request.Scheme}://{Request.Host}";
+            baseUrl = baseUrl.TrimEnd('/');
 
             if (Request.Method == "GET")
-            {
-                return Redirect("/");
-            }
+                return Redirect("/Order/Checkout");
 
             try
             {
+                // OrderID - query string, form, udf1 teeno try karo
                 int orderID = 0;
                 if (Request.Query.ContainsKey("OrderID"))
                     int.TryParse(Request.Query["OrderID"], out orderID);
-
-                if (orderID == 0)
-                {
-                    return Redirect("/Order/Checkout");
-                }
+                if (orderID == 0 && Request.Form.ContainsKey("OrderID"))
+                    int.TryParse(Request.Form["OrderID"], out orderID);
+                if (orderID == 0 && Request.Form.ContainsKey("udf1"))
+                    int.TryParse(Request.Form["udf1"], out orderID);
 
                 string encryptedResponse = "";
                 if (Request.Form.ContainsKey("trandata"))
                     encryptedResponse = Request.Form["trandata"].ToString();
+
+                // ✅ trandata nahi = cancelled/error - checkout pe wapas
+                if (string.IsNullOrEmpty(encryptedResponse))
+                    return Redirect("/Order/Checkout");
+
+                if (orderID == 0)
+                    return Redirect("/Order/Checkout");
 
                 var paymentRequest = new PaymentResponseRequest
                 {
@@ -593,20 +650,70 @@ namespace samiacraft.Controllers
 
                 if (paymentResult.IsSuccessful && paymentResult.Result == "CAPTURED")
                 {
-                    return Content($"REDIRECT={baseUrl}/Order/BenefitPayApproved?OrderID={paymentResult.OrderID}");
+                    return Content($"REDIRECT={baseUrl}/Order/BenefitPayApproved?OrderID={orderID}");
                 }
                 else
                 {
-                    // ✅ Failed/Cancelled - home pe bhejo
-                    return Content($"REDIRECT={baseUrl}/");
+                    return Content($"REDIRECT={baseUrl}/Order/Checkout");
                 }
             }
             catch (Exception ex)
             {
                 LogPaymentError(0, "BenefitPay Response Exception", ex.Message);
-                return Redirect("/");
+                return Redirect("/Order/Checkout");
             }
         }
+
+        //[HttpPost]
+        //[HttpGet]
+        //public IActionResult BenefitPayResponse()
+        //{
+        //    string baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+        //    if (Request.Method == "GET")
+        //    {
+        //        return Redirect("/");
+        //    }
+
+        //    try
+        //    {
+        //        int orderID = 0;
+        //        if (Request.Query.ContainsKey("OrderID"))
+        //            int.TryParse(Request.Query["OrderID"], out orderID);
+
+        //        if (orderID == 0)
+        //        {
+        //            return Redirect("/Order/Checkout");
+        //        }
+
+        //        string encryptedResponse = "";
+        //        if (Request.Form.ContainsKey("trandata"))
+        //            encryptedResponse = Request.Form["trandata"].ToString();
+
+        //        var paymentRequest = new PaymentResponseRequest
+        //        {
+        //            OrderID = orderID,
+        //            EncryptedResponse = encryptedResponse
+        //        };
+
+        //        var paymentResult = _benefitGatewayService.ProcessPaymentResponse(paymentRequest);
+
+        //        if (paymentResult.IsSuccessful && paymentResult.Result == "CAPTURED")
+        //        {
+        //            return Content($"REDIRECT={baseUrl}/Order/BenefitPayApproved?OrderID={paymentResult.OrderID}");
+        //        }
+        //        else
+        //        {
+        //            // ✅ Failed/Cancelled - home pe bhejo
+        //            return Content($"REDIRECT={baseUrl}/");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogPaymentError(0, "BenefitPay Response Exception", ex.Message);
+        //        return Redirect("/");
+        //    }
+        //}
 
         // ============================================================================
         // BENEFITPAY APPROVED
@@ -616,60 +723,72 @@ namespace samiacraft.Controllers
         [HttpGet]
         public IActionResult BenefitPayApproved(int OrderID)
         {
-            try
-            {
-                if (OrderID <= 0)
-                {
-                    return Redirect("/");
-                }
-
-                // ✅ Payment success - alert → status update + email → localStorage clear → home
-                return Content($@"
-            <!DOCTYPE html>
-            <html>
-            <body>
-            <script>
-                alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly. Thank you!');
-                
-                fetch('/Order/BenefitCompleteOrder?OrderID={OrderID}')
-                    .then(function() {{
-                        // ✅ Payment complete hone ke BAAD clear karo
-                        localStorage.removeItem('_cartitems');
-                        localStorage.removeItem('_giftitems');
-                        sessionStorage.removeItem('_pendingOrderID');
-                        window.location.href = '/';
-                    }})
-                    .catch(function() {{
-                        localStorage.removeItem('_cartitems');
-                        localStorage.removeItem('_giftitems');
-                        sessionStorage.removeItem('_pendingOrderID');
-                        window.location.href = '/';
-                    }});
-            </script>
-            </body>
-            </html>
-        ", "text/html");
-            }
-            catch (Exception ex)
-            {
-                LogPaymentError(OrderID, "BenefitPay Approval Failed", ex.Message);
+            if (OrderID <= 0)
                 return Redirect("/");
-            }
+
+            return Content($@"<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+    <style>
+        body {{ font-family: sans-serif; display: flex; align-items: center; 
+               justify-content: center; height: 100vh; margin: 0; background: #f5f5f5; }}
+        .box {{ text-align: center; background: white; padding: 40px; 
+                border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }}
+        .spinner {{ width: 40px; height: 40px; border: 4px solid #e0e0e0; 
+                    border-top-color: #1C3D5A; border-radius: 50%; 
+                    animation: spin 0.8s linear infinite; margin: 0 auto 16px; }}
+        @@keyframes spin {{ to {{ transform: rotate(360deg); }} }}
+        p {{ color: #555; margin: 0; }}
+    </style>
+</head>
+<body>
+<div class='box'>
+    <div class='spinner'></div>
+    <p>Processing your payment, please wait...</p>
+</div>
+<script>
+    // ✅ Step 1: Status update + email
+    fetch('/Order/BenefitCompleteOrder?OrderID={OrderID}')
+        .then(function(res) {{ return res.json(); }})
+        .then(function(data) {{
+            // ✅ Step 2: localStorage clear
+            localStorage.removeItem('_cartitems');
+            localStorage.removeItem('_giftitems');
+            sessionStorage.removeItem('_pendingOrderID');
+            // ✅ Step 3: Alert
+            alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed successfully.\nYou will receive a confirmation email shortly.\n\nThank you for shopping with us!');
+            // ✅ Step 4: Home redirect
+            window.location.href = '/';
+        }})
+        .catch(function(err) {{
+            localStorage.removeItem('_cartitems');
+            localStorage.removeItem('_giftitems');
+            sessionStorage.removeItem('_pendingOrderID');
+            alert('✅ Payment Successful!\n\nYour order #{OrderID} has been placed.\nThank you!');
+            window.location.href = '/';
+        }});
+</script>
+</body>
+</html>", "text/html");
         }
 
         // ============================================================================
         // BENEFIT COMPLETE ORDER - Status Update + Email (AJAX se call hota hai)
         // ============================================================================
-
         [HttpGet]
         public IActionResult BenefitCompleteOrder(int OrderID = 0)
         {
             try
             {
-                // ✅ 101 = Approved/Completed
+                if (OrderID <= 0)
+                    return Json(new { success = false, message = "Invalid OrderID" });
+
+                // ✅ Status 101 = Approved
                 var checkoutService = new checkoutBLL();
                 checkoutService.OrderUpdate(OrderID, 101);
 
+                // ✅ Email
                 var orderDetails = new myorderBLL().GetDetails(OrderID);
                 if (orderDetails != null)
                 {
@@ -690,6 +809,7 @@ namespace samiacraft.Controllers
             }
             catch (Exception ex)
             {
+                LogPaymentError(OrderID, "BenefitCompleteOrder Error", ex.Message);
                 return Json(new { success = false, message = ex.Message });
             }
         }
